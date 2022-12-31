@@ -1,4 +1,4 @@
-import { AppBar, Box, Container, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Container, Theme, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import './App.css';
 import GoogleLogin from './components/googleLogin';
@@ -14,7 +14,7 @@ function App() {
                     </Toolbar>
                 </AppBar>
             </header>
-            <Container component="main">
+            <Container component="main" maxWidth="md">
                 <GoogleLogin />
             </Container>
         </div>
