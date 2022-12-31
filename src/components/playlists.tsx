@@ -77,6 +77,10 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
             }
         }
     }
+    // Return early so we don't make request checking 0 ids
+    if (possiblyUnavailableItems.length === 0) {
+        return unavailableItems;
+    }
     const batch = gapi.client.newBatch();
     const MAX_VIDEO_IDS_PER_REQUEST = 50;
     let startIndex = 0;
