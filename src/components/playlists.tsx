@@ -78,9 +78,6 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
         }
     }
     const batch = gapi.client.newBatch();
-    const listVideos = gapi.client.youtube.videos.list({
-        part: "contentDetails,status",
-    });
     const MAX_VIDEO_IDS_PER_REQUEST = 50;
     let startIndex = 0;
     const videoIds = possiblyUnavailableItems.map((item) => {
@@ -93,20 +90,21 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     while (startIndex < videoIds.length) {
         batch.add(gapi.client.youtube.videos.list({
             part: "contentDetails,status",
-            id: videoIds.slice(startIndex, startIndex + MAX_VIDEO_IDS_PER_REQUEST).join(",")
+            id: videoIds.slice(startIndex, startIndex + MAX_VIDEO_IDS_PER_REQUEST).join(","),
+            maxResults: 50
         }));
         startIndex += 50;
     }
-    batch.add(gapi.client.youtube.videos.list({
-        part: "contentDetails,status",
-        id: videoIds.slice(endIndex - MAX_VIDEO_IDS_PER_REQUEST, endIndex).join(",")
-    }))
-    const response = await gapi.client.youtube.videos.list({
-        part: "contentDetails,status",
-        id: videoIds.slice(endIndex - MAX_VIDEO_IDS_PER_REQUEST, videoIds.length).join(","),
-    });
-    const result = response.result;
-    if (!result.items) {
+    const batchResults = (await batch).result;
+    const allVideoItems: Video[] = [];
+    for (const responseId in batchResults) {
+        const response = batchResults[responseId] as gapi.client.Response<gapi.client.youtube.VideoListResponse>;
+        const result = response.result;
+        if (result.items) {
+            allVideoItems.push(...result.items);
+        }
+    }
+    if (allVideoItems.length === 0) {
         return unavailableItems;
     }
     const videoIdToPlaylistItem = new Map();
@@ -122,7 +120,7 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
             videoIdToPlaylistItem.set(videoId, [playlistItem]);
         }
     }
-    for (const video of result.items) {
+    for (const video of allVideoItems) {
         if (!videoAvailableInCountry(video, "US")) {
             unavailableItems.push(...videoIdToPlaylistItem.get(video.id));
         }
