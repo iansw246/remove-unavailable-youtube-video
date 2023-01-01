@@ -1,25 +1,7 @@
-import { Stack, Container, Box, Typography, Paper, Link, Button, useTheme } from "@mui/material"
-import { PlaylistListResponse, PlaylistResponse } from "./googleLogin";
-
-type PlaylistItemListResponse = gapi.client.youtube.PlaylistItemListResponse
-type PlaylistItemResource = gapi.client.youtube.PlaylistItemsResource
-type PlaylistItem = gapi.client.youtube.PlaylistItem
-type Video = gapi.client.youtube.Video;
-
-function youtubePlaylistLink(playlistId: string) {
-    return `https://www.youtube.com/playlist?list=${playlistId}`;
-}
-
-function firstAvailableThumbnail(thumbnails: gapi.client.youtube.ThumbnailDetails): gapi.client.youtube.Thumbnail | null {
-    // Key for preferred thumbnail in order of preference. This function gets the first thumbnail in order of keys
-    const THUMBNAIL_KEYS: (keyof gapi.client.youtube.ThumbnailDetails)[] = ["default", "medium", "high", "standard", "maxres"];
-    for (const key of THUMBNAIL_KEYS) {
-        if (Object.hasOwn(thumbnails, key)) {
-            return thumbnails[key] as gapi.client.youtube.Thumbnail;
-        }
-    }
-    return null;
-}
+import { Stack, Box, Paper, useTheme, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button } from "@mui/material"
+import { useState } from "react";
+import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
+import PlaylistRow from "./PlaylistRow";
 
 async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
     const results: gapi.client.youtube.PlaylistItemListResponse[] = [];
@@ -132,44 +114,46 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     return unavailableItems;
 }
 
-export default function PlaylistsDisplay({playlists, currentUserChannelId}: {playlists: PlaylistListResponse, currentUserChannelId: string}) {
+export interface Props {
+    playlists: Playlist[],
+    currentUserChannelId: string,
+}
+
+export default function PlaylistsDisplay({playlists, currentUserChannelId}: Props) {
     const theme = useTheme();
+    const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
+    const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>();
     return (
         <Paper sx={{
             padding: "6px"
         }}>
+            <Dialog open={isRemoveVideoDialogOpen}>
+                <DialogTitle>
+                    Remove videos?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Found {unavailableItems?.length} videos. Confirm removal from playlist?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button>Ok</Button>
+                    <Button>Cancel</Button>
+                </DialogActions>
+            </Dialog>
             <Stack spacing={2}>
-                {playlists.items?.map((playlist) =>
-                    <Paper elevation={2} sx={{
-                        "&:hover": {
-                            backgroundColor: theme.palette.grey[100],
+                {playlists.map((playlist: Playlist) =>
+                    <PlaylistRow key={playlist.id} playlist={playlist} removeUnavailableVideosCallback={(playlist: Playlist) => {
+                        if (!playlist.id) {
+                            throw new Error("Playlist has no id");
                         }
-                    }} key={playlist.etag}>
-                        <Stack direction="row" >
-                            <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}} src={playlist.snippet?.thumbnails ? firstAvailableThumbnail(playlist.snippet?.thumbnails)?.url : ""}></Box>
-                            <Box>
-                                <Typography>{playlist.snippet?.title}</Typography>
-                                <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
-                                <Typography fontSize="0.8rem">Id: {playlist.id}</Typography>
-                                <Typography fontSize="0.8rem">Status: {playlist.status?.privacyStatus}</Typography>
-                                <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography>
-                                {playlist.id && <Link href={youtubePlaylistLink(playlist.id)}>Link to playlist</Link>}
-                            </Box>
-                            <Box ml="auto">
-                                <Button sx={{height: "100%"}} onClick={() => {
-                                    if (!playlist.id) {
-                                        return;
-                                    }
-                                    getVideosInPlaylist(playlist.id)
-                                        .then((itemResponses) => {
-                                            return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
-                                        }).then((unavailableItems) => {
-                                            console.log(unavailableItems);
-                                        });
-                                }}>Remove unavailable videos</Button>
-                            </Box>
-                        </Stack>
-                    </Paper>
+                        getVideosInPlaylist(playlist.id)
+                            .then((itemResponses) => {
+                                return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
+                            }).then((unavailableItems) => {
+                                setUnavailableItems(unavailableItems);
+                            });
+                    }}></PlaylistRow>
                 )}
             </Stack>
         </Paper>
