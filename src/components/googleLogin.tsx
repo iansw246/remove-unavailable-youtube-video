@@ -38,17 +38,6 @@ async function getToken(tokenClient: TokenClient, error: any) {
     });
 }
 
-// async function getPlaylists(tokenClient: TokenClient): Promise<gapi.client.youtube.PlaylistListResponse> {
-//     let request: PlaylistResponse;
-//     try {
-//         request = await listOwnedPlaylists();
-//     } catch (err) {
-//         await getToken(tokenClient, err);
-//         request = await listOwnedPlaylists();
-//     }
-//     return request.result;
-// }
-
 async function getOwnedChannels(): Promise<gapi.client.youtube.ChannelListResponse> {
     const response = await gapi.client.youtube.channels.list({
         part: "contentDetails,contentOwnerDetails,id,snippet,status",
@@ -92,7 +81,7 @@ export default function GoogleLogin() {
     const [currentUserChannelId, setCurrentUserChannelId] = useState<string>();
     const [showAuthentication, setShowAuthentication] = useState<boolean>(false);
     const [pendingRequest, setPendingRequest] = useState<ApiRequest>();
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(true);
     useEffect(() => {
         initTokenClient().then((newTokenClient) => {
             setTokenClient(newTokenClient);
@@ -169,17 +158,22 @@ export default function GoogleLogin() {
         tokenClient?.requestAccessToken();
     }
 
+    function handleDialogClose() {
+        setShowAuthentication(false);
+    }
+
     console.log(currentUserChannelId);
     const playlists: Playlist[] = playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[];
     return (
         <>
-            <Dialog open={showAuthentication}>
+            <Dialog open={showAuthentication} onClose={handleDialogClose}>
                 <DialogTitle>Login to Google</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         In order to show your playlists, please login to Google and grant this app permission to view and modify your playlists.
                     </DialogContentText>
                     <Button onClick={handleLoginButtonClick}>Login</Button>
+                    <Button onClick={handleDialogClose}>Cancel</Button>
                 </DialogContent>
             </Dialog>
             {/* {showAuthentication && <Button onClick={handleLoginButtonClick}>Login with Google</Button>} */}
