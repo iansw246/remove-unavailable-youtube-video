@@ -1,6 +1,6 @@
 // import google from "google-one-tap";
-import { Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from "@mui/material";
-import { useEffect, useId, useRef, useState } from "react";
+import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { useEffect, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
 import PlaylistsDisplay from "./playlists";
 
@@ -12,31 +12,8 @@ enum ApiRequest {
 
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
-const YouTubeApiDiscoveryURL = "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest";
 const CLIENT_ID: string = "914337747127-64uq2fegqsuo8c7qm4taen59susmslf7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/youtube";
-
-async function getToken(tokenClient: TokenClient, error: any) {
-    if (error.result.error.code !== 401 && !(error.result.error.code === 403 && error.result.error.status === "PERMISSION_DENIED")) {
-        // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
-        throw new Error(error);
-    }
-    await new Promise((resolve, reject) => {
-        try {
-            (tokenClient as any).callback = (resp: any) => {
-                if (resp.error !== undefined) {
-                    reject(resp);
-                }
-                console.log("gapi.client access token: " + JSON.stringify(gapi.client.getToken()));
-                resolve(resp);
-            };
-            tokenClient.requestAccessToken();
-        }
-        catch(err) {
-            console.error(err);
-        }
-    });
-}
 
 async function getOwnedChannels(): Promise<gapi.client.youtube.ChannelListResponse> {
     const response = await gapi.client.youtube.channels.list({

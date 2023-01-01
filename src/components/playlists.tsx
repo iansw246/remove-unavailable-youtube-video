@@ -1,4 +1,4 @@
-import { Stack, Box, Paper, useTheme, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, Typography, Card } from "@mui/material"
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, Card } from "@mui/material"
 import { useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import PlaylistItemView from "./PlaylistItemView";
@@ -99,7 +99,6 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
         const videoId = playlistItem.contentDetails?.videoId;
         if (!videoId) {
             throw new Error("Playlist Item should have video id");
-            continue;
         }
         if (videoIdToPlaylistItem.has(videoId)) {
             videoIdToPlaylistItem.get(playlistItem.contentDetails?.videoId).push(playlistItem);
@@ -138,7 +137,6 @@ export interface Props {
 }
 
 export default function PlaylistsDisplay({playlists, currentUserChannelId}: Props) {
-    const theme = useTheme();
     const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();

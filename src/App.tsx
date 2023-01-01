@@ -1,5 +1,4 @@
-import { AppBar, Box, Container, Theme, Toolbar, Typography } from '@mui/material';
-import React from 'react';
+import { AppBar, Container, Toolbar, Typography } from '@mui/material';
 import './App.css';
 import GoogleLogin from './components/googleLogin';
 
@@ -28,5 +27,4 @@ function App() {
         </div>
     );
 }
-
 export default App;

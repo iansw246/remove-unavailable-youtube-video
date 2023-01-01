@@ -1,4 +1,4 @@
-import { Box, Link, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import { PlaylistItem } from "../requestHelpers";
 import { getThumbnailUrl, makeVideoUrl } from "../youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
