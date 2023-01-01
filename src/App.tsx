@@ -15,6 +15,14 @@ function App() {
                 </AppBar>
             </header>
             <Container component="main" maxWidth="md">
+                <Typography variant="h2" component="h1">
+                    Unavailable Video Remover
+                </Typography>
+                <Typography>
+                    Annoyed by the "unavailable videos are hidden" banner in YouTube? This app will allow you to find and remove all unavailable videos from your YouTube playlists.
+                </Typography>
+                <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
+                <Typography>To get started, click the button below to load your playlists (requires a Google account).</Typography>
                 <GoogleLogin />
             </Container>
         </div>

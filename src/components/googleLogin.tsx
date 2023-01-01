@@ -13,7 +13,7 @@ enum GoogleApiRequest {
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
 const YouTubeApiDiscoveryURL = "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest";
-const CLIENT_ID: string = "110467423049-1d9811vpeei0ogsfr0q4fif4vokkhfip.apps.googleusercontent.com";
+const CLIENT_ID: string = "914337747127-r085lu3ktrko5dhgn677eh1jsk3mt8bn.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/youtube";
 
 async function getToken(tokenClient: TokenClient, error: any) {

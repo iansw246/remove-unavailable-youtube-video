@@ -1,6 +1,7 @@
-import { Stack, Box, Paper, useTheme, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button } from "@mui/material"
+import { Stack, Box, Paper, useTheme, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, Typography, Card } from "@mui/material"
 import { useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
+import PlaylistItemView from "./PlaylistItemView";
 import PlaylistRow from "./PlaylistRow";
 
 async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
@@ -122,37 +123,54 @@ export interface Props {
 export default function PlaylistsDisplay({playlists, currentUserChannelId}: Props) {
     const theme = useTheme();
     const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
-    const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>();
+    const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
+    const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
+
+    function handleDialogClose() {
+        setIsRemoveVideoDialogOpen(false);
+    }
+
     return (
         <Paper sx={{
             padding: "6px"
         }}>
-            <Dialog open={isRemoveVideoDialogOpen}>
+            <Dialog open={isRemoveVideoDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>
-                    Remove videos?
+                    Remove Unavailable Videos?
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Found {unavailableItems?.length} videos. Confirm removal from playlist?
+                        Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
+                        Confirm removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
                     </DialogContentText>
+                    {unavailableItems.map((item) =>
+                        <Card key={item.id}>
+                            <PlaylistItemView playlistItem={item}></PlaylistItemView>
+                        </Card>
+                    )}
                 </DialogContent>
                 <DialogActions>
                     <Button>Ok</Button>
-                    <Button>Cancel</Button>
+                    <Button onClick={handleDialogClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
             <Stack spacing={2}>
                 {playlists.map((playlist: Playlist) =>
-                    <PlaylistRow key={playlist.id} playlist={playlist} removeUnavailableVideosCallback={(playlist: Playlist) => {
-                        if (!playlist.id) {
-                            throw new Error("Playlist has no id");
-                        }
-                        getVideosInPlaylist(playlist.id)
-                            .then((itemResponses) => {
-                                return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
-                            }).then((unavailableItems) => {
-                                setUnavailableItems(unavailableItems);
-                            });
+                    <PlaylistRow
+                        key={playlist.id}
+                        playlist={playlist}
+                        removeUnavailableVideosCallback={(playlist: Playlist) => {
+                            if (!playlist.id) {
+                                throw new Error("Playlist has no id");
+                            }
+                            getVideosInPlaylist(playlist.id)
+                                .then((itemResponses) => {
+                                    return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
+                                }).then((unavailableItems) => {
+                                    setUnavailableItems(unavailableItems);
+                                    setIsRemoveVideoDialogOpen(true);
+                                    setCurrentlySelectedPlaylist(playlist);
+                                });
                     }}></PlaylistRow>
                 )}
             </Stack>

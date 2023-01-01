@@ -1,20 +1,10 @@
-import { Box, Button, Link, Paper, Stack, Typography } from "@mui/material";
-import { ReactNode } from "react";
+import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { Playlist } from "../requestHelpers";
+import { getThumbnailUrl } from "../youtubeResourceHelpers";
+import NewTabLink from "./NewTabLink";
 
 function youtubePlaylistLink(playlistId: string) {
     return `https://www.youtube.com/playlist?list=${playlistId}`;
-}
-
-function firstAvailableThumbnail(thumbnails: gapi.client.youtube.ThumbnailDetails): gapi.client.youtube.Thumbnail | null {
-    // Key for preferred thumbnail in order of preference. This function gets the first thumbnail in order of keys
-    const THUMBNAIL_KEYS: (keyof gapi.client.youtube.ThumbnailDetails)[] = ["default", "medium", "high", "standard", "maxres"];
-    for (const key of THUMBNAIL_KEYS) {
-        if (Object.hasOwn(thumbnails, key)) {
-            return thumbnails[key] as gapi.client.youtube.Thumbnail;
-        }
-    }
-    return null;
 }
 
 export interface Props {
@@ -30,10 +20,11 @@ export default function PlaylistRow({playlist, removeUnavailableVideosCallback}:
             }
         }} key={playlist.etag}>
             <Stack direction="row" >
-                <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}} src={playlist.snippet?.thumbnails ? firstAvailableThumbnail(playlist.snippet?.thumbnails)?.url : ""}></Box>
+                <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}}
+                    src={getThumbnailUrl(playlist.snippet?.thumbnails)}></Box>
                 <Box>
                     {playlist.id ? 
-                        <Link href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Link>
+                        <NewTabLink href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</NewTabLink>
                         :
                         <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
                     }
