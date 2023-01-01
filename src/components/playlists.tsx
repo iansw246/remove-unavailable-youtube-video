@@ -18,7 +18,7 @@ async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.yout
             part: "contentDetails,id,snippet,status",
             maxResults: 50,
             playlistId,
-            pageToken: itemsResult.nextPageToken
+            pageToken: itemsResult.nextPageToken,
         });
         itemsResult = response.result;
         results.push(itemsResult);
@@ -115,6 +115,23 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     return unavailableItems;
 }
 
+async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promise<gapi.client.Response<gapi.client.ResponseMap<any>> | undefined> {
+    if (unavailableItems.length <= 0) {
+        return;
+    }
+    const batch = gapi.client.newBatch();
+    for (const item of unavailableItems)
+    {
+        if (item.id) {
+            batch.add(gapi.client.youtube.playlistItems.delete({
+                id: item.id
+            }));
+        }
+    }
+    // batch.then()
+    return await batch;
+}
+
 export interface Props {
     playlists: Playlist[],
     currentUserChannelId: string,
@@ -128,6 +145,14 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId}: Prop
 
     function handleDialogClose() {
         setIsRemoveVideoDialogOpen(false);
+    }
+
+    function handleConfirmDeleteUnavailableVideos() {
+        deleteUnavailableVideos(unavailableItems).then(() => {
+            setIsRemoveVideoDialogOpen(false);
+            setUnavailableItems([]);
+            setCurrentlySelectedPlaylist(undefined);
+        });
     }
 
     return (
@@ -150,7 +175,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId}: Prop
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button>Ok</Button>
+                    <Button onClick={handleConfirmDeleteUnavailableVideos}>Ok</Button>
                     <Button onClick={handleDialogClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
