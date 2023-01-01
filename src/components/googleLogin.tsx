@@ -1,6 +1,6 @@
 // import google from "google-one-tap";
 import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
 import PlaylistsDisplay from "./playlists";
 
@@ -59,22 +59,8 @@ export default function GoogleLogin() {
     const [showAuthentication, setShowAuthentication] = useState<boolean>(false);
     const [pendingRequest, setPendingRequest] = useState<ApiRequest>();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(true);
-    useEffect(() => {
-        initTokenClient().then((newTokenClient) => {
-            setTokenClient(newTokenClient);
-        })
-    }, []);
-    useEffect(() => {
-        if (!isUserLoggedIn) {
-            return;
-        }
-        if (pendingRequest === ApiRequest.OwnPlaylists) {
-            handleShowPlaylistButtonClick();
-            setPendingRequest(undefined);
-        }
-    }, [isUserLoggedIn]);
 
-    function handleShowPlaylistButtonClick() {
+    const handleShowPlaylistButtonClick = useCallback(() => {
         if (!tokenClient) {
             return;
         }
@@ -100,7 +86,22 @@ export default function GoogleLogin() {
                     setPendingRequest(ApiRequest.OwnPlaylists);
                 }
             });
-    }
+    }, [tokenClient]);
+    
+    useEffect(() => {
+        initTokenClient().then((newTokenClient) => {
+            setTokenClient(newTokenClient);
+        })
+    }, []);
+    useEffect(() => {
+        if (!isUserLoggedIn) {
+            return;
+        }
+        if (pendingRequest === ApiRequest.OwnPlaylists) {
+            handleShowPlaylistButtonClick();
+            setPendingRequest(undefined);
+        }
+    }, [isUserLoggedIn, pendingRequest, handleShowPlaylistButtonClick]);
 
     async function initTokenClient(): Promise<google.accounts.oauth2.TokenClient> {
         await (window as any).gapiLoadPromise;
@@ -139,6 +140,10 @@ export default function GoogleLogin() {
         setShowAuthentication(false);
     }
 
+    const reloadPlaylistsCallback = useCallback(() => {
+        setPendingRequest(ApiRequest.OwnPlaylists);
+    }, []);
+
     console.log(currentUserChannelId);
     const playlists: Playlist[] = playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[];
     return (
@@ -156,7 +161,7 @@ export default function GoogleLogin() {
             {/* {showAuthentication && <Button onClick={handleLoginButtonClick}>Login with Google</Button>} */}
             <Button onClick={handleShowPlaylistButtonClick} disabled={!tokenClient}>Show Playlists</Button>
             {playlistResponses && currentUserChannelId ?
-                <PlaylistsDisplay playlists={playlists} currentUserChannelId={currentUserChannelId} />
+                <PlaylistsDisplay playlists={playlists} currentUserChannelId={currentUserChannelId} reloadPlaylists={reloadPlaylistsCallback} />
                 : null
             }
         </>

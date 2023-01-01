@@ -132,11 +132,12 @@ async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promis
 }
 
 export interface Props {
-    playlists: Playlist[],
-    currentUserChannelId: string,
+    playlists: Playlist[];
+    currentUserChannelId: string;
+    reloadPlaylists: () => void;
 }
 
-export default function PlaylistsDisplay({playlists, currentUserChannelId}: Props) {
+export default function PlaylistsDisplay({playlists, currentUserChannelId, reloadPlaylists}: Props) {
     const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
@@ -150,6 +151,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId}: Prop
             setIsRemoveVideoDialogOpen(false);
             setUnavailableItems([]);
             setCurrentlySelectedPlaylist(undefined);
+            reloadPlaylists();
         });
     }
 
