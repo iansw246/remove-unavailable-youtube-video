@@ -6,14 +6,14 @@ import PlaylistsDisplay from "./playlists";
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
-enum GoogleApiRequest {
+enum ApiRequest {
     OwnPlaylists
 }
 
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
 const YouTubeApiDiscoveryURL = "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest";
-const CLIENT_ID: string = "914337747127-r085lu3ktrko5dhgn677eh1jsk3mt8bn.apps.googleusercontent.com";
+const CLIENT_ID: string = "914337747127-64uq2fegqsuo8c7qm4taen59susmslf7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/youtube";
 
 async function getToken(tokenClient: TokenClient, error: any) {
@@ -87,18 +87,29 @@ async function listOwnedPlaylists(): Promise<PlaylistListResponse[]> {
 }
 
 export default function GoogleLogin() {
-    const tokenClient = useRef<TokenClient>();
+    const [tokenClient, setTokenClient] = useState<TokenClient>();
     const [playlistResponses, setPlaylistResponses] = useState<PlaylistListResponse[]>([]);
     const [currentUserChannelId, setCurrentUserChannelId] = useState<string>();
     const [showAuthentication, setShowAuthentication] = useState<boolean>(false);
-    const interruptedRequest = useRef<GoogleApiRequest>();
+    const [pendingRequest, setPendingRequest] = useState<ApiRequest>();
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
     useEffect(() => {
         initTokenClient().then((newTokenClient) => {
-            tokenClient.current = newTokenClient;
+            setTokenClient(newTokenClient);
         })
     }, []);
+    useEffect(() => {
+        if (!isUserLoggedIn) {
+            return;
+        }
+        if (pendingRequest === ApiRequest.OwnPlaylists) {
+            handleShowPlaylistButtonClick();
+            setPendingRequest(undefined);
+        }
+    }, [isUserLoggedIn]);
+
     function handleShowPlaylistButtonClick() {
-        if (!tokenClient.current) {
+        if (!tokenClient) {
             return;
         }
         listOwnedPlaylists()
@@ -118,8 +129,9 @@ export default function GoogleLogin() {
                 }
             }, (error: any) => {
                 if (isUnauthenticated(error)) {
+                    setIsUserLoggedIn(false);
                     setShowAuthentication(true);
-                    interruptedRequest.current = GoogleApiRequest.OwnPlaylists;
+                    setPendingRequest(ApiRequest.OwnPlaylists);
                 }
             });
     }
@@ -141,9 +153,7 @@ export default function GoogleLogin() {
                     callback: (tokenResponse) => {
                         console.log(tokenResponse);
                         setShowAuthentication(false);
-                        if (interruptedRequest.current === GoogleApiRequest.OwnPlaylists) {
-                            handleShowPlaylistButtonClick();
-                        }
+                        setIsUserLoggedIn(true);
                     },
                 });
                 resolve(tokenClient);
@@ -156,7 +166,7 @@ export default function GoogleLogin() {
     }
 
     function handleLoginButtonClick() {
-        tokenClient.current?.requestAccessToken();
+        tokenClient?.requestAccessToken();
     }
 
     console.log(currentUserChannelId);
@@ -173,7 +183,7 @@ export default function GoogleLogin() {
                 </DialogContent>
             </Dialog>
             {/* {showAuthentication && <Button onClick={handleLoginButtonClick}>Login with Google</Button>} */}
-            <Button onClick={handleShowPlaylistButtonClick}>Show Playlists</Button>
+            <Button onClick={handleShowPlaylistButtonClick} disabled={!tokenClient}>Show Playlists</Button>
             {playlistResponses && currentUserChannelId ?
                 <PlaylistsDisplay playlists={playlists} currentUserChannelId={currentUserChannelId} />
                 : null
