@@ -1,4 +1,3 @@
-// import google from "google-one-tap";
 import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
@@ -12,7 +11,8 @@ enum ApiRequest {
 
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
-const CLIENT_ID: string = "914337747127-64uq2fegqsuo8c7qm4taen59susmslf7.apps.googleusercontent.com";
+const {REACT_APP_CLIENT_ID: CLIENT_ID}: {REACT_APP_CLIENT_ID: string} = (process.env as any);
+console.log(process.env);
 const SCOPES = "https://www.googleapis.com/auth/youtube";
 
 async function getOwnedChannels(): Promise<gapi.client.youtube.ChannelListResponse> {
@@ -146,6 +146,7 @@ export default function GoogleLogin() {
 
     console.log(currentUserChannelId);
     const playlists: Playlist[] = playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[];
+    console.log(CLIENT_ID);
     return (
         <>
             <Dialog open={showAuthentication} onClose={handleDialogClose}>
