@@ -1,4 +1,4 @@
-import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button } from "@mui/material"
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Typography, Container } from "@mui/material"
 import { useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import PlaylistItemView from "./PlaylistItemView";
@@ -141,13 +141,16 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
     const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
+    const [loadingMessage, setLoadingMessage] = useState<string>();
 
     function handleDialogClose() {
         setIsRemoveVideoDialogOpen(false);
     }
 
     function handleConfirmDeleteUnavailableVideos() {
+        setLoadingMessage("Deleting unavailable videos.");
         deleteUnavailableVideos(unavailableItems).then(() => {
+            setLoadingMessage(undefined);
             setIsRemoveVideoDialogOpen(false);
             setUnavailableItems([]);
             setCurrentlySelectedPlaylist(undefined);
@@ -157,6 +160,14 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
 
     return (
         <>
+            <Dialog open={Boolean(loadingMessage)} fullWidth={true}>
+                <DialogTitle textAlign="center">
+                    {loadingMessage}
+                </DialogTitle>
+                <DialogContent sx={{display: "flex", justifyContent: "center"}}>
+                    <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
+                </DialogContent>
+            </Dialog>
             <Dialog open={isRemoveVideoDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>
                     Remove Unavailable Videos?
@@ -175,7 +186,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleConfirmDeleteUnavailableVideos}>Ok</Button>
+                    <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
                     <Button onClick={handleDialogClose}>Cancel</Button>
                 </DialogActions>
             </Dialog>
@@ -188,10 +199,12 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                             if (!playlist.id) {
                                 throw new Error("Playlist has no id");
                             }
+                            setLoadingMessage("Loading unavailable videos in playlist.");
                             getVideosInPlaylist(playlist.id)
                                 .then((itemResponses) => {
                                     return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
                                 }).then((unavailableItems) => {
+                                    setLoadingMessage(undefined);
                                     setUnavailableItems(unavailableItems);
                                     setIsRemoveVideoDialogOpen(true);
                                     setCurrentlySelectedPlaylist(playlist);
