@@ -1,8 +1,7 @@
-import { AppBar, Button, Container, Drawer, Icon, IconButton, Link, List, ListItem, Toolbar, Typography } from '@mui/material';
+import { AppBar, Container, Drawer, Icon, IconButton, Link, List, ListItem, Toolbar, Typography } from '@mui/material';
 import { useCallback, useState } from 'react';
 import './App.css';
 import GoogleLogin from './components/googleLogin';
-import YouTubeThumbnail from './components/YouTubeThumbnail';
 
 function App() {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>();
