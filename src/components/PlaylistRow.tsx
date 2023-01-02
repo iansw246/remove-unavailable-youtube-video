@@ -9,16 +9,16 @@ function youtubePlaylistLink(playlistId: string) {
 
 export interface Props {
     playlist: Playlist,
-    removeUnavailableVideosCallback: (playlist: Playlist) => void,
+    getUnavailableVideosCallback: (playlist: Playlist) => void,
 }
 
-export default function PlaylistRow({playlist, removeUnavailableVideosCallback}: Props): JSX.Element {
+export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Props): JSX.Element {
     return (
         <Paper elevation={2} sx={{
             "&:hover": {
-                backgroundColor: (theme) => theme.palette.grey[100],
+                backgroundColor: (theme) => theme.palette.grey[200],
             },
-            "padding": 1
+            "padding": 1,
         }} key={playlist.etag}>
             <Stack direction="row" flexWrap="wrap">
                 <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}}
@@ -39,8 +39,8 @@ export default function PlaylistRow({playlist, removeUnavailableVideosCallback}:
                         if (!playlist.id) {
                             return;
                         }
-                        removeUnavailableVideosCallback(playlist);
-                    }}>Remove unavailable videos</Button>
+                        getUnavailableVideosCallback(playlist);
+                    }}>Get unavailable videos</Button>
                 </Box>
             </Stack>
         </Paper>

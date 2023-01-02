@@ -170,12 +170,12 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
             </Dialog>
             <Dialog open={isRemoveVideoDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>
-                    Remove Unavailable Videos?
+                    Unavailable Videos
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
-                        Confirm removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
+                        Removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
                     </DialogContentText>
                     <Stack spacing={2}>
                         {unavailableItems.map((item) =>
@@ -195,7 +195,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     <PlaylistRow
                         key={playlist.id}
                         playlist={playlist}
-                        removeUnavailableVideosCallback={(playlist: Playlist) => {
+                        getUnavailableVideosCallback={(playlist: Playlist) => {
                             if (!playlist.id) {
                                 throw new Error("Playlist has no id");
                             }
