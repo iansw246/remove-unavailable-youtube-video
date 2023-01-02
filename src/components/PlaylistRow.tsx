@@ -1,6 +1,6 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { Playlist } from "../requestHelpers";
-import { getThumbnailUrl } from "../youtubeResourceHelpers";
+import { getThumbnailURL } from "../youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 
 function youtubePlaylistLink(playlistId: string) {
@@ -17,11 +17,12 @@ export default function PlaylistRow({playlist, removeUnavailableVideosCallback}:
         <Paper elevation={2} sx={{
             "&:hover": {
                 backgroundColor: (theme) => theme.palette.grey[100],
-            }
+            },
+            "padding": 1
         }} key={playlist.etag}>
-            <Stack direction="row" >
+            <Stack direction="row" flexWrap="wrap">
                 <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}}
-                    src={getThumbnailUrl(playlist.snippet?.thumbnails)}></Box>
+                    src={getThumbnailURL(playlist.snippet?.thumbnails)}></Box>
                 <Box>
                     {playlist.id ? 
                         <NewTabLink href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</NewTabLink>

@@ -1,4 +1,4 @@
-import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, Card } from "@mui/material"
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button } from "@mui/material"
 import { useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import PlaylistItemView from "./PlaylistItemView";
@@ -156,9 +156,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
     }
 
     return (
-        <Paper sx={{
-            padding: "6px"
-        }}>
+        <>
             <Dialog open={isRemoveVideoDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>
                     Remove Unavailable Videos?
@@ -168,11 +166,13 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                         Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
                         Confirm removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
                     </DialogContentText>
-                    {unavailableItems.map((item) =>
-                        <Card key={item.id}>
-                            <PlaylistItemView playlistItem={item}></PlaylistItemView>
-                        </Card>
-                    )}
+                    <Stack spacing={2}>
+                        {unavailableItems.map((item) =>
+                            <Paper key={item.id} sx={{padding: 1}}>
+                                <PlaylistItemView playlistItem={item}></PlaylistItemView>
+                            </Paper>
+                        )}
+                    </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleConfirmDeleteUnavailableVideos}>Ok</Button>
@@ -199,6 +199,6 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     }}></PlaylistRow>
                 )}
             </Stack>
-        </Paper>
+        </>
     );
 }
