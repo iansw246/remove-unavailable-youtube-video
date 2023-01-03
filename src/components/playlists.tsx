@@ -138,20 +138,20 @@ export interface Props {
 }
 
 export default function PlaylistsDisplay({playlists, currentUserChannelId, reloadPlaylists}: Props) {
-    const [isRemoveVideoDialogOpen, setIsRemoveVideoDialogOpen] = useState<boolean>(false);
+    const [isUnavailableVideosDialogOpen, setIsUnavailableVideosDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
     const [loadingMessage, setLoadingMessage] = useState<string>();
 
     function handleDialogClose() {
-        setIsRemoveVideoDialogOpen(false);
+        setIsUnavailableVideosDialogOpen(false);
     }
 
     function handleConfirmDeleteUnavailableVideos() {
         setLoadingMessage("Deleting unavailable videos.");
         deleteUnavailableVideos(unavailableItems).then(() => {
             setLoadingMessage(undefined);
-            setIsRemoveVideoDialogOpen(false);
+            setIsUnavailableVideosDialogOpen(false);
             setUnavailableItems([]);
             setCurrentlySelectedPlaylist(undefined);
             reloadPlaylists();
@@ -160,6 +160,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
 
     return (
         <>
+            {/* Loading dialog */}
             <Dialog open={Boolean(loadingMessage)} fullWidth={true}>
                 <DialogTitle textAlign="center">
                     {loadingMessage}
@@ -168,7 +169,8 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
                 </DialogContent>
             </Dialog>
-            <Dialog open={isRemoveVideoDialogOpen} onClose={handleDialogClose}>
+            {/* Unavailable videos dialog */}
+            <Dialog open={isUnavailableVideosDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>
                     Unavailable Videos
                 </DialogTitle>
@@ -206,7 +208,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                                 }).then((unavailableItems) => {
                                     setLoadingMessage(undefined);
                                     setUnavailableItems(unavailableItems);
-                                    setIsRemoveVideoDialogOpen(true);
+                                    setIsUnavailableVideosDialogOpen(true);
                                     setCurrentlySelectedPlaylist(playlist);
                                 });
                     }}></PlaylistRow>
