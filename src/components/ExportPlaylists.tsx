@@ -1,5 +1,5 @@
 import { Button, DialogActions, DialogContent } from "@mui/material";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlaylistItem } from "../requestHelpers";
 
 export interface Props {
@@ -15,7 +15,6 @@ export interface Props {
 const invalidFilenameCharactersRegex = /\\|\/|<|>|:|"|\||\?|\*/g;
 
 export default function ExportPlaylistItems({playlistName, playlistItems}: Props) {
-    const playlistDataTextRef = useRef<HTMLPreElement>(null);
     const [playlistDataTextObjectURL, setPlaylistDataTextObjectURL] = useState<string>();
 
     const playlistItemsJSON = useMemo(() => {
@@ -23,11 +22,11 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
     }, [playlistItems]);
 
     const copyTextCallback = useCallback(() => {
-        if (!playlistDataTextRef.current?.textContent) {
+        if (!playlistItemsJSON) {
             return;
         }
         const clipboard = navigator.clipboard;
-        clipboard.writeText(playlistDataTextRef.current?.textContent).then(
+        clipboard.writeText(playlistItemsJSON).then(
             () => { 
                 console.log("Text written successfully");
             },
@@ -35,21 +34,24 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 console.error("Error copying text to clipboard: ", err);
             }
         )
-    }, [playlistDataTextRef]);
+    }, [playlistItemsJSON]);
 
     useEffect(() => {
         setPlaylistDataTextObjectURL(URL.createObjectURL(new Blob([playlistItemsJSON], { type: "application/json" })));
+    }, [playlistItemsJSON]);
+
+    useEffect(() => {
         return () => {
             if (playlistDataTextObjectURL) {
                 URL.revokeObjectURL(playlistDataTextObjectURL);
             }
         }
-    }, [playlistItemsJSON, playlistDataTextObjectURL]);
+    }, [playlistDataTextObjectURL]);
 
     return (
         <>
             <DialogContent>
-                <pre ref={playlistDataTextRef}>
+                <pre>
                     {playlistItemsJSON}
                 </pre>
             </DialogContent>

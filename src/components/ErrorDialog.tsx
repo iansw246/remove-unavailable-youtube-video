@@ -21,6 +21,10 @@ export default function ErrorDialog({ open, errorTitle, errorBody, onClose } : P
                 <DialogContentText>
                     {errorBody}
                 </DialogContentText>
+                <br />
+                <DialogContentText>
+                    Try clicking the show playlists button and signing into Google if prompted. If the error persists, report the error to the developer.
+                </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleOkButtonClick}>Ok</Button>

@@ -139,11 +139,11 @@ export interface Props {
     reloadPlaylists: () => void;
 }
 
-interface TabPanelProps {
-    children?: JSX.Element | JSX.Element[];
-    index: number;
-    value: number;
-}
+// interface TabPanelProps {
+//     children?: JSX.Element | JSX.Element[];
+//     index: number;
+//     value: number;
+// }
 
 // function TabPanel({ children, index, value, ...other } : TabPanelProps) {
 //     return (
