@@ -1,5 +1,5 @@
-import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress } from "@mui/material";
-import { useState } from "react";
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
+import React, { useCallback, useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
@@ -138,11 +138,30 @@ export interface Props {
     reloadPlaylists: () => void;
 }
 
+interface TabPanelProps {
+    children?: JSX.Element;
+    index: number;
+    value: number;
+}
+
+function TabPanel({ children, index, value, ...other } : TabPanelProps) {
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            {...other}
+        >
+            {index === value ? children : null}
+        </div>
+    )
+}
+
 export default function PlaylistsDisplay({playlists, currentUserChannelId, reloadPlaylists}: Props) {
     const [isUnavailableVideosDialogOpen, setIsUnavailableVideosDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
     const [loadingMessage, setLoadingMessage] = useState<string>();
+    const [selectedTab, setSelectedTab] = useState<number>(0);
 
     function handleDialogClose() {
         setIsUnavailableVideosDialogOpen(false);
@@ -158,6 +177,10 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
             reloadPlaylists();
         });
     }
+
+    const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: number) => {
+        setSelectedTab(newValue);
+    }, []);
 
     return (
         <>
@@ -180,14 +203,24 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                         Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
                         Removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
                     </DialogContentText>
-                    <Stack spacing={2}>
-                        {unavailableItems.map((item) =>
-                            <Paper key={item.id} sx={{padding: 1}}>
-                                <PlaylistItemView playlistItem={item}></PlaylistItemView>
-                            </Paper>
-                        )}
-                    </Stack>
-                    <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                        <Tabs value={selectedTab} onChange={handleTabChange}>
+                            <Tab label="Remove videos" />
+                            <Tab label="Download unavailable video data" />
+                        </Tabs>
+                    </Box>
+                    <TabPanel value={selectedTab} index={0}>
+                        <Stack spacing={2}>
+                            {unavailableItems.map((item) =>
+                                <Paper key={item.id} sx={{padding: 1}}>
+                                    <PlaylistItemView playlistItem={item}></PlaylistItemView>
+                                </Paper>
+                            )}
+                        </Stack>
+                    </TabPanel>
+                    <TabPanel value={selectedTab} index={1}>
+                        <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>
+                    </TabPanel>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
