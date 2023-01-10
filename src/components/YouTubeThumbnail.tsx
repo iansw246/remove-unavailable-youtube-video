@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { styled } from "@mui/material";
 import { VIDEO_THUMBNAIL_DIMENSIONS } from "../youtubeResourceHelpers";
 
 const YouTubeThumbnailComponent = styled("img")({

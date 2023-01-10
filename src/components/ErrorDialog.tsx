@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContentText, DialogTitle } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import React, { useCallback } from "react";
 
 export interface Props {
@@ -17,9 +17,11 @@ export default function ErrorDialog({ open, errorTitle, errorBody, onClose } : P
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>{errorTitle}</DialogTitle>
-            <DialogContentText>
-                {errorBody}
-            </DialogContentText>
+            <DialogContent>
+                <DialogContentText>
+                    {errorBody}
+                </DialogContentText>
+            </DialogContent>
             <DialogActions>
                 <Button onClick={handleOkButtonClick}>Ok</Button>
             </DialogActions>

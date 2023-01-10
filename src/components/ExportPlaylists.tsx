@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Button, DialogActions, DialogContent } from "@mui/material";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PlaylistItem } from "../requestHelpers";
 
@@ -43,17 +43,20 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
             if (playlistDataTextObjectURL) {
                 URL.revokeObjectURL(playlistDataTextObjectURL);
             }
-            setPlaylistDataTextObjectURL(undefined);
         }
-    }, [playlistItemsJSON]);
+    }, [playlistItemsJSON, playlistDataTextObjectURL]);
 
     return (
-        <Box>
-            <pre ref={playlistDataTextRef}>
-                {playlistItemsJSON}
-            </pre>
-            <Button onClick={copyTextCallback}>Copy text</Button>
-            <Button component="a" download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.json`} href={playlistDataTextObjectURL}>Download JSON</Button>
-        </Box>
-    )
+        <>
+            <DialogContent>
+                <pre ref={playlistDataTextRef}>
+                    {playlistItemsJSON}
+                </pre>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={copyTextCallback}>Copy text</Button>
+                <Button component="a" download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.json`} href={playlistDataTextObjectURL}>Download JSON</Button>
+            </DialogActions>
+        </>
+    );    
 }

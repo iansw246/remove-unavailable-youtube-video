@@ -1,4 +1,4 @@
-import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box, Typography } from "@mui/material";
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import ErrorDialog from "./ErrorDialog";
@@ -145,17 +145,17 @@ interface TabPanelProps {
     value: number;
 }
 
-function TabPanel({ children, index, value, ...other } : TabPanelProps) {
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            {...other}
-        >
-            {index === value && children}
-        </div>
-    ) 
-}
+// function TabPanel({ children, index, value, ...other } : TabPanelProps) {
+//     return (
+//         <div
+//             role="tabpanel"
+//             hidden={value !== index}
+//             {...other}
+//         >
+//             {index === value && children}
+//         </div>
+//     ) 
+// }
 
 function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
     return Object.hasOwn(obj, "result") && Object.hasOwn(obj, "body") && Object.hasOwn(obj, "headers") &&
@@ -215,45 +215,34 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                 <DialogTitle>
                     Unavailable Videos
                 </DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
-                    </DialogContentText>
-                    <Box borderBottom={1} borderColor="divider">
-                        <Tabs value={selectedTab} onChange={handleTabChange}>
-                            <Tab label="Remove videos" />
-                            <Tab label="Download list" />
-                        </Tabs>
-                    </Box>
-                    <TabPanel value={selectedTab} index={0}>
-                        <DialogContentText>Remove from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?</DialogContentText>
-                        <Stack spacing={2}>
-                            {unavailableItems.map((item) =>
-                                <Paper key={item.id} sx={{padding: 1}}>
-                                    <PlaylistItemView playlistItem={item}></PlaylistItemView>
-                                </Paper>
-                            )}
-                        </Stack>
-                    </TabPanel>
-                    <TabPanel value={selectedTab} index={1}>
-                        <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>
-                    </TabPanel>
-                </DialogContent>
-                <DialogActions>
-                    {selectedTab === 0 &&
-                        <>
+                <Box borderBottom={1} borderColor="divider" paddingLeft={2} paddingRight={2}>
+                    <Tabs value={selectedTab} onChange={handleTabChange}>
+                        <Tab label="Remove videos" />
+                        <Tab label="Download list" />
+                    </Tabs>
+                </Box>
+                {selectedTab === 0 && 
+                    <>
+                        <DialogContent>
+                            <DialogContentText>
+                                Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
+                            </DialogContentText>
+                            <DialogContentText>Remove from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?</DialogContentText>
+                            <Stack spacing={2}>
+                                {unavailableItems.map((item) =>
+                                    <Paper key={item.id} sx={{padding: 1}}>
+                                        <PlaylistItemView playlistItem={item}></PlaylistItemView>
+                                    </Paper>
+                                )}
+                            </Stack>
+                        </DialogContent>
+                        <DialogActions>
                             <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
                             <Button onClick={handleUnavailableVideosDialogClose}>Cancel</Button>
-                        </>
-                    }
-                    {
-                        selectedTab === 1 &&
-                        <>
-                            <Button>Copy text to clipboard</Button>
-                            <Button>Download text</Button>
-                        </>
-                    }
-                </DialogActions>
+                        </DialogActions>
+                    </>
+                }
+                {selectedTab === 1 && <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>}
             </Dialog>
             <Stack spacing={2}>
                 {playlists.map((playlist: Playlist) =>
