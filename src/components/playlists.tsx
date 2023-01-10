@@ -1,6 +1,7 @@
 import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
+import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
 import PlaylistRow from "./PlaylistRow";
 
@@ -186,6 +187,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                             </Paper>
                         )}
                     </Stack>
+                    <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
