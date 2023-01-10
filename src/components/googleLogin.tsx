@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
 import PlaylistsDisplay from "./playlists";
 
@@ -145,8 +145,11 @@ export default function GoogleLogin() {
     }, []);
 
     console.log(currentUserChannelId);
-    const playlists: Playlist[] = playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[];
     console.log(CLIENT_ID);
+    const playlists: Playlist[] = useMemo(() => 
+        playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[],
+        [playlistResponses]
+    );
     return (
         <>
             <Dialog open={showAuthentication} onClose={handleDialogClose}>

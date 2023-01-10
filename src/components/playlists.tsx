@@ -1,6 +1,7 @@
 import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
+import ErrorDialog from "./ErrorDialog";
 import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
 import PlaylistRow from "./PlaylistRow";
@@ -160,10 +161,18 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
     const [isUnavailableVideosDialogOpen, setIsUnavailableVideosDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
+
     const [loadingMessage, setLoadingMessage] = useState<string>();
     const [selectedTab, setSelectedTab] = useState<number>(0);
 
-    function handleDialogClose() {
+    const [isErrorDialogOpen, setIsErrorDialogOpen] = useState<boolean>(false);
+    const [errorTitle, setErrorTitle] = useState<string>();
+    const [errorBody, setErrorBody] = useState<string>();
+    const handleErrorDialogClose = useCallback(() => {
+        setIsErrorDialogOpen(false);
+    }, []);
+
+    function handleUnavailableVideosDialogClose() {
         setIsUnavailableVideosDialogOpen(false);
     }
 
@@ -193,8 +202,9 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
                 </DialogContent>
             </Dialog>
+            <ErrorDialog open={isErrorDialogOpen} errorTitle={errorTitle} errorBody={errorBody} onClose={handleErrorDialogClose} />
             {/* Unavailable videos dialog */}
-            <Dialog open={isUnavailableVideosDialogOpen} onClose={handleDialogClose}>
+            <Dialog open={isUnavailableVideosDialogOpen} onClose={handleUnavailableVideosDialogClose}>
                 <DialogTitle>
                     Unavailable Videos
                 </DialogTitle>
@@ -223,8 +233,19 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     </TabPanel>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
-                    <Button onClick={handleDialogClose}>Cancel</Button>
+                    {selectedTab === 0 &&
+                        <>
+                            <Button onClick={handleConfirmDeleteUnavailableVideos}>Remove</Button>
+                            <Button onClick={handleUnavailableVideosDialogClose}>Cancel</Button>
+                        </>
+                    }
+                    {
+                        selectedTab === 1 &&
+                        <>
+                            <Button>Copy text to clipboard</Button>
+                            <Button>Download text</Button>
+                        </>
+                    }
                 </DialogActions>
             </Dialog>
             <Stack spacing={2}>
@@ -245,7 +266,16 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                                     setUnavailableItems(unavailableItems);
                                     setIsUnavailableVideosDialogOpen(true);
                                     setCurrentlySelectedPlaylist(playlist);
-                                });
+                                }).catch((error) => {
+                                    console.error(error);
+                                    setLoadingMessage(undefined);
+                                    setUnavailableItems([]);
+                                    setIsUnavailableVideosDialogOpen(false);
+                                    setCurrentlySelectedPlaylist(undefined);
+
+                                    setIsErrorDialogOpen(true);
+                                    setErrorBody(error);
+                                })
                     }}></PlaylistRow>
                 )}
             </Stack>
