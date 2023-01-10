@@ -1,4 +1,4 @@
-import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
+import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box, Typography } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import ErrorDialog from "./ErrorDialog";
@@ -140,7 +140,7 @@ export interface Props {
 }
 
 interface TabPanelProps {
-    children?: JSX.Element;
+    children?: JSX.Element | JSX.Element[];
     index: number;
     value: number;
 }
@@ -152,9 +152,14 @@ function TabPanel({ children, index, value, ...other } : TabPanelProps) {
             hidden={value !== index}
             {...other}
         >
-            {index === value ? children : null}
+            {index === value && children}
         </div>
-    )
+    ) 
+}
+
+function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
+    return Object.hasOwn(obj, "result") && Object.hasOwn(obj, "body") && Object.hasOwn(obj, "headers") &&
+        Object.hasOwn(obj, "status") && Object.hasOwn(obj, "statusText");
 }
 
 export default function PlaylistsDisplay({playlists, currentUserChannelId, reloadPlaylists}: Props) {
@@ -202,7 +207,9 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
                 </DialogContent>
             </Dialog>
+
             <ErrorDialog open={isErrorDialogOpen} errorTitle={errorTitle} errorBody={errorBody} onClose={handleErrorDialogClose} />
+
             {/* Unavailable videos dialog */}
             <Dialog open={isUnavailableVideosDialogOpen} onClose={handleUnavailableVideosDialogClose}>
                 <DialogTitle>
@@ -211,15 +218,15 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                 <DialogContent>
                     <DialogContentText>
                         Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
-                        Removal from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?
                     </DialogContentText>
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Box borderBottom={1} borderColor="divider">
                         <Tabs value={selectedTab} onChange={handleTabChange}>
                             <Tab label="Remove videos" />
-                            <Tab label="Download unavailable video data" />
+                            <Tab label="Download list" />
                         </Tabs>
                     </Box>
                     <TabPanel value={selectedTab} index={0}>
+                        <DialogContentText>Remove from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?</DialogContentText>
                         <Stack spacing={2}>
                             {unavailableItems.map((item) =>
                                 <Paper key={item.id} sx={{padding: 1}}>
@@ -268,13 +275,15 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                                     setCurrentlySelectedPlaylist(playlist);
                                 }).catch((error) => {
                                     console.error(error);
+                                    setIsErrorDialogOpen(true);
+                                    if (isGapiError(error)) {
+                                        setErrorTitle(`Error ${error.status}: ${error.statusText}`);
+                                        setErrorBody(error.result.error.message);
+                                    }
                                     setLoadingMessage(undefined);
                                     setUnavailableItems([]);
                                     setIsUnavailableVideosDialogOpen(false);
                                     setCurrentlySelectedPlaylist(undefined);
-
-                                    setIsErrorDialogOpen(true);
-                                    setErrorBody(error);
                                 })
                     }}></PlaylistRow>
                 )}
