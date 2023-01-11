@@ -30,7 +30,6 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
                         <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
                     }
                     <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
-                    <Typography fontSize="0.8rem">Id: {playlist.id}</Typography>
                     <Typography fontSize="0.8rem">Status: {playlist.status?.privacyStatus}</Typography>
                     <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography>
                 </Box>
