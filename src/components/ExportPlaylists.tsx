@@ -1,32 +1,45 @@
-import { Button, DialogActions, DialogContent } from "@mui/material";
+import { Button, DialogActions, DialogContent, InputLabel, MenuItem, Select } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlaylistItem } from "../requestHelpers";
+
+enum DataFormats {
+    PlainText = "plaintext",
+    JSON = "json",
+}
+
+function isDataFormat(obj: any): obj is DataFormats {
+    return Object.values(DataFormats).includes(obj);
+}
 
 export interface Props {
     playlistName: string;
     playlistItems: PlaylistItem[];
 }
 
-// function dataURIForJSON(json: string) {
-//     return "data:application/octet-stream;charset=utf-8," + encodeURIComponent(json);
-// }
-
 // Reference: https://stackoverflow.com/questions/1976007/what-characters-are-forbidden-in-windows-and-linux-directory-names
 const invalidFilenameCharactersRegex = /\\|\/|<|>|:|"|\||\?|\*/g;
 
 export default function ExportPlaylistItems({playlistName, playlistItems}: Props) {
     const [playlistDataTextObjectURL, setPlaylistDataTextObjectURL] = useState<string>();
+    const [playlistDataFormat, setPlaylistDataFormat] = useState<DataFormats>(DataFormats.PlainText);
 
-    const playlistItemsJSON = useMemo(() => {
-        return JSON.stringify(playlistItems, null, 2);
-    }, [playlistItems]);
+    const playlistItemsDataText: string = useMemo(() => {
+        if (playlistDataFormat === DataFormats.JSON) {
+            return JSON.stringify(playlistItems, null, 2);
+        } else if (playlistDataFormat === DataFormats.PlainText) {
+            const strings = playlistItems.map((item) => `${item.snippet?.videoOwnerChannelTitle} - ${item.snippet?.title}`);
+            return strings.join("\n");
+        } else {
+            return "Invalid data format. Please report this error";
+        }
+    }, [playlistItems, playlistDataFormat]);
 
     const copyTextCallback = useCallback(() => {
-        if (!playlistItemsJSON) {
+        if (!playlistItemsDataText) {
             return;
         }
         const clipboard = navigator.clipboard;
-        clipboard.writeText(playlistItemsJSON).then(
+        clipboard.writeText(playlistItemsDataText).then(
             () => { 
                 console.log("Text written successfully");
             },
@@ -34,11 +47,11 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 console.error("Error copying text to clipboard: ", err);
             }
         )
-    }, [playlistItemsJSON]);
+    }, [playlistItemsDataText]);
 
     useEffect(() => {
-        setPlaylistDataTextObjectURL(URL.createObjectURL(new Blob([playlistItemsJSON], { type: "application/json" })));
-    }, [playlistItemsJSON]);
+        setPlaylistDataTextObjectURL(URL.createObjectURL(new Blob([playlistItemsDataText], { type: "application/json" })));
+    }, [playlistItemsDataText]);
 
     useEffect(() => {
         return () => {
@@ -51,13 +64,33 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
     return (
         <>
             <DialogContent>
+                <InputLabel>Playlist data format</InputLabel>
+                <Select
+                    label="Format"
+                    value={playlistDataFormat}
+                    sx={{ minWidth: "12rem" }}
+                    onChange={(event) => {
+                        if (isDataFormat(event.target.value)) {
+                            setPlaylistDataFormat(event.target.value);
+                        }
+                    }}
+                >
+                    <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
+                    <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
+                </Select>
                 <pre>
-                    {playlistItemsJSON}
+                    {playlistItemsDataText}
                 </pre>
             </DialogContent>
             <DialogActions>
                 <Button onClick={copyTextCallback}>Copy text</Button>
-                <Button component="a" download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.json`} href={playlistDataTextObjectURL}>Download JSON</Button>
+                <Button
+                    component="a"
+                    download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.json`}
+                    href={playlistDataTextObjectURL}
+                >
+                    Download List
+                </Button>
             </DialogActions>
         </>
     );    
