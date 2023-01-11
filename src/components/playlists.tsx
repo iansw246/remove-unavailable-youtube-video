@@ -116,30 +116,6 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     return unavailableItems;
 }
 
-async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promise<gapi.client.Response<void>[] | undefined> {
-    if (unavailableItems.length <= 0) {
-        return;
-    }
-
-    const responses: gapi.client.Response<void>[] = [];
-
-    for (const item of unavailableItems) {
-        if (!item.id) {
-            continue;
-        }
-        const response = await gapi.client.youtube.playlistItems.delete({
-            id: item.id
-        });
-        // Successful deletion should responsd with error 204
-        if (response.status !== 204) {
-            throw response;
-        }
-        responses.push(response);
-    }
-
-    return responses;
-}
-
 export interface Props {
     playlists: Playlist[];
     currentUserChannelId: string;
@@ -174,6 +150,8 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
 
+    const [loadingProgressValue, setLoadingProgressValue] = useState<number>();
+    const [loadingProgressTotal, setLoadingProgressTotal] = useState<number>();
     const [loadingMessage, setLoadingMessage] = useState<string>();
     const [selectedTab, setSelectedTab] = useState<number>(0);
 
@@ -188,10 +166,36 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
         setIsUnavailableVideosDialogOpen(false);
     }
 
+    async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promise<void> {
+        if (unavailableItems.length <= 0) {
+            return;
+        }
+        setLoadingProgressValue(0);
+        setLoadingProgressTotal(unavailableItems.length);
+    
+        for (let i = 0; i < unavailableItems.length; ++i) {
+            const item: gapi.client.youtube.PlaylistItem = unavailableItems[i];
+            if (!item.id) {
+                continue;
+            }
+            setLoadingProgressValue(i + 1);
+            const response = await gapi.client.youtube.playlistItems.delete({
+                id: item.id
+            });
+            // Successful deletion should responsd with error 204
+            if (response.status !== 204) {
+                throw response;
+            }
+        }
+    }
+
     function handleConfirmDeleteUnavailableVideos() {
         setLoadingMessage("Deleting unavailable videos.");
-        deleteUnavailableVideos(unavailableItems).then((responses) => {
+        deleteUnavailableVideos(unavailableItems).finally(() => {
             setLoadingMessage(undefined);
+            setLoadingProgressValue(0);
+            setLoadingProgressTotal(0);
+
             setIsUnavailableVideosDialogOpen(false);
             setUnavailableItems([]);
             setCurrentlySelectedPlaylist(undefined);
@@ -211,7 +215,11 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                     {loadingMessage}
                 </DialogTitle>
                 <DialogContent sx={{display: "flex", justifyContent: "center"}}>
-                    <CircularProgress sx={{marginLeft: "auto", marginRight: "auto"}} />
+                    <CircularProgress
+                        variant={loadingProgressValue ? "determinate" : "indeterminate"}
+                        sx={{marginLeft: "auto", marginRight: "auto"}}
+                        value={loadingProgressValue && loadingProgressTotal ? Math.floor(loadingProgressValue / loadingProgressTotal * 100) : 0}
+                    />
                 </DialogContent>
             </Dialog>
 
@@ -222,6 +230,9 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                 <DialogTitle>
                     Unavailable Videos
                 </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.</DialogContentText>
+                </DialogContent>
                 <Box borderBottom={1} borderColor="divider" paddingLeft={2} paddingRight={2}>
                     <Tabs value={selectedTab} onChange={handleTabChange}>
                         <Tab label="Remove videos" />
@@ -231,10 +242,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
                 {selectedTab === 0 && 
                     <>
                         <DialogContent>
-                            <DialogContentText>
-                                Found {unavailableItems.length} unavailable video{unavailableItems.length === 1 ? "" : "s"}.
-                            </DialogContentText>
-                            <DialogContentText>Remove from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?</DialogContentText>
+                            <DialogContentText>Remove the following videos from playlist {(currentlySelectedPlaylist && currentlySelectedPlaylist?.snippet?.title) || ""}?</DialogContentText>
                             <Stack spacing={2}>
                                 {unavailableItems.map((item) =>
                                     <Paper key={item.id} sx={{padding: 1}}>
