@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
-import PlaylistsDisplay from "./playlists";
+import PlaylistsDashboard from "./PlaylistsDashboard";
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -165,7 +165,7 @@ export default function GoogleLogin() {
             {/* {showAuthentication && <Button onClick={handleLoginButtonClick}>Login with Google</Button>} */}
             <Button onClick={handleShowPlaylistButtonClick} disabled={!tokenClient}>Show Playlists</Button>
             {playlistResponses && currentUserChannelId ?
-                <PlaylistsDisplay playlists={playlists} currentUserChannelId={currentUserChannelId} reloadPlaylists={reloadPlaylistsCallback} />
+                <PlaylistsDashboard playlists={playlists} currentUserChannelId={currentUserChannelId} reloadPlaylists={reloadPlaylistsCallback} />
                 : null
             }
         </>

@@ -145,7 +145,7 @@ function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
         Object.hasOwn(obj, "status") && Object.hasOwn(obj, "statusText");
 }
 
-export default function PlaylistsDisplay({playlists, currentUserChannelId, reloadPlaylists}: Props) {
+export default function PlaylistsDashboard({playlists, currentUserChannelId, reloadPlaylists}: Props) {
     const [isUnavailableVideosDialogOpen, setIsUnavailableVideosDialogOpen] = useState<boolean>(false);
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>([]);
     const [currentlySelectedPlaylist, setCurrentlySelectedPlaylist] = useState<Playlist>();
