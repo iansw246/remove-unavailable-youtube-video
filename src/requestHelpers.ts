@@ -7,11 +7,8 @@ type Playlist = gapi.client.youtube.Playlist;
 type Video = gapi.client.youtube.Video;
 
 function isUnauthenticated(error: any): boolean {
-    if (error.result.error.code === 401 || (error.result.error.code === 403 && error.result.error.status === "PERMISSION_DENIED")) {
-        // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
-        return true;
-    }
-    return false;
+    // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
+    return error?.result?.error?.code === 401 || (error?.result?.error?.code === 403 && error.result.error?.status === "PERMISSION_DENIED");
 }
 
 export { isUnauthenticated }
