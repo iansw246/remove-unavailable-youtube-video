@@ -116,21 +116,28 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     return unavailableItems;
 }
 
-async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promise<gapi.client.Response<gapi.client.ResponseMap<any>> | undefined> {
+async function deleteUnavailableVideos(unavailableItems: PlaylistItem[]): Promise<gapi.client.Response<void>[] | undefined> {
     if (unavailableItems.length <= 0) {
         return;
     }
-    const batch = gapi.client.newBatch();
-    for (const item of unavailableItems)
-    {
-        if (item.id) {
-            batch.add(gapi.client.youtube.playlistItems.delete({
-                id: item.id
-            }));
+
+    const responses: gapi.client.Response<void>[] = [];
+
+    for (const item of unavailableItems) {
+        if (!item.id) {
+            continue;
         }
+        const response = await gapi.client.youtube.playlistItems.delete({
+            id: item.id
+        });
+        // Successful deletion should responsd with error 204
+        if (response.status !== 204) {
+            throw response;
+        }
+        responses.push(response);
     }
-    // batch.then()
-    return await batch;
+
+    return responses;
 }
 
 export interface Props {
@@ -183,7 +190,7 @@ export default function PlaylistsDisplay({playlists, currentUserChannelId, reloa
 
     function handleConfirmDeleteUnavailableVideos() {
         setLoadingMessage("Deleting unavailable videos.");
-        deleteUnavailableVideos(unavailableItems).then(() => {
+        deleteUnavailableVideos(unavailableItems).then((responses) => {
             setLoadingMessage(undefined);
             setIsUnavailableVideosDialogOpen(false);
             setUnavailableItems([]);
