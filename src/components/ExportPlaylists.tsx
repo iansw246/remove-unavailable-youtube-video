@@ -7,6 +7,11 @@ enum DataFormats {
     JSON = "json",
 }
 
+const dataFormatToExtensionMap = new Map<DataFormats, string>([
+    [DataFormats.PlainText, "txt"],
+    [DataFormats.JSON, "json"]
+]);
+
 function isDataFormat(obj: any): obj is DataFormats {
     return Object.values(DataFormats).includes(obj);
 }
@@ -78,7 +83,7 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                     <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
                     <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
                 </Select>
-                <pre>
+                <pre style={{overflow: "scroll", paddingBottom: "1rem"}}>
                     {playlistItemsDataText}
                 </pre>
             </DialogContent>
@@ -86,7 +91,7 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 <Button onClick={copyTextCallback}>Copy text</Button>
                 <Button
                     component="a"
-                    download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.json`}
+                    download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.${dataFormatToExtensionMap.get(playlistDataFormat) || ".txt"}`}
                     href={playlistDataTextObjectURL}
                 >
                     Download List
