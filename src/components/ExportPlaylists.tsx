@@ -33,8 +33,10 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
         if (playlistDataFormat === DataFormats.JSON) {
             return JSON.stringify(playlistItems, null, 2);
         } else if (playlistDataFormat === DataFormats.PlainText) {
-            const strings = playlistItems.map((item) => `${item.snippet?.videoOwnerChannelTitle} - ${item.snippet?.title}`);
-            return strings.join("\n");
+            const dataLines: string[] = playlistItems.map((item) =>
+                `${item.snippet?.videoOwnerChannelTitle || "[Unknown channel]"} - ${item.snippet?.title}`
+            );
+            return dataLines.join("\n");
         } else {
             return "Invalid data format. Please report this error";
         }
