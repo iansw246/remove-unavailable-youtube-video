@@ -1,5 +1,5 @@
-import { Button, DialogActions, DialogContent, InputLabel, MenuItem, Select } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { PlaylistItem } from "../requestHelpers";
 
 enum DataFormats {
@@ -27,6 +27,7 @@ const invalidFilenameCharactersRegex = /\\|\/|<|>|:|"|\||\?|\*/g;
 export default function ExportPlaylistItems({playlistName, playlistItems}: Props) {
     const [playlistDataTextObjectURL, setPlaylistDataTextObjectURL] = useState<string>();
     const [playlistDataFormat, setPlaylistDataFormat] = useState<DataFormats>(DataFormats.PlainText);
+    const playlistDataFormatLabelId: string = useId();
 
     const playlistItemsDataText: string = useMemo(() => {
         if (playlistDataFormat === DataFormats.JSON) {
@@ -69,20 +70,23 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
     return (
         <>
             <DialogContent>
-                <InputLabel>Playlist data format</InputLabel>
-                <Select
-                    label="Format"
-                    value={playlistDataFormat}
-                    sx={{ minWidth: "12rem" }}
-                    onChange={(event) => {
-                        if (isDataFormat(event.target.value)) {
-                            setPlaylistDataFormat(event.target.value);
-                        }
-                    }}
-                >
-                    <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
-                    <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
-                </Select>
+                <FormControl>
+                    <InputLabel id={playlistDataFormatLabelId}>Format</InputLabel>
+                    <Select
+                        labelId={playlistDataFormatLabelId}
+                        label="Format"
+                        value={playlistDataFormat}
+                        sx={{ minWidth: "12rem" }}
+                        onChange={(event) => {
+                            if (isDataFormat(event.target.value)) {
+                                setPlaylistDataFormat(event.target.value);
+                            }
+                        }}
+                    >
+                        <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
+                        <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
+                    </Select>
+                </FormControl>
                 <pre style={{overflow: "scroll", paddingBottom: "1rem"}}>
                     {playlistItemsDataText}
                 </pre>
