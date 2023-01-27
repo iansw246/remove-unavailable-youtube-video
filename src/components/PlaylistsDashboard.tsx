@@ -173,6 +173,10 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
         setLoadingProgressValue(0);
         setLoadingProgressTotal(unavailableItems.length);
     
+        /**
+         * Can't use batching because, after deleting a vide, we must wait for a response
+         * before deleting another. I guess batching is too fast and doesn't wait for a response.
+         */
         for (let i = 0; i < unavailableItems.length; ++i) {
             const item: gapi.client.youtube.PlaylistItem = unavailableItems[i];
             if (!item.id) {
@@ -218,7 +222,9 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                     <CircularProgress
                         variant={loadingProgressValue ? "determinate" : "indeterminate"}
                         sx={{marginLeft: "auto", marginRight: "auto"}}
-                        value={loadingProgressValue && loadingProgressTotal ? Math.floor(loadingProgressValue / loadingProgressTotal * 100) : 0}
+                        value={loadingProgressValue && loadingProgressTotal
+                            ? Math.floor(loadingProgressValue / loadingProgressTotal * 100)
+                            : 0}
                     />
                 </DialogContent>
             </Dialog>
@@ -257,7 +263,10 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                         </DialogActions>
                     </>
                 }
-                {selectedTab === 1 && <ExportPlaylistItems playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"} playlistItems={unavailableItems}></ExportPlaylistItems>}
+                {selectedTab === 1 &&
+                    <ExportPlaylistItems
+                        playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"}
+                        playlistItems={unavailableItems} />}
             </Dialog>
             <Stack spacing={2}>
                 {playlists.map((playlist: Playlist) =>
