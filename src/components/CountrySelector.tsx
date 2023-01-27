@@ -10,7 +10,7 @@ function createCountryMenuItems(countryNameToCode: Map<string, string>): JSX.Ele
     // Otherweise, we receive the error:
     // Type 'Generator<Element, void, unknown>' can only be iterated through when using the '--downlevelIteration' flag or with a '--target' of 'es2015' or higher.
     countryNameToCode.forEach((countryCode, countryName) => {
-        result.push(<MenuItem key={countryCode}>{countryName}</MenuItem>);
+        result.push(<MenuItem value={countryCode} key={countryCode}>{countryName}</MenuItem>);
     });
     return result;
 }
@@ -20,7 +20,7 @@ export default function CountrySelector() {
     return (
         <FormControl>
             <InputLabel>Country</InputLabel>
-            <Select>
+            <Select defaultValue="US">
                 {countryMenuItems}
             </Select>
         </FormControl>
