@@ -8,10 +8,6 @@ export interface Props {
 }
 
 export default function CountrySelector({ value, onChange }: Props) {
-    // const countryMenuItems: JSX.Element[] = useMemo(() => createCountryMenuItems(COUNTRY_NAME_TO_CODE), []);
-    const defaultCountryOption = useMemo(() => {
-        return countryOptions.find((option) => option.code === DEFAULT_COUNTRY_CODE);
-    }, [countryOptions]);
     return (
         <Autocomplete 
             options={countryOptions}
