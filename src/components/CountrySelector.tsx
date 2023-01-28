@@ -1,6 +1,5 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useMemo } from "react";
-import { CountryType, countryOptions, DEFAULT_COUNTRY_CODE } from "../data/countryOptions";
+import { CountryType, countryOptions } from "../data/countryOptions";
 
 export interface Props {
     value: CountryType;

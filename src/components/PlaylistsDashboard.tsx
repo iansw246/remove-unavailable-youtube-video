@@ -124,24 +124,6 @@ export interface Props {
     reloadPlaylists: () => void;
 }
 
-// interface TabPanelProps {
-//     children?: JSX.Element | JSX.Element[];
-//     index: number;
-//     value: number;
-// }
-
-// function TabPanel({ children, index, value, ...other } : TabPanelProps) {
-//     return (
-//         <div
-//             role="tabpanel"
-//             hidden={value !== index}
-//             {...other}
-//         >
-//             {index === value && children}
-//         </div>
-//     ) 
-// }
-
 function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
     return Object.hasOwn(obj, "result") && Object.hasOwn(obj, "body") && Object.hasOwn(obj, "headers") &&
         Object.hasOwn(obj, "status") && Object.hasOwn(obj, "statusText");
