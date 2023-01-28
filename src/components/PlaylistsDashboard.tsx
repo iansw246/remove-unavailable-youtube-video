@@ -1,12 +1,12 @@
 import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
 import React, { useCallback, useState } from "react";
-import { CountryType, defaultCountryOption } from "../data/countryOptions";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import CountrySelector from "./CountrySelector";
 import ErrorDialog from "./ErrorDialog";
 import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
 import PlaylistRow from "./PlaylistRow";
+import { defaultRegion } from "../data/regionOptions";
 
 async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
     const results: gapi.client.youtube.PlaylistItemListResponse[] = [];
@@ -35,13 +35,17 @@ function videoAvailableInCountry(video: Video, countryCode: string): boolean {
     if (!regionRestriction) {
         return true;
     }
-    // regionRestriction must contain either allowed or blocked
-    // If this property is present and a country is not listed in its value, then the video is blocked from appearing in that country. If this property is present and contains an empty list, the video is blocked in all countries.
+    /**
+     * See https://developers.google.com/youtube/v3/docs/videos#contentDetails.regionRestriction
+     * regionRestriction must contain either allowed or blocked
+     * If this property is present and a country is not listed in its value,
+     * then the video is blocked from appearing in that country. If this property is present and contains an empty list, the video is blocked in all countries.
+     */
     if (regionRestriction.allowed) {
         return regionRestriction.allowed.length !== 0 || regionRestriction.allowed.includes(countryCode);
     }
     else {
-        // If this property is present and a country is not listed in its value, then the video is viewable in that country. If this property is present and contains an empty list, the video is viewable in all countries.
+        // If the blocked property is present and a country is not listed in its value, then the video is viewable in that country. If this property is present and contains an empty list, the video is viewable in all countries.
         return !regionRestriction.blocked || regionRestriction.blocked.length === 0 || !regionRestriction.blocked.includes(countryCode);
     }
 }
@@ -111,7 +115,7 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
         }
     }
     for (const video of allVideoItems) {
-        if (!videoAvailableInCountry(video, "US")) {
+        if (!videoAvailableInCountry(video, userCountryCode)) {
             unavailableItems.push(...videoIdToPlaylistItem.get(video.id));
         }
     }
@@ -146,7 +150,7 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
         setIsErrorDialogOpen(false);
     }, []);
 
-    const [selectedCountry, setSelectedCountry] = useState<CountryType>(defaultCountryOption);
+    const [selectedCountry, setSelectedCountry] = useState<Region>(defaultRegion);
 
     function handleUnavailableVideosDialogClose() {
         setIsUnavailableVideosDialogOpen(false);
@@ -274,7 +278,7 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                             setLoadingMessage("Loading unavailable videos in playlist.");
                             getVideosInPlaylist(playlist.id)
                                 .then((itemResponses) => {
-                                    return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, "US");
+                                    return getUnavailablePlaylistItems(itemResponses, currentUserChannelId, selectedCountry.snippet.gl);
                                 }).then((unavailableItems) => {
                                     setLoadingMessage(undefined);
                                     setUnavailableItems(unavailableItems);

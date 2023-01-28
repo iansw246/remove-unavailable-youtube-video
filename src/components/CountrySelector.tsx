@@ -1,18 +1,19 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { CountryType, countryOptions } from "../data/countryOptions";
+import regionListResponse from "../data/regions";
 
 export interface Props {
-    value: CountryType;
-    onChange: (event: React.SyntheticEvent<Element, Event>, newValue: CountryType | null) => void | undefined;
+    value: Region;
+    onChange: (event: React.SyntheticEvent<Element, Event>, newValue: Region | null) => void | undefined;
 }
 
 export default function CountrySelector({ value, onChange }: Props) {
     return (
         <Autocomplete 
-            options={countryOptions}
+            options={regionListResponse.items}
+            getOptionLabel={(option: Region) => option.snippet.name}
             autoHighlight
             value={value}
-            renderInput={(params) => <TextField {...params} label="Country" />}
+            renderInput={(params) => <TextField {...params} label="Region" />}
             onChange={onChange}
         />
     );
