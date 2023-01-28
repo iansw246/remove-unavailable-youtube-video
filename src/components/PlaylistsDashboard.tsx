@@ -1,5 +1,6 @@
 import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
 import React, { useCallback, useState } from "react";
+import { CountryType, defaultCountryOption } from "../data/countryOptions";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
 import CountrySelector from "./CountrySelector";
 import ErrorDialog from "./ErrorDialog";
@@ -163,6 +164,8 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
         setIsErrorDialogOpen(false);
     }, []);
 
+    const [selectedCountry, setSelectedCountry] = useState<CountryType>(defaultCountryOption);
+
     function handleUnavailableVideosDialogClose() {
         setIsUnavailableVideosDialogOpen(false);
     }
@@ -269,7 +272,14 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                         playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"}
                         playlistItems={unavailableItems} />}
             </Dialog>
-            <CountrySelector />
+            <CountrySelector
+                value={selectedCountry}
+                onChange={(event, newValue) => {
+                    if (newValue) {
+                        setSelectedCountry(newValue)
+                    }
+                }}
+            />
             <Stack spacing={2}>
                 {playlists.map((playlist: Playlist) =>
                     <PlaylistRow
