@@ -9,10 +9,14 @@ can be removed from playlists or downloaded.
 To get started, click on the "Show Playlists" button on the home page. Click the login button if the
 popup appears to login to Google.
 
+Next, select the region you watch videos in. This is required to get an accurate list of
+unavailable videos because video availability depends on the region. In other words, videos are
+available in some countries but not others.
+
 A list of playlists will be displayed. For each playlist, click on the "Get unavailable videos"
 button to retrieve all unavailable videos. The popup will show a list of unavailable videos and
 give options to download the list of videos or remove the videos. Due to limitations of Youtube,
-videos that are deleted will have no infromation.
+videos that are deleted will have no information.
 
 
 # Details
