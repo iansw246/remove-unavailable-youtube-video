@@ -1,4 +1,6 @@
 # Remove Unavailable Videos
+[![Netlify Status](https://api.netlify.com/api/v1/badges/765ede59-349a-47c7-afcb-0e6faa3376e0/deploy-status)](https://app.netlify.com/sites/ruv/deploys)
+
 This web app gets all YouTube playlists and the unavailable videos in each video. Unavailable videos
 can be removed from playlists or downloaded.
 
