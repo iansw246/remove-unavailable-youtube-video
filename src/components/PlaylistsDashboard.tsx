@@ -1,7 +1,7 @@
 import { Stack, Paper, DialogActions, DialogTitle, DialogContent, DialogContentText, Dialog, Button, CircularProgress, Tabs, Tab, Box } from "@mui/material";
 import React, { useCallback, useState } from "react";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, Video } from "../requestHelpers";
-import CountrySelector from "./CountrySelector";
+import RegionSelector from "./RegionSelector";
 import ErrorDialog from "./ErrorDialog";
 import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
@@ -258,15 +258,16 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                         playlistName={currentlySelectedPlaylist?.snippet?.title || "[untitled]"}
                         playlistItems={unavailableItems} />}
             </Dialog>
-            <CountrySelector
-                value={selectedCountry}
-                onChange={(event, newValue) => {
-                    if (newValue) {
-                        setSelectedCountry(newValue)
-                    }
-                }}
-            />
             <Stack spacing={2}>
+                <RegionSelector
+                    value={selectedCountry}
+                    onChange={(event, newValue) => {
+                        if (newValue) {
+                            setSelectedCountry(newValue)
+                        }
+                    }}
+                />
+
                 {playlists.map((playlist: Playlist) =>
                     <PlaylistRow
                         key={playlist.id}

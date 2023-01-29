@@ -6,7 +6,7 @@ export interface Props {
     onChange: (event: React.SyntheticEvent<Element, Event>, newValue: Region | null) => void | undefined;
 }
 
-export default function CountrySelector({ value, onChange }: Props) {
+export default function RegionSelector({ value, onChange }: Props) {
     return (
         <Autocomplete 
             options={regionListResponse.items}
