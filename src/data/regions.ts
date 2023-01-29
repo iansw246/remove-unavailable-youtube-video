@@ -989,4 +989,6 @@ const regionListResponse: RegionListResponse = {
     ]
 }
 
+regionListResponse.items.sort((a, b) => a.snippet.name < b.snippet.name ? -1 : 1);
+
 export default regionListResponse;

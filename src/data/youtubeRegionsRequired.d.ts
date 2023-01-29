@@ -1,5 +1,5 @@
 /**
- * Types modified from gapi.client.youtube files
+ * Types modified from gapi.client.youtube files to not have nullable fields.
  */
 interface RegionListResponse {
     /** Identifies what kind of resource this is. Value: the fixed string "youtube#i18nRegionListResponse". */
@@ -7,7 +7,7 @@ interface RegionListResponse {
     /** Etag of this resource. */
     etag: string;
     /** A list of regions where YouTube is available. In this map, the i18n region ID is the map key, and its value is the corresponding i18nRegion resource. */
-    items: I18nRegion[];
+    items: Region[];
 }
 
 interface Region {
