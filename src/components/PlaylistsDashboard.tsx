@@ -159,7 +159,7 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
             savedRegionId = defaultRegion.id;
             localStorage.setItem(SELECTED_REGION_KEY, defaultRegion.id);
         }
-        return regionListResponse.items.find((region) => region.id == savedRegionId) || defaultRegion;
+        return regionListResponse.items.find((region) => region.id === savedRegionId) || defaultRegion;
     });
 
     function handleUnavailableVideosDialogClose() {
