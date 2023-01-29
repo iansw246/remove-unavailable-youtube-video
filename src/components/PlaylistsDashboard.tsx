@@ -7,6 +7,9 @@ import ExportPlaylistItems from "./ExportPlaylists";
 import PlaylistItemView from "./PlaylistItemView";
 import PlaylistRow from "./PlaylistRow";
 import { defaultRegion } from "../data/regionOptions";
+import regionListResponse from "../data/regions";
+
+const SELECTED_REGION_KEY: string = "selectedRegion";
 
 async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
     const results: gapi.client.youtube.PlaylistItemListResponse[] = [];
@@ -150,7 +153,14 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
         setIsErrorDialogOpen(false);
     }, []);
 
-    const [selectedCountry, setSelectedCountry] = useState<Region>(defaultRegion);
+    const [selectedCountry, setSelectedCountry] = useState<Region>(() => {
+        let savedRegionId = localStorage.getItem(SELECTED_REGION_KEY);
+        if (savedRegionId === null) {
+            savedRegionId = defaultRegion.id;
+            localStorage.setItem(SELECTED_REGION_KEY, defaultRegion.id);
+        }
+        return regionListResponse.items.find((region) => region.id == savedRegionId) || defaultRegion;
+    });
 
     function handleUnavailableVideosDialogClose() {
         setIsUnavailableVideosDialogOpen(false);
@@ -263,7 +273,8 @@ export default function PlaylistsDashboard({playlists, currentUserChannelId, rel
                     value={selectedCountry}
                     onChange={(event, newValue) => {
                         if (newValue) {
-                            setSelectedCountry(newValue)
+                            setSelectedCountry(newValue);
+                            localStorage.setItem(SELECTED_REGION_KEY, newValue.id);
                         }
                     }}
                 />
