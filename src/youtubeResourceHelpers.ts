@@ -25,22 +25,32 @@ const VIDEO_THUMBNAIL_DIMENSIONS = {
     },
 };
 
-function firstAvailableThumbnail(thumbnails: gapi.client.youtube.ThumbnailDetails): gapi.client.youtube.Thumbnail | null {
+/**
+ * Returns first available thumbnail in the order of "default", "medium", "high", and "standard"
+ * @param thumbnailDetails 
+ * @returns First avaialble thumbnail
+ */
+function firstAvailableThumbnail(thumbnailDetails: gapi.client.youtube.ThumbnailDetails): gapi.client.youtube.Thumbnail | null {
     // Key for preferred thumbnail in order of preference. This function gets the first thumbnail in order of keys
     const THUMBNAIL_KEYS: (keyof gapi.client.youtube.ThumbnailDetails)[] = ["default", "medium", "high", "standard", "maxres"];
     for (const key of THUMBNAIL_KEYS) {
-        if (Object.hasOwn(thumbnails, key)) {
-            return thumbnails[key] as gapi.client.youtube.Thumbnail;
+        if (Object.hasOwn(thumbnailDetails, key)) {
+            return thumbnailDetails[key] as gapi.client.youtube.Thumbnail;
         }
     }
     return null;
 }
 
-function getThumbnailURL(thumbnails: gapi.client.youtube.ThumbnailDetails | null | undefined): string {
-    if (!thumbnails) {
+/**
+ * Returns url for one of the thumbnails in thumbnailDetails
+ * @param thumbnailDetails
+ * @returns url for thumbnail, or a "no thumbnail" image if no valid thumbnails are found
+ */
+function getThumbnailURL(thumbnailDetails: gapi.client.youtube.ThumbnailDetails | null | undefined): string {
+    if (!thumbnailDetails) {
         return UNAVAILABLE_THUMBNAIL_URL;
     }
-    const firstThumbnail = firstAvailableThumbnail(thumbnails);
+    const firstThumbnail = firstAvailableThumbnail(thumbnailDetails);
     if (!firstThumbnail || !firstThumbnail.url) {
         return UNAVAILABLE_THUMBNAIL_URL;
     }
@@ -51,4 +61,4 @@ function makeVideoURL(videoId: string, playlistId?: string, playlistPosition?: n
     return `https://www.youtube.com/watch?v=${videoId}${playlistId ? `&list=${playlistId}` : ""}${playlistPosition ? `&position=${playlistPosition}` : null}`;
 }
 
-export { getThumbnailURL, firstAvailableThumbnail, makeVideoURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }
+export { getThumbnailURL, makeVideoURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }

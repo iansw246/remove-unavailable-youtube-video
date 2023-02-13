@@ -1,6 +1,6 @@
 import { Box, Link, Stack } from "@mui/material";
 import { Video } from "../requestHelpers";
-import { firstAvailableThumbnail, getThumbnailURL, makeVideoURL } from "../youtubeResourceHelpers";
+import { getThumbnailURL, makeVideoURL } from "../youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 import YouTubeThumbnail from "./YouTubeThumbnail";
 export interface Props {

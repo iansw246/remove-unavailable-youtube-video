@@ -22,3 +22,9 @@ videos that are deleted will have no information.
 # Details
 Unavailable videos are videos that are deleted, privated, blocked due to copyright grounds, or other
 reasons. Videos availability, mostly for videos blocked for copyright, is different in each country.
+
+# Todo
+- Get app approved by Google
+- Add unit tests
+- Add privacy policy or other information
+- Link to Github?
