@@ -2,6 +2,8 @@ import { Button, Dialog, DialogContent, DialogContentText, DialogTitle } from "@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistListResponse } from "../requestHelpers";
 import PlaylistsDashboard from "./PlaylistsDashboard";
+import GoogleSigninButton from "./GoogleSignInButton";
+import PlaylistInput from "./PlaylistInput";
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -144,8 +146,6 @@ export default function GoogleLogin() {
         setPendingRequest(ApiRequest.OwnPlaylists);
     }, []);
 
-    console.log(currentUserChannelId);
-    console.log(CLIENT_ID);
     const playlists: Playlist[] = useMemo(() => 
         playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[],
         [playlistResponses]
@@ -162,8 +162,10 @@ export default function GoogleLogin() {
                     <Button onClick={handleDialogClose}>Cancel</Button>
                 </DialogContent>
             </Dialog>
+            <GoogleSigninButton onClick={handleShowPlaylistButtonClick} disabled={!tokenClient}/>
             {/* {showAuthentication && <Button onClick={handleLoginButtonClick}>Login with Google</Button>} */}
             <Button onClick={handleShowPlaylistButtonClick} disabled={!tokenClient}>Show Playlists</Button>
+            <PlaylistInput />
             {playlistResponses && currentUserChannelId ?
                 <PlaylistsDashboard playlists={playlists} currentUserChannelId={currentUserChannelId} reloadPlaylists={reloadPlaylistsCallback} />
                 : null
