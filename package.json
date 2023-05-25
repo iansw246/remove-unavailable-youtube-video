@@ -13,7 +13,7 @@
     "@types/gapi.client.youtube-v3": "^0.0.1",
     "@types/google.accounts": "^0.0.7",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.32",
+    "@types/node": "^20.2.3",
     "@types/react": "^18.2.6",
     "@types/react-dom": "^18.2.4",
     "@types/react-router-dom": "^5.3.3",
