@@ -23,21 +23,28 @@ function parseYoutubeUrl(url: URL) {
 }
 
 function parseYoutubePlaylistInput(input: string) {
+    let url;
     // First try interpreting input as youtube URL
     try {
-        const url = new URL(input);
+        url = new URL(input);
+    } catch (e) {
+        // URL constructor throws TypeError if malformed url.
+        // Rethrow all other unexpected exceptions.
+        
+        // Issue: On NodeJS, the error isn't an instanceof TypeError and doesn't get caught.
+        // Not sure how to fix this
+        if (!(e instanceof TypeError)) {
+            throw e;
+        }
+    }
+
+    if (url !== undefined) {
         const playlistId = parseYoutubeUrl(url);
         if (playlistId !== null) {
             return playlistId;
         } else {
             // If is a valid URL but not a YouTube playlist URL, assume is not a YouTube playlist ID and return null
             return null;
-        }
-    } catch (e) {
-        // URL constructor throws TypeError if malformed url.
-        // Rethrow all other unexpected exceptions.
-        if (!(e instanceof TypeError)) {
-            throw e;
         }
     }
 
