@@ -30,6 +30,10 @@ Build with run `pnpm build`.
 Unavailable videos are videos that are deleted, privated, blocked due to copyright grounds, or other
 reasons. Videos availability, mostly for videos blocked for copyright, is different in each country.
 
+Uses [google-api-javascript-client](https://github.com/google/google-api-javascript-client) for YouTube API requests.
+
+Uses the [Google 3P Authorization library for authentication and authorization](https://developers.google.com/identity/oauth2/web/guides/load-3p-authorization-library) (sign-in with Google)
+
 # Todo
 - Get app approved by Google
 - Add unit tests
