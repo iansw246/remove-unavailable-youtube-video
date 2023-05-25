@@ -18,6 +18,13 @@ button to retrieve all unavailable videos. The popup will show a list of unavail
 give options to download the list of videos or remove the videos. Due to limitations of Youtube,
 videos that are deleted will have no information.
 
+# Building
+Install dependencies with `pnpm i`. Set required environment variables in build: 
+`REACT_APP_CLIENT_ID`: Google API OAuth Client ID
+
+Build with run `pnpm build`. 
+
+
 
 # Details
 Unavailable videos are videos that are deleted, privated, blocked due to copyright grounds, or other
