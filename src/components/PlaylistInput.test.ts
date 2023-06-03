@@ -1,5 +1,22 @@
 import { parseYoutubePlaylistInput } from "./PlaylistInput";
 
+function throwTest() {
+    try {
+        const url = new URL("Potato cheese");
+        console.log(url);
+    } catch (e) {
+        console.log(e instanceof TypeError);
+        console.log(e instanceof Error);
+    }
+
+    try {
+        ([] as any).f()
+    } catch (e) {
+        console.log(e instanceof TypeError);
+        console.log(e instanceof Error);
+    }
+}
+
 describe("parseYoutubePlaylistInput", () => {
     test("reads valids YouTube playlist url", () => {
         expect(parseYoutubePlaylistInput("https://www.youtube.com/playlist?list=PLBB4108C5CB4E1DD6"))
@@ -13,7 +30,7 @@ describe("parseYoutubePlaylistInput", () => {
     });
     test("reads YouTube playlist url with other parameters and fragment", () => {
         expect(parseYoutubePlaylistInput(
-            "https://www.youtube.com/playlist?list=PLe1jcCJWvkWg9PnsWDEbQvIa_XmkMzjzk&otherStuff=blabla#ExampleHash"
+            "https://www.youtube.com/playlist?list=PLe1jcCJWvkWg9PnsWDEbQvIa_XmkMzjzk&otherStuff=blabla&pp=iAQB#ExampleHash"
         ))
             .toBe("PLe1jcCJWvkWg9PnsWDEbQvIa_XmkMzjzk");
     });
@@ -24,5 +41,9 @@ describe("parseYoutubePlaylistInput", () => {
     test("returns null for invalid YouTube playlist ID", () => {
         expect(parseYoutubePlaylistInput("PLe1jcCJWvkWg9PnsWDEbQvIa_XmkMzjzk , #@js!"))
             .toBeNull();
-    })
+    });
+});
+
+test("throwTest", () => {
+    throwTest();
 });

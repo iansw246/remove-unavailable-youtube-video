@@ -1,6 +1,11 @@
-import { PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "./requestHelpers";
+import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "./utils/requestHelpers";
 
-async function listOwnedPlaylists(): Promise<PlaylistListResponse[]> {
+/**
+ * Gets all playlists owned by the signed-in user.
+ * Requires authentication to have already happened.
+ * @returns The pages of the PlaylistListReponses 
+ */
+async function fetchOwnedPlaylists(): Promise<PlaylistListResponse[]> {
     const responses: PlaylistListResponse[] = [];
 
     let response: gapi.client.Response<PlaylistListResponse>;
@@ -44,7 +49,7 @@ function isVideoAvailableInCountry(video: Video, countryCode: string): boolean {
     }
 }
 
-async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
+async function fetchVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
     const results: gapi.client.youtube.PlaylistItemListResponse[] = [];
 
     let response = await gapi.client.youtube.playlistItems.list({
@@ -72,14 +77,26 @@ async function getVideosInPlaylist(playlistId: string): Promise<gapi.client.yout
 }
 
 // Gets unavailable playlist items as a non-signed-in user in the given country
-async function getUnavailablePlaylistItemsAsPublic(playlistId: string, userCountryCode: string): Promise<PlaylistItem[]> {
-    const playlistItems = await getVideosInPlaylist(playlistId);
-    return getUnavailablePlaylistItems(playlistItems, null, userCountryCode);
+async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCountryCode: string): Promise<PlaylistItem[]> {
+    return fetchUnavailablePlaylistItems(playlistId, null, userCountryCode);
 }
 
-// If userChannelId is null, will get unavailable playlist items as a public user, not signed in
-// All private videos will be unavailable
-async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
+// Gets unavailable playlist items from given playlist as the given user user in the given country
+async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
+    const playlistItems = await fetchVideosInPlaylist(playlistId);
+    return includeUnavailablePlaylistItems(playlistItems, userChannelId, userCountryCode);
+}
+
+// 
+/**
+ * Returns all playlistItems that are unavailable for the given user in the given region from the given list
+ * @param playlistItems List of playlistItems to check if unavailble
+ * @param userChannelId Channel id of user to check as. If userChannelId is null, will get unavailable playlist items as a public user, not signed in, and
+ * all private videos will be unavailable
+ * @param userCountryCode Country code of YouTube region for user. Get from Region.id
+ * @returns 
+ */
+async function includeUnavailablePlaylistItems(playlistItems: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
     const unavailableItems: PlaylistItem[] = [];
     // Videos public, but possibly unavailable due to region blocking
     const possiblyUnavailableItems: PlaylistItem[] = [];
@@ -120,6 +137,7 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
         }
         return item.contentDetails.videoId;
     });
+
 
     while (startIndex < videoIds.length) {
         batch.add(gapi.client.youtube.videos.list({
@@ -164,4 +182,37 @@ async function getUnavailablePlaylistItems(playlistItems: PlaylistItemListRespon
     return unavailableItems;
 }
 
-export { getUnavailablePlaylistItems, getVideosInPlaylist }
+async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemDelete?: (index: number) => void): Promise<void> {
+    if (unavailableItems.length <= 0) {
+        return;
+    }
+
+    /**
+     * Can't use batching because, after deleting an item, we must wait for a response
+     * before deleting another. I guess batching is too fast and doesn't wait for a response.
+     */
+    for (let i = 0; i < unavailableItems.length; ++i) {
+        const item: gapi.client.youtube.PlaylistItem = unavailableItems[i];
+        if (!item.id) {
+            continue;
+        }
+        const response = await gapi.client.youtube.playlistItems.delete({
+            id: item.id
+        });
+        // Successful deletion should responsd with error 204
+        if (response.status !== 204) {
+            throw response;
+        }
+        onItemDelete?.(i);
+    }
+}
+
+async function fetchPlaylist(playlistId: string): Promise<Playlist[]> {
+    return (await gapi.client.youtube.playlists.list({
+        id: playlistId,
+        part: "contentDetails,id,snippet,status",
+        maxResults: 50,
+    })).result.items ?? [];
+}
+
+export { fetchOwnedPlaylists, includeUnavailablePlaylistItems, fetchUnavailablePublicPlaylistItems, fetchUnavailablePlaylistItems, fetchVideosInPlaylist, removeItemsFromPlaylist, fetchPlaylist }

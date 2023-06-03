@@ -1,5 +1,5 @@
 import { styled } from "@mui/material";
-import { VIDEO_THUMBNAIL_DIMENSIONS } from "../youtubeResourceHelpers";
+import { VIDEO_THUMBNAIL_DIMENSIONS } from "../utils/youtubeResourceHelpers";
 
 const YouTubeThumbnailComponent = styled("img")({
     width: VIDEO_THUMBNAIL_DIMENSIONS.default.width,

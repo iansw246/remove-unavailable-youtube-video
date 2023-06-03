@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
-import { PlaylistItem } from "../requestHelpers";
-import { getThumbnailURL, makeVideoURL } from "../youtubeResourceHelpers";
+import { PlaylistItem } from "../utils/requestHelpers";
+import { getThumbnailURL, makeChannelURL, makeVideoURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 import YouTubeThumbnail from "./YouTubeThumbnail";
 
@@ -13,8 +13,8 @@ export default function PlaylistItemView({playlistItem}: Props) {
         <Box display="flex" flexDirection="row" flexWrap="wrap">
             <YouTubeThumbnail thumbnailURL={getThumbnailURL(playlistItem.snippet?.thumbnails)} alt={playlistItem.snippet?.title + " thumbnail"} sx={{marginRight: 1}} />
             <Box minWidth="200px">
-                <NewTabLink href={makeVideoURL(playlistItem.contentDetails?.videoId || "", playlistItem.snippet?.playlistId, playlistItem.snippet?.position)}>{playlistItem.snippet?.title}</NewTabLink>
-                <Typography>{playlistItem.snippet?.videoOwnerChannelTitle}</Typography>
+                <Typography><NewTabLink href={makeVideoURL(playlistItem.contentDetails?.videoId ?? "", playlistItem.snippet?.playlistId, playlistItem.snippet?.position)}>{playlistItem.snippet?.title}</NewTabLink></Typography>
+                <Typography><NewTabLink href={makeChannelURL(playlistItem.snippet?.videoOwnerChannelId ?? "")}>{playlistItem.snippet?.videoOwnerChannelTitle}</NewTabLink></Typography>
                 <Typography>Published on {(new Date(playlistItem.snippet?.publishedAt || "")).toLocaleString()}</Typography>
             </Box>
         </Box>

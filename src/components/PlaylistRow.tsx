@@ -1,6 +1,6 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-import { Playlist } from "../requestHelpers";
-import { getThumbnailURL } from "../youtubeResourceHelpers";
+import { Playlist } from "../utils/requestHelpers";
+import { getThumbnailURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 
 function youtubePlaylistLink(playlistId: string) {
@@ -30,7 +30,7 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
                         <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
                     }
                     <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
-                    <Typography fontSize="0.8rem">Status: {playlist.status?.privacyStatus}</Typography>
+                    <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
                     <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography>
                 </Box>
                 <Box ml="auto">

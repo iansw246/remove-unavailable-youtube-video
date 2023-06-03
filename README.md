@@ -20,10 +20,10 @@ videos that are deleted will have no information.
 
 # Building
 Install dependencies with `pnpm i`. Set required environment variables in build: 
-`REACT_APP_CLIENT_ID`: Google API OAuth Client ID
+- `REACT_APP_GAPI_CLIENT_ID`: Google API OAuth Client ID
+- `REACT_APP_GAPI_API_KEY`: Google API API Key
 
 Build with run `pnpm build`. 
-
 
 
 # Details

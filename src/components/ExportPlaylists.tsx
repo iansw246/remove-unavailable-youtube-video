@@ -1,6 +1,6 @@
 import { Button, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { PlaylistItem } from "../requestHelpers";
+import { PlaylistItem } from "../utils/requestHelpers";
 
 enum DataFormats {
     PlainText = "plaintext",
@@ -71,29 +71,27 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
 
     return (
         <>
-            <DialogContent>
-                <FormControl>
-                    <InputLabel id={playlistDataFormatLabelId}>Format</InputLabel>
-                    <Select
-                        labelId={playlistDataFormatLabelId}
-                        label="Format"
-                        value={playlistDataFormat}
-                        sx={{ minWidth: "12rem" }}
-                        onChange={(event) => {
-                            if (isDataFormat(event.target.value)) {
-                                setPlaylistDataFormat(event.target.value);
-                            }
-                        }}
-                    >
-                        <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
-                        <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
-                    </Select>
-                </FormControl>
-                <pre style={{overflow: "scroll", paddingBottom: "1rem"}}>
-                    {playlistItemsDataText}
-                </pre>
-            </DialogContent>
-            <DialogActions>
+            <FormControl>
+                <InputLabel id={playlistDataFormatLabelId}>Format</InputLabel>
+                <Select
+                    labelId={playlistDataFormatLabelId}
+                    label="Format"
+                    value={playlistDataFormat}
+                    sx={{ minWidth: "12rem" }}
+                    onChange={(event) => {
+                        if (isDataFormat(event.target.value)) {
+                            setPlaylistDataFormat(event.target.value);
+                        }
+                    }}
+                >
+                    <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
+                    <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
+                </Select>
+            </FormControl>
+            <pre style={{paddingBottom: "1rem"}}>
+                {playlistItemsDataText}
+            </pre>
+            <div>
                 <Button onClick={copyTextCallback}>Copy text</Button>
                 <Button
                     component="a"
@@ -102,7 +100,7 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 >
                     Download List
                 </Button>
-            </DialogActions>
+            </div>
         </>
     );    
 }

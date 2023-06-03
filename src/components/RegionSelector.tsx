@@ -1,5 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 import regionListResponse from "../data/regions";
+import { defaultRegion } from "../data/regionOptions";
 
 export interface Props {
     value: Region;
@@ -18,3 +19,25 @@ export default function RegionSelector({ value, onChange }: Props) {
         />
     );
 }
+
+const SELECTED_REGION_LOCAL_STORAGE_KEY: string = "selectedRegion";
+
+function loadOrInitializeSavedRegion(): Region {
+    let savedRegionId = localStorage.getItem(SELECTED_REGION_LOCAL_STORAGE_KEY);
+    if (savedRegionId === null) {
+        savedRegionId = defaultRegion.id;
+        localStorage.setItem(SELECTED_REGION_LOCAL_STORAGE_KEY, defaultRegion.id);
+    }
+    return regionListResponse.items.find((region) => region.id === savedRegionId) || defaultRegion;
+}
+
+/**
+ * Save region persistently so that loadOrInitializeSavedRegion() will retrieve
+ * this new region next time.
+ * @param newRegion 
+ */
+function saveRegion(newRegion: Region) {
+    localStorage.setItem(SELECTED_REGION_LOCAL_STORAGE_KEY, newRegion.id);
+}
+
+export { loadOrInitializeSavedRegion, saveRegion }

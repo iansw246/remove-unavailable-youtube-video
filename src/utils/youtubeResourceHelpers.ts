@@ -61,4 +61,8 @@ function makeVideoURL(videoId: string, playlistId?: string, playlistPosition?: n
     return `https://www.youtube.com/watch?v=${videoId}${playlistId ? `&list=${playlistId}` : ""}${playlistPosition ? `&position=${playlistPosition}` : null}`;
 }
 
-export { getThumbnailURL, makeVideoURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }
+function makeChannelURL(channelId: string) {
+    return `https://www.youtube.com/channel/${channelId}`;
+}
+
+export { getThumbnailURL, makeVideoURL, makeChannelURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }
