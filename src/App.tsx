@@ -60,30 +60,13 @@ enum TabTypes {
 }
 
 function App() {
-    const [showAuthentication, setShowAuthentication] = useState<boolean>(false);
-    const [pendingRequest, setPendingRequest] = useState<ApiRequest>();
-
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
 
-    const [playlistId, setPlaylistId] = useState<string | null>(null);
     const [userRegion, setUserRegion] = useState<Region>(loadOrInitializeSavedRegion);
-    const [userChannelId, setUserChannelId] = useState<string>();
-
-    const [playlistResponses, setPlaylistResponses] = useState<PlaylistListResponse[]>([]);
-    const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>();
-    const [showUnavailableItems, setShowUnavailableItems] = useState<boolean>(false);
-
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [loadingMessage, setLoadingMessage] = useState<React.ReactNode>();
-    const [loadingProgress, setLoadingProgress] = useState<number>();
-    const [loadingTotal, setLoadingTotal] = useState<number>();
 
     const [showError, setShowError] = useState<boolean>(false);
     const [errorTitle, setErrorTitle] = useState<string>();
     const [errorBody, setErrorBody] = useState<React.ReactNode>();
-
-    const [playlistOption, setPlaylistOption] = useState<string>("none");
-
 
     const [tokenClient, setTokenClient] = useState<TokenClient>();
     const onTokenClientLoadFail = useCallback((error: unknown) => {
@@ -103,17 +86,9 @@ function App() {
 
     const [tabIndex, setTabIndex] = useState<TabTypes>(TabTypes.ENTER_PLAYLIST);
 
-    const playlists: Playlist[] = useMemo(() =>
-        playlistResponses.flatMap(playlistResponse => playlistResponse.items).filter(Boolean) as Playlist[],
-        [playlistResponses]
-    );
-
     return (
         <div className="App">
             <Layout>
-                {unavailableItems &&
-                    <UnavailableVideosDialog open={showUnavailableItems} selectedPlaylist={playlists[0]} unavailablePlaylistItems={unavailableItems} onClose={() => { }} />
-                }
                 {showError &&
                     <ErrorDialog open={true} errorBody={errorBody} errorTitle={errorTitle} onClose={() => setShowError(false)} />
                 }

@@ -88,7 +88,7 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                     <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
                 </Select>
             </FormControl>
-            <pre style={{paddingBottom: "1rem"}}>
+            <pre style={{paddingBottom: "1rem", width: "50%"}}>
                 {playlistItemsDataText}
             </pre>
             <div>
