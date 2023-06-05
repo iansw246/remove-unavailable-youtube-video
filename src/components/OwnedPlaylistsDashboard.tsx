@@ -155,7 +155,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />
-            <Button onClick={handleGetMyPlaylistsButtonClick}>Get my playlists</Button>
+            <Button onClick={handleGetMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Get my playlists</Button>
 
             <p>User logged in: {isUserLoggedIn.toString()}</p>
 

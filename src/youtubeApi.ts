@@ -84,19 +84,20 @@ async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCount
 // Gets unavailable playlist items from given playlist as the given user user in the given country
 async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
     const playlistItems = await fetchVideosInPlaylist(playlistId);
-    return includeUnavailablePlaylistItems(playlistItems, userChannelId, userCountryCode);
+    return filterAvailablePlaylistItems(playlistItems, userChannelId, userCountryCode);
 }
 
 // 
 /**
- * Returns all playlistItems that are unavailable for the given user in the given region from the given list
+ * Returns all playlistItems that are unavailable for the given user in the given region from the given list.
+ * Filters out available playlist items
  * @param playlistItems List of playlistItems to check if unavailble
  * @param userChannelId Channel id of user to check as. If userChannelId is null, will get unavailable playlist items as a public user, not signed in, and
  * all private videos will be unavailable
  * @param userCountryCode Country code of YouTube region for user. Get from Region.id
  * @returns 
  */
-async function includeUnavailablePlaylistItems(playlistItems: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
+async function filterAvailablePlaylistItems(playlistItems: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string, ): Promise<PlaylistItem[]> {
     const unavailableItems: PlaylistItem[] = [];
     // Videos public, but possibly unavailable due to region blocking
     const possiblyUnavailableItems: PlaylistItem[] = [];
@@ -215,4 +216,4 @@ async function fetchPlaylist(playlistId: string): Promise<Playlist[]> {
     })).result.items ?? [];
 }
 
-export { fetchOwnedPlaylists, includeUnavailablePlaylistItems, fetchUnavailablePublicPlaylistItems, fetchUnavailablePlaylistItems, fetchVideosInPlaylist, removeItemsFromPlaylist, fetchPlaylist }
+export { fetchOwnedPlaylists, filterAvailablePlaylistItems as includeUnavailablePlaylistItems, fetchUnavailablePublicPlaylistItems, fetchUnavailablePlaylistItems, fetchVideosInPlaylist, removeItemsFromPlaylist, fetchPlaylist }
