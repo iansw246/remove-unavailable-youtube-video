@@ -4,8 +4,8 @@ import { VIDEO_THUMBNAIL_DIMENSIONS } from "../utils/youtubeResourceHelpers";
 const YouTubeThumbnailComponent = styled("img")({
     width: VIDEO_THUMBNAIL_DIMENSIONS.default.width,
     height: VIDEO_THUMBNAIL_DIMENSIONS.default.height,
-    borderWidth: 2,
-    borderRadius: 6,
+    borderRadius: "4px",
+    objectFit: "cover"
 });
 
 export interface Props extends React.ComponentPropsWithoutRef<typeof YouTubeThumbnailComponent> {

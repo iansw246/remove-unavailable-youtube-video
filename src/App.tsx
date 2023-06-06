@@ -112,7 +112,7 @@ function App() {
                 <Box mb={2}>
                     <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)}>
                         <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
-                        <Tab label="Show your playlists" value={TabTypes.MY_PLAYLISTS} />
+                        <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
                     </Tabs>
                 </Box>
                 
