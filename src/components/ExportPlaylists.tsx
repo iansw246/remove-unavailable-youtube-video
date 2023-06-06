@@ -92,8 +92,9 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 {playlistItemsDataText}
             </pre>
             <div>
-                <Button onClick={copyTextCallback}>Copy text</Button>
+                <Button variant="contained" onClick={copyTextCallback}>Copy text</Button>
                 <Button
+                    variant="contained"
                     component="a"
                     download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.${dataFormatToExtensionMap.get(playlistDataFormat) || ".txt"}`}
                     href={playlistDataTextObjectURL}
