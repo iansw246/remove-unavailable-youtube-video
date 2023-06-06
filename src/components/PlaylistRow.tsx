@@ -13,36 +13,34 @@ export interface Props {
 }
 
 export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Props): JSX.Element {
+    const playlistTitleText = playlist.snippet?.title || "[No title]";
     return (
         <Paper elevation={2} sx={{
             "&:hover": {
                 backgroundColor: (theme) => theme.palette.grey[200],
             },
-            paddingTop: 0,
-            paddingLeft: 0,
-            paddingRight: 1,
+            padding: 1,
+            paddingBottom: 0,
             height: "100%"
         }} key={playlist.etag}>
             <Stack direction="row" flexWrap="wrap">
                 <Box component="img"
                     width="120px" height="90px"
-                    mr={2}
                     borderRadius="4px"
-                    sx={{mr: 2, objectFit: "cover"}}
+                    sx={{objectFit: "cover"}}
                     alignSelf="center"
+                    mr={1.5}
                     src={thumbnailURL(playlist.snippet?.thumbnails)}
                 />
-                <Box sx={{paddingTop: 1, paddingBottom: 1}}>
-                    <Box>
-                        {playlist.id ? 
-                            <NewTabLink href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</NewTabLink>
-                            :
-                            <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
+                <Box flex="1 0" minWidth="0">
+                    <Typography fontWeight="bold" maxHeight={"2rem"} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+                        {playlist.id ? <NewTabLink href={youtubePlaylistLink(playlist.id)}>{playlistTitleText}</NewTabLink>
+                            : playlistTitleText
                         }
-                        <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
-                        <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
-                        {/* <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography> */}
-                    </Box>
+                    </Typography>
+                    <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
+                    <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
+                    {/* <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography> */}
                     <Button variant="contained" size="small" sx={{ml: "auto"}} onClick={() => {
                         if (!playlist.id) {
                             return;
