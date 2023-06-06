@@ -15,7 +15,7 @@ export default function UnavailableItemsDashboard({ unavailableItems, playlist, 
         <div style={{maxWidth: "48%"}}>
             <Typography variant="h4" mb={2}>Unavailable videos</Typography>
             <UnavailableItemsDisplay unavailableItems={unavailableItems} playlist={playlist} />
-            {showRemoveVideosButton && <Button onClick={handleRemoveVideosButtonClick}>Remove videos?</Button>}
+            {showRemoveVideosButton && <Button variant="contained" onClick={handleRemoveVideosButtonClick}>Remove videos?</Button>}
         </div>
         <div style={{maxWidth: "48%"}}>
             <Typography variant="h4" mb={2}>Export list</Typography>
