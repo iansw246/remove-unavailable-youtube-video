@@ -86,7 +86,14 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
     const [error, setError] = useState<any>();
 
-    function handleGetMyPlaylistsButtonClick() {
+    useEffect(() => {
+        if (!isUserLoggedIn) {
+            return;
+        }
+        fetchPlaylists();
+    }, [isUserLoggedIn]);
+
+    function fetchPlaylists() {
         if (!isUserLoggedIn) {
             setError("User is not logged in");
         }
@@ -107,6 +114,10 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setIsLoading(false);
             setError(error);
         });
+    }
+
+    function handleGetMyPlaylistsButtonClick() {
+        fetchPlaylists();
     }
 
     function handleGetUnavailableItemsClick(playlist: Playlist, index: number) {
@@ -155,9 +166,9 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />
-            <Button onClick={handleGetMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Get my playlists</Button>
+            <Button onClick={handleGetMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
 
-            <p>User logged in: {isUserLoggedIn.toString()}</p>
+            <p style={{border: "2px solid green", padding: "0.2rem"}}>[Debug] User logged in: {isUserLoggedIn.toString()}</p>
 
             {error && <Typography>An error has occured: {JSON.stringify(error)}</Typography>}
             {isLoading && <LinearProgress variant="indeterminate" />}

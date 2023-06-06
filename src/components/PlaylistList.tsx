@@ -1,4 +1,5 @@
 import { Stack } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { Playlist } from "../utils/requestHelpers";
 import PlaylistRow from "./PlaylistRow";
 
@@ -9,10 +10,12 @@ export interface Props {
 
 export default function PlaylistList({ playlists, onGetUnavailableItemsClick }: Props) {
     return (
-        <Stack spacing={2}>
+        <Grid container spacing={2}>
             {playlists.map((playlist, index) =>
-                <PlaylistRow key={playlist.id} playlist={playlist} getUnavailableVideosCallback={(playlist) => { onGetUnavailableItemsClick(playlist, index) }} />
+                <Grid xs={4} mt={2}>
+                    <PlaylistRow key={playlist.id} playlist={playlist} getUnavailableVideosCallback={(playlist) => { onGetUnavailableItemsClick(playlist, index) }} />
+                </Grid>
             )}
-        </Stack>
+        </Grid>
     );
 }

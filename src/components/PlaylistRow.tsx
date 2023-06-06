@@ -18,7 +18,8 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
             "&:hover": {
                 backgroundColor: (theme) => theme.palette.grey[200],
             },
-            "padding": 1,
+            padding: 1,
+            height: "100%"
         }} key={playlist.etag}>
             <Stack direction="row" flexWrap="wrap">
                 <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}}
