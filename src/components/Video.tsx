@@ -1,6 +1,6 @@
 import { Box, Link, Stack } from "@mui/material";
 import { Video } from "../utils/requestHelpers";
-import { getThumbnailURL, makeVideoURL } from "../utils/youtubeResourceHelpers";
+import { thumbnailURL, makeVideoURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 import YouTubeThumbnail from "./YouTubeThumbnail";
 export interface Props {
@@ -10,7 +10,7 @@ export interface Props {
 export default function Video({video}: Props) {
     return (
         <Stack direction="row">
-            <YouTubeThumbnail thumbnailURL={getThumbnailURL(video.snippet?.thumbnails)} alt={video.snippet?.title + " thumbnail"} />
+            <YouTubeThumbnail thumbnailURL={thumbnailURL(video.snippet?.thumbnails)} alt={video.snippet?.title + " thumbnail"} />
             <Box>
                 <NewTabLink href={video.id ? makeVideoURL(video.id) : ""}>{video.snippet?.title}</NewTabLink>
             </Box>

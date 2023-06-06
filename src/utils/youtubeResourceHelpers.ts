@@ -46,7 +46,7 @@ function firstAvailableThumbnail(thumbnailDetails: gapi.client.youtube.Thumbnail
  * @param thumbnailDetails
  * @returns url for thumbnail, or a "no thumbnail" image if no valid thumbnails are found
  */
-function getThumbnailURL(thumbnailDetails: gapi.client.youtube.ThumbnailDetails | null | undefined): string {
+function thumbnailURL(thumbnailDetails: gapi.client.youtube.ThumbnailDetails | null | undefined): string {
     if (!thumbnailDetails) {
         return UNAVAILABLE_THUMBNAIL_URL;
     }
@@ -65,4 +65,4 @@ function makeChannelURL(channelId: string) {
     return `https://www.youtube.com/channel/${channelId}`;
 }
 
-export { getThumbnailURL, makeVideoURL, makeChannelURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }
+export { thumbnailURL, makeVideoURL, makeChannelURL, UNAVAILABLE_THUMBNAIL_URL, VIDEO_THUMBNAIL_DIMENSIONS }

@@ -1,6 +1,6 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { Playlist } from "../utils/requestHelpers";
-import { getThumbnailURL } from "../utils/youtubeResourceHelpers";
+import { thumbnailURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 
 function youtubePlaylistLink(playlistId: string) {
@@ -18,29 +18,37 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
             "&:hover": {
                 backgroundColor: (theme) => theme.palette.grey[200],
             },
-            padding: 1,
+            paddingTop: 0,
+            paddingLeft: 0,
+            paddingRight: 1,
             height: "100%"
         }} key={playlist.etag}>
             <Stack direction="row" flexWrap="wrap">
-                <Box component="img" width="130px" height="90px" sx={{border: "2px solid white", borderRadius: "15px", mr: 2, objectFit: "cover"}}
-                    src={getThumbnailURL(playlist.snippet?.thumbnails)}></Box>
-                <Box>
-                    {playlist.id ? 
-                        <NewTabLink href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</NewTabLink>
-                        :
-                        <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
-                    }
-                    <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
-                    <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
-                    <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography>
-                </Box>
-                <Box ml="auto">
-                    <Button sx={{height: "100%"}} onClick={() => {
+                <Box component="img"
+                    width="120px" height="90px"
+                    mr={2}
+                    borderRadius="4px"
+                    sx={{mr: 2, objectFit: "cover"}}
+                    alignSelf="center"
+                    src={thumbnailURL(playlist.snippet?.thumbnails)}
+                />
+                <Box sx={{paddingTop: 1, paddingBottom: 1}}>
+                    <Box>
+                        {playlist.id ? 
+                            <NewTabLink href={youtubePlaylistLink(playlist.id)} fontWeight="bold">{playlist.snippet?.title || "[No title]"}</NewTabLink>
+                            :
+                            <Typography fontWeight="bold">{playlist.snippet?.title || "[No title]"}</Typography>
+                        }
+                        <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
+                        <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
+                        {/* <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography> */}
+                    </Box>
+                    <Button variant="contained" size="small" sx={{ml: "auto"}} onClick={() => {
                         if (!playlist.id) {
                             return;
                         }
                         getUnavailableVideosCallback(playlist);
-                    }}>Get unavailable videos</Button>
+                    }}>Load videos</Button>
                 </Box>
             </Stack>
         </Paper>
