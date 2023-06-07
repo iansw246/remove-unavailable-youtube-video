@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { PlaylistItem } from "../utils/requestHelpers";
-import PlaylistItemView from "./PlaylistItemView";
+import PlaylistItemCard from "./PlaylistItemView";
 import { PaperHover } from "./PaperHover";
 
 export interface Props {
@@ -20,9 +20,7 @@ export default function PlaylistItemList({ items }: Props) {
                     && item.snippet !== undefined
                     && item.status !== undefined
                 ).map((item: Required<PlaylistItem>) => (
-                    <PaperHover key={item.id}>
-                        <PlaylistItemView playlistItem={item} />
-                    </PaperHover>
+                    <PlaylistItemCard playlistItem={item} key={item.etag}/>
                 ))
             }
         </Stack>

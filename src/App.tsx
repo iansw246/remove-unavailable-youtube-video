@@ -104,12 +104,10 @@ function App() {
 
                 <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} />
 
-                <Box mb={2}>
-                    <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)}>
-                        <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
-                        <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
-                    </Tabs>
-                </Box>
+                <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
+                    <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
+                    <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
+                </Tabs>
                 
                 {/* Use TabPanes which are always rendered because  */}
                 <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>

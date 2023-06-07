@@ -1,6 +1,6 @@
 import { Button, LinearProgress, Paper, Stack, Typography } from "@mui/material";
 import useUnavailableItems from "./useUnavailableItems";
-import PlaylistItemView from "./PlaylistItemView";
+import PlaylistItemCard from "./PlaylistItemView";
 import { Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { useState, useEffect } from "react";
 import { fetchPlaylist, fetchUnavailablePublicPlaylistItems } from "../youtubeApi";

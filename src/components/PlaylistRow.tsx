@@ -36,7 +36,7 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
                     src={thumbnailURL(playlist.snippet?.thumbnails)}
                 /> */}
                 <Box flex="1 0" minWidth="0">
-                    <Typography fontWeight="bold" maxHeight={"2rem"} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+                    <Typography fontWeight="bold" maxHeight={"1.5rem"} textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
                         {playlist.id ? <NewTabLink href={youtubePlaylistLink(playlist.id)}>{playlistTitleText}</NewTabLink>
                             : playlistTitleText
                         }

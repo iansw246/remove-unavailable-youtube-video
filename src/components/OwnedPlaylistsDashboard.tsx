@@ -1,5 +1,5 @@
 import { Button, Typography, LinearProgress } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Playlist, PlaylistItem } from "../utils/requestHelpers";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import { createAction, BaseAction } from "../reducerActions";
@@ -74,6 +74,8 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
     const [error, setError] = useState<any>();
 
+    const unavailableVideosHeader = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         if (!isUserLoggedIn) {
             return;
@@ -104,11 +106,11 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         });
     }
 
-    function handleGetMyPlaylistsButtonClick() {
+    function handleFetchMyPlaylistsButtonClick() {
         fetchPlaylists();
     }
 
-    function handleGetUnavailableItemsClick(playlist: Playlist, index: number) {
+    function handleFetchUnavailableItemsClick(playlist: Playlist, index: number) {
         if (playlist.id === null || playlist.id === undefined) {
             throw new Error(`playlist.id cannot be ${playlist.id}.`);
         }
@@ -121,8 +123,8 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
 
-        fetchUnavailablePlaylistItems(playlist.id, userChannelId, userRegion.id).then((fetchedUnavailbleItems) => {
-            setUnavailableItems(fetchedUnavailbleItems);
+        fetchUnavailablePlaylistItems(playlist.id, userChannelId, userRegion.id).then((fetchedUnavailableItems) => {
+            setUnavailableItems(fetchedUnavailableItems);
             setIsLoading(false);
         }, (error) => {
             setError(error);
@@ -154,15 +156,16 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />
-            <Button onClick={handleGetMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
+            <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
 
             <p style={{border: "2px solid green", padding: "0.2rem"}}>[Debug] User logged in: {isUserLoggedIn.toString()}</p>
 
             {error && <Typography>An error has occured: {JSON.stringify(error)}</Typography>}
             {isLoading && <LinearProgress variant="indeterminate" />}
-            {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleGetUnavailableItemsClick} />}
+            {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} mb={2} />}
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
+                    ref={unavailableVideosHeader}
                     unavailableItems={unavailableItems}
                     playlist={selectedPlaylist}
                     handleRemoveVideosButtonClick={handleRemoveVideosButtonClick}

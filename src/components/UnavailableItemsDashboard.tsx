@@ -2,22 +2,23 @@ import { Button, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { PlaylistItem, Playlist } from "../utils/requestHelpers";
 import UnavailableItemsDisplay from "./UnavailableItemsDisplay";
 import ExportPlaylistItems from "./ExportPlaylists";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 import TabPanel from "./TabPanel";
 
 interface Props {
     unavailableItems: PlaylistItem[];
     playlist: Playlist;
     handleRemoveVideosButtonClick?: () => void;
-    showRemoveVideosButton?: boolean
+    showRemoveVideosButton?: boolean;
+    ref?: React.RefObject<HTMLDivElement>;
 }
 
-export default function UnavailableItemsDashboard({ unavailableItems, playlist, handleRemoveVideosButtonClick, showRemoveVideosButton = true }: Props) {
+export default function UnavailableItemsDashboard({ unavailableItems, playlist, handleRemoveVideosButtonClick, showRemoveVideosButton = true, ref }: Props) {
     const [tabIndex, setTabIndex] = useState<number>(0);
     return (
-        <div>
+        <div ref={ref}>
             <Typography variant="h4">Unavailable videos in selected playlist</Typography>
-            <Tabs value={tabIndex} onChange={(event, newTabIndex) => setTabIndex(newTabIndex)} sx={{mb: 2}}>
+            <Tabs value={tabIndex} onChange={(event, newTabIndex) => setTabIndex(newTabIndex)} sx={{mb: 2, borderBottom: 1, borderColor: "divider"}}>
                 <Tab label="Delete videos" />
                 <Tab label="Export list" />
             </Tabs>
@@ -32,15 +33,4 @@ export default function UnavailableItemsDashboard({ unavailableItems, playlist, 
             </TabPanel>
         </div>
     );
-    return (<Stack direction="row" flexWrap="wrap" spacing={2} style={{columnGap: 2}}>
-        <div style={{maxWidth: "48%"}}>
-            <Typography variant="h4" mb={2}>Unavailable videos</Typography>
-            <UnavailableItemsDisplay unavailableItems={unavailableItems} playlist={playlist} />
-            {showRemoveVideosButton && <Button variant="contained" onClick={handleRemoveVideosButtonClick}>Remove videos?</Button>}
-        </div>
-        <div style={{maxWidth: "48%"}}>
-            <Typography variant="h4" mb={2}>Export list</Typography>
-            <ExportPlaylistItems playlistItems={unavailableItems} playlistName={playlist.snippet?.title ?? "untitled_playlist"} />
-        </div>
-    </Stack>);
 }
