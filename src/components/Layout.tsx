@@ -1,6 +1,8 @@
 import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, Link, List, ListItem, Theme, Box } from "@mui/material";
 import { useState, useCallback } from "react";
 
+import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png"
+
 export interface Props {
     children: React.ReactNode
 }
@@ -12,7 +14,7 @@ export default function Layout({ children }: Props) {
     }, [isDrawerOpen]);
     
     return (
-        <div>
+        <>
             <header>
                 <AppBar position="static" sx={{ mb: "1rem" }}>
                     <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
@@ -33,6 +35,7 @@ export default function Layout({ children }: Props) {
                     </Box>
                 </AppBar>
             </header>
+
             <Container maxWidth="lg" component="main">
                 <Drawer open={isDrawerOpen} onClose={onClose}>
                     <List sx={{width: 200}}>
@@ -46,6 +49,10 @@ export default function Layout({ children }: Props) {
                 </Drawer>
                 {children}
             </Container>
-        </div>
+
+            <footer id="footer">
+                <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}}/></a>
+            </footer>
+        </>
     );
 }
