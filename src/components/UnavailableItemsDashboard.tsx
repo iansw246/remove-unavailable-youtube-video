@@ -25,7 +25,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, hand
             <TabPanel value={tabIndex} index={0}>
                 <Typography variant="h5"> Unavailable videos</Typography>
                 <UnavailableItemsDisplay unavailableItems={unavailableItems} playlist={playlist} />
-                {showRemoveVideosButton && <Button variant="contained" onClick={handleRemoveVideosButtonClick}>Remove videos?</Button>}
+                {showRemoveVideosButton && <Button variant="contained" onClick={handleRemoveVideosButtonClick} sx={{margin: 1}}>Remove videos?</Button>}
             </TabPanel>
             <TabPanel value={tabIndex} index={1}>
                 <Typography variant="h5" mb={2}>Export list</Typography>
