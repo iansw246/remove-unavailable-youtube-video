@@ -3,6 +3,7 @@ import { Playlist } from "../utils/requestHelpers";
 import { thumbnailURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
 import YouTubeThumbnail from "./YouTubeThumbnail";
+import { PaperHover } from "./PaperHover";
 
 function youtubePlaylistLink(playlistId: string) {
     return `https://www.youtube.com/playlist?list=${playlistId}`;
@@ -16,12 +17,7 @@ export interface Props {
 export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Props): JSX.Element {
     const playlistTitleText = playlist.snippet?.title || "[No title]";
     return (
-        <Paper elevation={2} sx={{
-            "&:hover": {
-                backgroundColor: (theme) => theme.palette.grey[100],
-            },
-            transition: "background-color 0.2s",
-            padding: 1,
+        <PaperHover elevation={2} sx={{
             paddingBottom: 0,
             height: "100%"
         }} key={playlist.etag}>
@@ -56,6 +52,6 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
                     }}>Load videos</Button>
                 </Box>
             </Stack>
-        </Paper>
+        </PaperHover>
     );
 }
