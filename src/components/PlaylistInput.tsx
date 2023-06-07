@@ -10,6 +10,11 @@ export interface Props {
 // These are assumed from the fact that the YouTube API allows for comma separated IDs in requests
 const PLAYLIST_ID_DISALLOWED_CHARACTERS: string[] = [",", " "];
 
+/**
+ * Get the playlist id from the search parameters of a YouTube playlist URL
+ * @param url URL of YouTube playlist
+ * @returns playlist id or null if playlist URL is not valid
+ */
 function parseYoutubeUrl(url: URL) {
     if (
         (url.hostname !== "www.youtube.com" && url.hostname !== "youtube.com")
@@ -22,23 +27,31 @@ function parseYoutubeUrl(url: URL) {
     return params.get("list");
 }
 
-function parseYoutubePlaylistInput(input: string) {
-    let url;
-    // First try interpreting input as youtube URL
+/**
+ * Try to parse str as URL
+ * @param str url string to parse
+ * @returns URL object of url string, or null if url string was invalid
+ */
+function defaultStringToUrl(str: string): URL | null {
     try {
-        url = new URL(input);
+        return new URL(str);
     } catch (e) {
         // URL constructor throws TypeError if malformed url.
         // Rethrow all other unexpected exceptions.
         
         // Issue: On NodeJS, the error isn't an instanceof TypeError and doesn't get caught.
-        // Not sure how to fix this
+        // This function exists so it can be mocked in testing
         if (!(e instanceof TypeError)) {
             throw e;
         }
+        return null;
     }
+}
 
-    if (url !== undefined) {
+function parseYoutubePlaylistInput(input: string, stringToUrl: ((str: string) => URL | null) = defaultStringToUrl) {
+    const url = stringToUrl(input);
+
+    if (url !== null) {
         const playlistId = parseYoutubeUrl(url);
         if (playlistId !== null) {
             return playlistId;
@@ -48,7 +61,10 @@ function parseYoutubePlaylistInput(input: string) {
         }
     }
 
+    // input string is not a url. Check if it is a playlist id
+
     // Check if input has any disallowed chars
+    // If so, it's not a playlist id
     if (PLAYLIST_ID_DISALLOWED_CHARACTERS.some(
         (disallowedChar) => input.includes(disallowedChar)
     )) {
@@ -64,13 +80,13 @@ export default function PlaylistInput({ onChange }: Props) {
 
     const onPlaylistInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const parsedPlaylistId = parseYoutubePlaylistInput(event.target.value);
-        if (parsedPlaylistId) {
+        if (parsedPlaylistId === null) {
+            setIsPlaylistInputValid(false);
+        } else {
             if (onChange) {      
                 onChange(parsedPlaylistId);
             }
             setIsPlaylistInputValid(true);
-        } else {
-            setIsPlaylistInputValid(false);
         }
     }, [onChange]);
 
