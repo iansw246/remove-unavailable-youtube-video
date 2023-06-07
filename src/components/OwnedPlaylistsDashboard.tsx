@@ -153,6 +153,13 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         });
     }
 
+    useEffect(() => {
+        if (!unavailableItems || !selectedPlaylist || isLoading) {
+            return;
+        }
+        unavailableVideosHeader.current?.scrollIntoView();
+    }, [unavailableItems, selectedPlaylist]);
+
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />

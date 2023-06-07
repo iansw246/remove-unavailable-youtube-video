@@ -13,7 +13,7 @@ interface Props {
     ref?: React.RefObject<HTMLDivElement>;
 }
 
-export default function UnavailableItemsDashboard({ unavailableItems, playlist, handleRemoveVideosButtonClick, showRemoveVideosButton = true, ref }: Props) {
+const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, handleRemoveVideosButtonClick, showRemoveVideosButton = true }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [tabIndex, setTabIndex] = useState<number>(0);
     return (
         <div ref={ref}>
@@ -33,4 +33,6 @@ export default function UnavailableItemsDashboard({ unavailableItems, playlist, 
             </TabPanel>
         </div>
     );
-}
+});
+
+export default UnavailableItemsDashboard;
