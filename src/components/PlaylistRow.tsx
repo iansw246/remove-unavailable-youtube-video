@@ -18,8 +18,9 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
     return (
         <Paper elevation={2} sx={{
             "&:hover": {
-                backgroundColor: (theme) => theme.palette.grey[200],
+                backgroundColor: (theme) => theme.palette.grey[100],
             },
+            transition: "background-color 0.2s",
             padding: 1,
             paddingBottom: 0,
             height: "100%"
@@ -47,7 +48,7 @@ export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Pr
                     <Typography fontSize="0.8rem">{playlist.contentDetails?.itemCount} {" "} Videos</Typography>
                     <Typography fontSize="0.8rem">Privacy status: {playlist.status?.privacyStatus}</Typography>
                     {/* <Typography fontSize="0.8rem">{playlist.snippet?.description}</Typography> */}
-                    <Button variant="contained" size="small" sx={{ml: "auto"}} onClick={() => {
+                    <Button variant="contained" size="small" sx={{ml: "auto", mt: 0.5}} onClick={() => {
                         if (!playlist.id) {
                             return;
                         }

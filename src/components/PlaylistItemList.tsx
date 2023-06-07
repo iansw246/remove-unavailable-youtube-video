@@ -1,18 +1,11 @@
-import { Paper, Stack, styled } from "@mui/material";
+import { Stack } from "@mui/material";
 import { PlaylistItem } from "../utils/requestHelpers";
 import PlaylistItemView from "./PlaylistItemView";
+import { PaperHover } from "./PaperHover";
 
 export interface Props {
     items: PlaylistItem[]
 }
-
-const PaperHover = styled(Paper)({
-    padding: 1,
-    ":hover": {
-        backgroundColor: "rgba(0, 0, 0, 0.05)"
-    },
-    transition: "background-color 0.3s"
-})
 
 export default function PlaylistItemList({ items }: Props) {
     return (

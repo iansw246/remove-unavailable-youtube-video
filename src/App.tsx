@@ -8,7 +8,7 @@ import RegionSelector, { loadOrInitializeSavedRegion } from './components/Region
 import ErrorDialog from './components/ErrorDialog';
 import useGapiTokenClient from './components/useGapiTokenClient';
 import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
-import TabPanel from './components/TabPane';
+import TabPanel from './components/TabPanel';
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
