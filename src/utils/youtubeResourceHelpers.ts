@@ -58,7 +58,7 @@ function thumbnailURL(thumbnailDetails: gapi.client.youtube.ThumbnailDetails | n
 }
 
 function makeVideoURL(videoId: string, playlistId?: string, playlistPosition?: number) {
-    return `https://www.youtube.com/watch?v=${videoId}${playlistId ? `&list=${playlistId}` : ""}${playlistPosition ? `&position=${playlistPosition}` : null}`;
+    return `https://www.youtube.com/watch?v=${videoId}${playlistId === undefined ? "" : `&list=${playlistId}`}${playlistPosition === undefined ? "" : `&position=${playlistPosition}`}`;
 }
 
 function makeChannelURL(channelId: string) {
