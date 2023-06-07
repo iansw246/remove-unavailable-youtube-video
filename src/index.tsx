@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import ErrorPage from './errorPage';
 import PrivacyPolicy from './routes/privacyPolicy';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 const router = createBrowserRouter([
   {
@@ -22,9 +24,12 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

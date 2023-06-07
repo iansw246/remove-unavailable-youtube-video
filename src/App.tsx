@@ -88,7 +88,7 @@ function App() {
                     <ErrorDialog open={true} errorBody={errorBody} errorTitle={errorTitle} onClose={() => setShowError(false)} />
                 }
 
-                <Typography variant="h3" component="h1">
+                <Typography variant="h1">
                     Unavailable Video Remover
                 </Typography>
                 <Typography>
@@ -96,13 +96,10 @@ function App() {
                     This app will allow you to find and remove all unavailable videos from your YouTube playlists.
                 </Typography>
                 <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
-                <Typography>
-                    To get started, click the button below to load your playlists
-                    (requires a Google account). Then select the region you watch videos in.
-                </Typography>
-                <br />
+                
+                <Typography>To get started, first <strong>select your region</strong>.</Typography>
 
-                <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} />
+                <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} sx={{mt: 2}} />
 
                 <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
                     <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
