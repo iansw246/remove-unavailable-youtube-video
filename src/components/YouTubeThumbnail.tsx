@@ -15,6 +15,6 @@ export interface Props extends React.ComponentPropsWithoutRef<typeof YouTubeThum
 
 export default function YouTubeThumbnail({thumbnailURL, alt, ...rest}: Props): JSX.Element {
     return (
-        <YouTubeThumbnailComponent src={thumbnailURL} alt={alt} {...rest} />
+        <YouTubeThumbnailComponent src={thumbnailURL} alt={alt} {...rest} loading="lazy" />
     );
 }

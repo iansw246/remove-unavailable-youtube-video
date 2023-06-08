@@ -11,12 +11,16 @@ type Playlist = gapi.client.youtube.Playlist;
 type Video = gapi.client.youtube.Video;
 type TokenClient = google.accounts.oauth2.TokenClient;
 
-function isUnauthenticated(error: any): boolean {
+function hasProperty<KnownT extends object, WithPropT extends PropertyKey>(obj: KnownT, prop: WithPropT): obj is KnownT & Record<WithPropT, unknown> {
+    return Object.hasOwn(obj, prop);
+}
+
+function isUnauthenticatedError(error: any): boolean {
     // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
     return error?.result?.error?.code === 401 || (error?.result?.error?.code === 403 && error.result.error?.status === "PERMISSION_DENIED");
 }
 
-export { isUnauthenticated }
+export { isUnauthenticatedError as isUnauthenticated, hasProperty }
 
 export type {
     PlaylistListResponse,

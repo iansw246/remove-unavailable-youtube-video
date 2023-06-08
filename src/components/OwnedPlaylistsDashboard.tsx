@@ -1,11 +1,12 @@
-import { Button, Typography, LinearProgress } from "@mui/material";
+import { Button, Typography, LinearProgress, Collapse, Alert, AlertTitle } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { Playlist, PlaylistItem } from "../utils/requestHelpers";
+import { Playlist, PlaylistItem, isUnauthenticated } from "../utils/requestHelpers";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import { createAction, BaseAction } from "../reducerActions";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems, removeItemsFromPlaylist } from "../youtubeApi";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
+import ErrorAlert from "./ErrorAlert";
 
 function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
     return Object.hasOwn(obj, "result") && Object.hasOwn(obj, "body") && Object.hasOwn(obj, "headers") &&
@@ -72,6 +73,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     const [loadingProgress, setLoadingProgress] = useState<number>();
     const [loadingTotal, setLoadingTotal] = useState<number>();
 
+    const [showError, setShowError] = useState<boolean>(false);
     const [error, setError] = useState<any>();
 
     const unavailableVideosHeader = useRef<HTMLDivElement>(null);
@@ -85,7 +87,9 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
     function fetchPlaylists() {
         if (!isUserLoggedIn) {
+            setShowError(true);
             setError("User is not logged in");
+            console.error("User is not logged in");
         }
         setIsLoading(true);
         setLoadingProgress(undefined);
@@ -100,9 +104,14 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setUserChannelId(responses[0].items?.[0]?.snippet?.channelId);
 
             setIsLoading(false);
+
+            setShowError(false);
         }, (error) => {
             setIsLoading(false);
+
+            setShowError(true);
             setError(error);
+            console.error(error);
         });
     }
 
@@ -119,6 +128,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         }
 
         setSelectedPlaylist(playlist);
+
         setIsLoading(true);
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
@@ -127,8 +137,11 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setUnavailableItems(fetchedUnavailableItems);
             setIsLoading(false);
         }, (error) => {
-            setError(error);
             setIsLoading(false);
+
+            setShowError(true);
+            setError(error);
+            console.error(error);
         });
     }
 
@@ -145,11 +158,16 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setLoadingProgress(index);
         }).then(() => {
             setIsLoading(false);
+
             setSelectedPlaylist(undefined);
         }, (error) => {
             setIsLoading(false);
-            setError(error);
+
             setSelectedPlaylist(undefined);
+
+            setShowError(true);
+            setError(error);
+            console.error(error);
         });
     }
 
@@ -167,7 +185,18 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
             <p style={{border: "2px solid green", padding: "0.2rem"}}>[Debug] User logged in: {isUserLoggedIn.toString()}</p>
 
-            {error && <Typography>An error has occured: {JSON.stringify(error)}</Typography>}
+            <Collapse in={showError}>
+                <ErrorAlert error={error}>
+                    {isUnauthenticated(error) ? <>
+                        <AlertTitle>Not signed in</AlertTitle>
+                        You are not signed in to Google. Please sign in and try again.
+                    </> : 
+                    <>
+                        <AlertTitle>Unknown error</AlertTitle>
+                        An unknown error occured. Please try again or contact the developer.
+                    </>}
+                </ErrorAlert>
+            </Collapse>
             {isLoading && <LinearProgress variant="indeterminate" />}
             {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} mb={2} />}
             {unavailableItems && selectedPlaylist &&
