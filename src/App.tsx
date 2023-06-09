@@ -115,11 +115,6 @@ function App() {
                         tokenClient?.requestAccessToken();
                     }} />
                 </TabPanel>
-
-                <div style={{ backgroundColor: "lightgreen" }}>
-                    <p>Token client: {tokenClient === undefined ? "undefined" : "is defined"}</p>
-                    <p>Is user logged in: {isUserLoggedIn.toString()}</p>
-                </div>
             </Layout>
         </div>
     );
