@@ -51,7 +51,7 @@ function defaultStringToUrl(str: string): URL | null {
 function parseYoutubePlaylistInput(input: string, stringToUrl: ((str: string) => URL | null) = defaultStringToUrl) {
     const url = stringToUrl(input);
 
-    if (url !== null) {
+    if (url !== null && url !== undefined) {
         const playlistId = parseYoutubeUrl(url);
         if (playlistId !== null) {
             return playlistId;

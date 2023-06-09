@@ -16,8 +16,15 @@ function hasProperty<KnownT extends object, WithPropT extends PropertyKey>(obj: 
 }
 
 function isUnauthenticatedError(error: any): boolean {
+    const resultError = error?.result?.error;
+    if (!resultError) {
+        return false;
+    }
+    
     // Errors unrelated to authorization: server errors, exceeding quota, bad requests, and so on.
-    return error?.result?.error?.code === 401 || (error?.result?.error?.code === 403 && error.result.error?.status === "PERMISSION_DENIED");
+    return (resultError.code === 401 && resultError.errors?.[0]?.message === "Invalid Credentials")
+        // Should modify this so it checks the message, but I need to trigger the error again to check
+        || (resultError.code === 403 && resultError.status === "PERMISSION_DENIED");
 }
 
 export { isUnauthenticatedError as isUnauthenticated, hasProperty }

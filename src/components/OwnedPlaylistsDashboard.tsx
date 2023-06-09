@@ -183,10 +183,8 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />
             <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
 
-            <p style={{border: "2px solid green", padding: "0.2rem"}}>[Debug] User logged in: {isUserLoggedIn.toString()}</p>
-
             <Collapse in={showError}>
-                <ErrorAlert error={error}>
+                <ErrorAlert error={error} onClose={() => {setShowError(false);}}>
                     {isUnauthenticated(error) ? <>
                         <AlertTitle>Not signed in</AlertTitle>
                         You are not signed in to Google. Please sign in and try again.
