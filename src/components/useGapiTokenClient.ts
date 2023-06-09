@@ -11,6 +11,7 @@ function getEnvVarSafe(envVarName: string): string {
 
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
+const youtubeDiscoveryUrl = `https://www.googleapis.com/discovery/v1/apis/${youtubeApiName}/${youtubeApiVersion}/rest`;
 
 const CLIENT_ID = getEnvVarSafe("REACT_APP_GAPI_CLIENT_ID");
 const API_KEY = getEnvVarSafe("REACT_APP_GAPI_API_KEY");
@@ -30,7 +31,7 @@ async function loadGapiLibrary() {
         apiKey: API_KEY,
         // clientId: CLIENT_ID // The API still works without this
     });
-    await gapi.client.load(youtubeApiName, youtubeApiVersion);
+    await gapi.client.load(youtubeDiscoveryUrl);
     await (window as any).gisLoadPromise;
 }
 
