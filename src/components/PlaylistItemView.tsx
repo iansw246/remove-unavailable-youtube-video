@@ -11,7 +11,7 @@ export interface Props {
 
 export default function PlaylistItemCard({playlistItem}: Props) {
     return (
-        <PaperHover>
+        <PaperHover elevation={2}>
             <Box display="flex" flexDirection="row" flexWrap="wrap">
                 <YouTubeThumbnail thumbnailURL={thumbnailURL(playlistItem.snippet?.thumbnails)} alt={playlistItem.snippet?.title + " thumbnail"} sx={{marginRight: 1}} />
                 <Box minWidth="200px">
