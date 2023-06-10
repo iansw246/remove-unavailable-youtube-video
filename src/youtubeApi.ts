@@ -81,28 +81,32 @@ async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCount
     return fetchUnavailablePlaylistItems(playlistId, null, userCountryCode);
 }
 
-// Gets unavailable playlist items from given playlist as the given user user in the given country
-async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
-    const playlistItems = await fetchVideosInPlaylist(playlistId);
-    return filterAvailablePlaylistItems(playlistItems, userChannelId, userCountryCode);
-}
-
-// 
 /**
- * Returns all playlistItems that are unavailable for the given user in the given region from the given list.
- * Filters out available playlist items
- * @param playlistItems List of playlistItems to check if unavailble
- * @param userChannelId Channel id of user to check as. If userChannelId is null, will get unavailable playlist items as a public user, not signed in, and
- * all private videos will be unavailable
- * @param userCountryCode Country code of YouTube region for user. Get from Region.id
+ * Gets unavailable playlist items from given playlist as the given user user in the given country
+ * @param playlistId 
+ * @param userChannelId 
+ * @param userCountryCode 
  * @returns 
  */
-async function filterAvailablePlaylistItems(playlistItems: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string, ): Promise<PlaylistItem[]> {
+async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
+    const playlistItemResponses = await fetchVideosInPlaylist(playlistId);
+    return filterAvailablePlaylistItems(playlistItemResponses, userChannelId, userCountryCode);
+}
+
+/**
+ * Returns all playlistItems that are unavailable for the given user in the given region from the given list.
+ * Filters out available playlist items, and keeps only unavailable items
+ * @param playlistItemResponses 
+ * @param userChannelId 
+ * @param userCountryCode 
+ * @returns 
+ */
+async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
     const unavailableItems: PlaylistItem[] = [];
     // Videos public, but possibly unavailable due to region blocking
     const possiblyUnavailableItems: PlaylistItem[] = [];
 
-    for (const response of playlistItems) {
+    for (const response of playlistItemResponses) {
         if (!response.items) {
             continue;
         }
@@ -131,7 +135,7 @@ async function filterAvailablePlaylistItems(playlistItems: PlaylistItemListRespo
     const MAX_VIDEO_IDS_PER_REQUEST = 50;
     let startIndex = 0;
 
-    const videoIds = possiblyUnavailableItems.map((item) => {
+    const videoIdsMaybeDuplicates = possiblyUnavailableItems.map((item) => {
         console.assert(Boolean(item.contentDetails), item);
         if (!item.contentDetails) {
             throw new Error("playlistItem must have contentDetails");
@@ -139,45 +143,52 @@ async function filterAvailablePlaylistItems(playlistItems: PlaylistItemListRespo
         return item.contentDetails.videoId;
     });
 
+    // Remove duplicates from video ids
+    const uniqueVideoIds = Array.from(new Set(videoIdsMaybeDuplicates));
 
-    while (startIndex < videoIds.length) {
+    while (startIndex < uniqueVideoIds.length) {
         batch.add(gapi.client.youtube.videos.list({
             part: "contentDetails,status",
-            id: videoIds.slice(startIndex, startIndex + MAX_VIDEO_IDS_PER_REQUEST).join(","),
+            id: uniqueVideoIds.slice(startIndex, startIndex + MAX_VIDEO_IDS_PER_REQUEST).join(","),
             maxResults: 50
         }));
         startIndex += 50;
     }
 
     const batchResults = (await batch).result;
-    const allVideoItems: Video[] = [];
+    const possiblyUnavailableVideos: Video[] = [];
     for (const responseId in batchResults) {
         const response = batchResults[responseId] as gapi.client.Response<gapi.client.youtube.VideoListResponse>;
         const result = response.result;
         if (result.items) {
-            allVideoItems.push(...result.items);
+            possiblyUnavailableVideos.push(...result.items);
         }
     }
-    if (allVideoItems.length === 0) {
+    if (possiblyUnavailableVideos.length === 0) {
         return unavailableItems;
     }
 
-    const videoIdToPlaylistItem = new Map();
+    const videoIdToPlaylistItems = new Map<string, PlaylistItem[]>();
     for (const playlistItem of possiblyUnavailableItems) {
         const videoId = playlistItem.contentDetails?.videoId;
         if (!videoId) {
             throw new Error("Playlist Item should have video id");
         }
-        if (videoIdToPlaylistItem.has(videoId)) {
-            videoIdToPlaylistItem.get(playlistItem.contentDetails?.videoId).push(playlistItem);
+        if (videoIdToPlaylistItems.has(videoId)) {
+            videoIdToPlaylistItems.get(videoId)!!.push(playlistItem);
         } else {
-            videoIdToPlaylistItem.set(videoId, [playlistItem]);
+            videoIdToPlaylistItems.set(videoId, [playlistItem]);
         }
     }
 
-    for (const video of allVideoItems) {
+    for (const video of possiblyUnavailableVideos) {
         if (!isVideoAvailableInCountry(video, userCountryCode)) {
-            unavailableItems.push(...videoIdToPlaylistItem.get(video.id));
+            if (!video.id) {
+                throw new Error("Video should have video id");
+            }
+            if (videoIdToPlaylistItems.has(video.id)) {
+                unavailableItems.push(...videoIdToPlaylistItems.get(video.id)!!);
+            }
         }
     }
     return unavailableItems;
