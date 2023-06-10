@@ -1,53 +1,15 @@
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Tab, Tabs, Typography } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import './App.css';
+import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
+import ErrorDialog from './components/ErrorDialog';
 import Layout from './components/Layout';
-import { PlaylistItem, PlaylistListResponse } from './utils/requestHelpers';
 import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion } from './components/RegionSelector';
-import ErrorDialog from './components/ErrorDialog';
-import useGapiTokenClient from './components/useGapiTokenClient';
-import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
 import TabPanel from './components/TabPanel';
+import useGapiTokenClient from './components/useGapiTokenClient';
 
 type TokenClient = google.accounts.oauth2.TokenClient;
-
-enum ApiRequest {
-    OwnPlaylists
-}
-
-enum Action {
-    USER_LOGGED_IN,
-    PLAYLIST_ID_ENTERED,
-    TOKEN_CLIENT_LOADING_FAILED,
-    TOKEN_CLIENT_LOADED,
-    SHOW_PLAYLIST_BUTTON_CLICKED,
-    SHOW_OWNED_PLAYLIST_BUTTON_CLICKED,
-    ERROR_OCCURED
-}
-
-interface AppState {
-    isUserLoggedIn: boolean,
-
-    selectedPlaylistId: string | null,
-    userRegion: Region,
-    userChannelId?: string,
-
-    showUnavailableItems: boolean,
-    playlistResponses: PlaylistListResponse[],
-    unavailableItems: PlaylistItem[],
-
-    isLoading: boolean,
-    loadingMessage: React.ReactNode,
-    loadingProgress: number,
-    loadingTotal: number,
-
-    showError: boolean,
-    errorTitle: string,
-    errorBody: React.ReactNode,
-
-    tokenClient: TokenClient
-}
 
 enum TabTypes {
     ENTER_PLAYLIST = 0,

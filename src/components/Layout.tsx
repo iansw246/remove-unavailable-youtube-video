@@ -51,7 +51,7 @@ export default function Layout({ children }: Props) {
             </Container>
 
             <footer id="footer">
-                <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}}/></a>
+                <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}} alt="Developed with YouTube"/></a>
             </footer>
         </>
     );

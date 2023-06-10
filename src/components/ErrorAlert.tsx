@@ -1,6 +1,4 @@
-import { Collapse, Alert, AlertTitle, Typography, IconButton, IconButtonProps, Icon } from "@mui/material";
-import { error } from "console";
-import { isUnauthenticated } from "../utils/requestHelpers";
+import { Alert, Icon, IconButton, IconButtonProps } from "@mui/material";
 
 export interface Props {
     error?: any;
@@ -20,5 +18,4 @@ export default function ErrorAlert({ error, onClose, children }: Props) {
             {children}
         </Alert>
     );
-    // {/* {error && <Typography>An error has occured: {JSON.stringify(error)}</Typography>} */}
 }

@@ -1,59 +1,12 @@
-import { Button, Typography, LinearProgress, Collapse, Alert, AlertTitle } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import { Playlist, PlaylistItem, isUnauthenticated } from "../utils/requestHelpers";
-import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
-import { createAction, BaseAction } from "../reducerActions";
+import { AlertTitle, Button, Collapse, LinearProgress } from "@mui/material";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems, removeItemsFromPlaylist } from "../youtubeApi";
+import ErrorAlert from "./ErrorAlert";
+import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
+import LinearProgressWithPercentLabel from "./LinearProgressWithLabel";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
-import ErrorAlert from "./ErrorAlert";
-
-function isGapiError(obj: any): obj is gapi.client.HttpRequestRejected {
-    return Object.hasOwn(obj, "result") && Object.hasOwn(obj, "body") && Object.hasOwn(obj, "headers") &&
-    Object.hasOwn(obj, "status") && Object.hasOwn(obj, "statusText");
-}
-
-interface State {
-    isUserLoggedIn: boolean,
-
-    userChannelId?: string,
-
-    unavailablePlaylists: Playlist[],
-
-    selectedPlaylist: Playlist,
-    unavailableItems: PlaylistItem[],
-
-    isLoading: boolean,
-    loadingMessage: React.ReactNode,
-    loadingProgress?: number,
-    loadingTotal?: number,
-
-    showError: boolean,
-    errorTitle: string,
-    errorBody: React.ReactNode,
-}
-
-enum ActionType {
-    USER_LOGGED_IN = "userLoggedIn",
-    SHOW_OWNED_PLAYLIST_BUTTON_CLICKED = "showOwnedPlaylistButtonClicked",
-    PLAYLISTS_LOADED = "playlistsLoaded",
-    ERROR_OCCURED = "errorOccured",
-}
-
-const userLoggedInAction = createAction<undefined, ActionType.USER_LOGGED_IN>(ActionType.USER_LOGGED_IN);
-const showOwnedPlaylistButtonClickedAction = createAction<undefined, ActionType.SHOW_OWNED_PLAYLIST_BUTTON_CLICKED>(ActionType.SHOW_OWNED_PLAYLIST_BUTTON_CLICKED);
-const playlistsLoadedAction = createAction<Playlist[], ActionType.PLAYLISTS_LOADED>(ActionType.PLAYLISTS_LOADED);
-
-
-function reducer(state: State, action: BaseAction): State {
-    if (userLoggedInAction.match(action)) {
-        return { ...state, isUserLoggedIn: true };
-    } else if (showOwnedPlaylistButtonClickedAction.match(action)) {
-        return { ...state, isLoading: true, loadingMessage: "Loading your playlists", loadingProgress: undefined, loadingTotal: undefined };
-    }
-    // Temporary
-    return state;
-}
 
 export interface Props {
     isUserLoggedIn: boolean;
@@ -78,14 +31,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
     const unavailableVideosHeader = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (!isUserLoggedIn) {
-            return;
-        }
-        fetchPlaylists();
-    }, [isUserLoggedIn]);
-
-    function fetchPlaylists() {
+    const fetchPlaylists = useCallback(() => {
         if (!isUserLoggedIn) {
             setShowError(true);
             setError("User is not logged in");
@@ -113,7 +59,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setError(error);
             console.error(error);
         });
-    }
+    }, [isUserLoggedIn]);
 
     function handleFetchMyPlaylistsButtonClick() {
         fetchPlaylists();
@@ -172,11 +118,18 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     }
 
     useEffect(() => {
+        if (!isUserLoggedIn) {
+            return;
+        }
+        fetchPlaylists();
+    }, [isUserLoggedIn, fetchPlaylists]);
+
+    useEffect(() => {
         if (!unavailableItems || !selectedPlaylist || isLoading) {
             return;
         }
         unavailableVideosHeader.current?.scrollIntoView();
-    }, [unavailableItems, selectedPlaylist]);
+    }, [unavailableItems, selectedPlaylist, isLoading]);
 
     return (
         <div>
@@ -195,7 +148,13 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                     </>}
                 </ErrorAlert>
             </Collapse>
-            {isLoading && <LinearProgress variant="indeterminate" />}
+            {isLoading &&
+                ((loadingProgress === undefined || loadingTotal === undefined) ? 
+                    <LinearProgress variant="indeterminate" />
+                 : 
+                    <LinearProgressWithPercentLabel value={loadingProgress / loadingTotal} />
+                )
+            }
             {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} mb={2} />}
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
@@ -207,5 +166,5 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                 />
             }
         </div>
-    )
+    );
 }

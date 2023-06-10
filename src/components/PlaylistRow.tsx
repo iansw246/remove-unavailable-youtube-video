@@ -1,9 +1,9 @@
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { Playlist } from "../utils/requestHelpers";
 import { thumbnailURL } from "../utils/youtubeResourceHelpers";
 import NewTabLink from "./NewTabLink";
-import YouTubeThumbnail from "./YouTubeThumbnail";
 import { PaperHover } from "./PaperHover";
+import YouTubeThumbnail from "./YouTubeThumbnail";
 
 function youtubePlaylistLink(playlistId: string) {
     return `https://www.youtube.com/playlist?list=${playlistId}`;
@@ -17,7 +17,7 @@ export interface Props {
 export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Props): JSX.Element {
     const playlistTitleText = playlist.snippet?.title || "[No title]";
     return (
-        <PaperHover elevation={2} sx={{
+        <PaperHover elevation={1} sx={{
             paddingBottom: 0,
             height: "100%"
         }} key={playlist.etag}>
