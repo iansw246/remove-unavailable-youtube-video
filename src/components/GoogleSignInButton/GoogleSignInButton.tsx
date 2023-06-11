@@ -12,6 +12,7 @@ export default function GoogleSigninButton({disabled = false, onClick}: Props) {
         <Button onClick={onClick} disabled={disabled}>
             <img
                 height="50"
+                style={{objectFit: "cover"}}
                 src={disabled ? buttonDisabled : buttonNormal}
                 alt="Sign in with Google"
             />
