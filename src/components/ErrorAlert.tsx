@@ -7,7 +7,8 @@ export interface Props {
 }
 
 export default function ErrorAlert({ error, onClose, children }: Props) {
-    return (<Alert severity="error" action={
+    return (
+        <Alert severity="error" action={
             <IconButton
                 aria-label="close"
                 color="inherit"

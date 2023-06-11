@@ -1,14 +1,11 @@
-import { AlertTitle, Box, Button, Collapse, LinearProgress } from "@mui/material";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AlertTitle, Button, Collapse } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems, removeItemsFromPlaylist } from "../youtubeApi";
+import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../youtubeApi";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
-import LinearProgressWithPercentLabel from "./LinearProgressWithLabel";
-import LoadingDialog from "./LoadingDialog";
 import PlaylistList from "./PlaylistList";
-import ProgressSnackbar from "./ProgressSnackbar";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
 export interface Props {
@@ -33,10 +30,6 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     const [error, setError] = useState<any>();
 
     const unavailableVideosHeader = useRef<HTMLDivElement>(null);
-
-    const progressBarValue = (loadingProgress === undefined || loadingTotal === undefined)
-        ? undefined
-        : loadingProgress / loadingTotal;
 
     const fetchPlaylists = useCallback(() => {
         if (!isUserLoggedIn) {
@@ -98,32 +91,6 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         });
     }
 
-    function handleRemoveVideosButtonClick() {
-        if (!unavailableItems) {
-            return;
-        }
-
-        setIsLoading(true);
-        setLoadingProgress(0);
-        setLoadingTotal(unavailableItems.length);
-
-        removeItemsFromPlaylist(unavailableItems, (index) => {
-            setLoadingProgress(index);
-        }).then(() => {
-            setIsLoading(false);
-
-            setSelectedPlaylist(undefined);
-        }, (error) => {
-            setIsLoading(false);
-
-            setSelectedPlaylist(undefined);
-
-            setShowError(true);
-            setError(error);
-            console.error(error);
-        });
-    }
-
     useEffect(() => {
         if (!isUserLoggedIn) {
             return;
@@ -155,16 +122,13 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                     </>}
                 </ErrorAlert>
             </Collapse>
-            {/* <ProgressSnackbar open={isLoading} value={progressBarValue} /> */}
-            <AdaptiveLinearProgress isLoading={isLoading} loadingProgress={loadingProgress} loadingTotal={loadingTotal} />
+            {isLoading && <AdaptiveLinearProgress loadingProgress={loadingProgress} loadingTotal={loadingTotal} />}
             {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} pl={1} pr={2} mt={2} mb={2} />}
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
-                    isLoading={false}
                     ref={unavailableVideosHeader}
                     unavailableItems={unavailableItems}
                     playlist={selectedPlaylist}
-                    handleRemoveVideosButtonClick={handleRemoveVideosButtonClick}
                     showRemoveVideosButton={true}
                 />
             }

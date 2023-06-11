@@ -1,6 +1,5 @@
-import { CircularProgress, LinearProgress, Snackbar } from "@mui/material";
+import { CircularProgress, Snackbar } from "@mui/material";
 import { useMemo } from "react";
-import LinearProgressWithPercentLabel from "./LinearProgressWithLabel";
 
 export interface Props {
     /** Whether the snackbar is open */
@@ -26,8 +25,4 @@ export default function ProgressSnackbar({open, value}: Props) {
             {progressBar}
         </Snackbar>
         );
-    // {/* <>
-    //     Snackbar
-    //     {progressBar}
-    // </> */}
 }

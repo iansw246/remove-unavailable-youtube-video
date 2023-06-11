@@ -24,8 +24,6 @@ export default function EnterPlaylistDashboard({region}: Props) {
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [loadingProgress, setLoadingProgress] = useState<number>();
-    const [loadingTotal, setLoadingTotal] = useState<number>();
 
     const [showError, setShowError] = useState<boolean>(false);
     const [error, setError] = useState<any>();
@@ -79,7 +77,7 @@ export default function EnterPlaylistDashboard({region}: Props) {
                 </ErrorAlert>
             </Collapse>
             {playlist ? (
-                <UnavailableItemsDashboard isLoading={false} playlist={playlist} unavailableItems={unavailableItems ?? []} showRemoveVideosButton={false} />
+                <UnavailableItemsDashboard playlist={playlist} unavailableItems={unavailableItems ?? []} showRemoveVideosButton={false} />
             ) : null}
         </div>
     );
