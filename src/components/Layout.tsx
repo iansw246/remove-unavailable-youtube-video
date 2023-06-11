@@ -16,7 +16,7 @@ export default function Layout({ children }: Props) {
     return (
         <>
             <header>
-                <AppBar position="static" sx={{ mb: "1rem" }}>
+                <AppBar position="static" sx={{mb: 1}}>
                     <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
                     {/* <Container maxWidth="lg"> */}
                         <Toolbar>
@@ -36,7 +36,7 @@ export default function Layout({ children }: Props) {
                 </AppBar>
             </header>
 
-            <Container maxWidth="lg" component="main">
+            <Container maxWidth="lg" component="main" sx={{pt: 2, pb: 4}}>
                 <Drawer open={isDrawerOpen} onClose={onClose}>
                     <List sx={{width: 200}}>
                         <ListItem>

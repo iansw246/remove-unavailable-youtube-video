@@ -15,7 +15,7 @@ export default function LoadingDialog({open, progressValue, progressTotal, loadi
             </DialogTitle>
             <DialogContent sx={{display: "flex", justifyContent: "center"}}>
                 <CircularProgress
-                    variant={progressValue ? "determinate" : "indeterminate"}
+                    variant={(progressValue !== undefined && progressTotal !== undefined) ? "determinate" : "indeterminate"}
                     sx={{marginLeft: "auto", marginRight: "auto"}}
                     value={progressValue && progressTotal
                         ? Math.floor(progressValue / progressTotal * 100)

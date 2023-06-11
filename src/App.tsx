@@ -29,8 +29,9 @@ function App() {
     const onTokenClientLoadFail = useCallback((error: unknown) => {
         setShowError(true);
         setErrorTitle("Failed to load gapi token client");
-        setErrorBody("Details: " + error);
-    }, [setShowError, setErrorTitle, setErrorBody]);
+        setErrorBody(<Typography>Please check your network connection or brower blocking settings.</Typography>);
+        console.error(`Failed to load gapi token client: ${JSON.stringify(error)}`);
+    }, []);
     const onTokenResponse = useCallback((tokenResponse: google.accounts.oauth2.TokenResponse) => {
         // If successfully got scopes desired
         if (tokenResponse.access_token) {
@@ -38,7 +39,7 @@ function App() {
         } else {
             setIsUserLoggedIn(false);
         }
-    }, [setIsUserLoggedIn]);
+    }, []);
     useGapiTokenClient(setTokenClient, onTokenClientLoadFail, onTokenResponse);
 
     const [tabIndex, setTabIndex] = useState<TabTypes>(TabTypes.ENTER_PLAYLIST);

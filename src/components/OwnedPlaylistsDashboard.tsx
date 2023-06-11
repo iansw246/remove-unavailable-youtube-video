@@ -1,11 +1,14 @@
-import { AlertTitle, Button, Collapse, LinearProgress } from "@mui/material";
+import { AlertTitle, Box, Button, Collapse, LinearProgress } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems, removeItemsFromPlaylist } from "../youtubeApi";
+import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import LinearProgressWithPercentLabel from "./LinearProgressWithLabel";
+import LoadingDialog from "./LoadingDialog";
 import PlaylistList from "./PlaylistList";
+import ProgressSnackbar from "./ProgressSnackbar";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
 export interface Props {
@@ -22,7 +25,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist>();
     const [unavailableItems, setUnavailableItems] = useState<PlaylistItem[]>();
 
-    const [isLoading, setIsLoading] = useState<boolean>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<number>();
     const [loadingTotal, setLoadingTotal] = useState<number>();
 
@@ -30,6 +33,10 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     const [error, setError] = useState<any>();
 
     const unavailableVideosHeader = useRef<HTMLDivElement>(null);
+
+    const progressBarValue = (loadingProgress === undefined || loadingTotal === undefined)
+        ? undefined
+        : loadingProgress / loadingTotal;
 
     const fetchPlaylists = useCallback(() => {
         if (!isUserLoggedIn) {
@@ -148,16 +155,12 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                     </>}
                 </ErrorAlert>
             </Collapse>
-            {isLoading &&
-                ((loadingProgress === undefined || loadingTotal === undefined) ? 
-                    <LinearProgress variant="indeterminate" />
-                 : 
-                    <LinearProgressWithPercentLabel value={loadingProgress / loadingTotal} />
-                )
-            }
-            {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} mb={2} />}
+            {/* <ProgressSnackbar open={isLoading} value={progressBarValue} /> */}
+            <AdaptiveLinearProgress isLoading={isLoading} loadingProgress={loadingProgress} loadingTotal={loadingTotal} />
+            {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} pl={1} pr={2} mt={2} mb={2} />}
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
+                    isLoading={false}
                     ref={unavailableVideosHeader}
                     unavailableItems={unavailableItems}
                     playlist={selectedPlaylist}

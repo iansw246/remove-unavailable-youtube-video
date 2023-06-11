@@ -6,7 +6,7 @@ export default function LinearProgressWithPercentLabel({ variant = "determinate"
     return (
         <Box>
             <Box>
-                <LinearProgress variant={variant} {...rest} />
+                <LinearProgress variant={variant} {...rest} value={value} />
             </Box>
             <Box>
                 <Typography variant="body2" color="text.secondary">{Math.round(value)}%</Typography>

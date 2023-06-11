@@ -79,7 +79,7 @@ export default function EnterPlaylistDashboard({region}: Props) {
                 </ErrorAlert>
             </Collapse>
             {playlist ? (
-                <UnavailableItemsDashboard playlist={playlist} unavailableItems={unavailableItems ?? []} showRemoveVideosButton={false} />
+                <UnavailableItemsDashboard isLoading={false} playlist={playlist} unavailableItems={unavailableItems ?? []} showRemoveVideosButton={false} />
             ) : null}
         </div>
     );

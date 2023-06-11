@@ -7,6 +7,11 @@ export interface Props extends StackProps {
     items: PlaylistItem[];
 } 
 
+/**
+ * Requires that all playlist items are unique
+ * @param param0 
+ * @returns 
+ */
 export default function PlaylistItemList({ items, ...rest }: Props) {
     return (
         <Stack spacing={2} {...rest}>
@@ -20,7 +25,7 @@ export default function PlaylistItemList({ items, ...rest }: Props) {
                     && item.snippet !== undefined
                     && item.status !== undefined
                 ).map((item: Required<PlaylistItem>) => (
-                    <PlaylistItemCard playlistItem={item} key={item.etag}/>
+                    <PlaylistItemCard playlistItem={item} key={item.id}/>
                 ))
             }
         </Stack>

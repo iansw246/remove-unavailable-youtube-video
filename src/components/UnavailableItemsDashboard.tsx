@@ -8,8 +8,14 @@ import UnavailableItemsDisplay from "./UnavailableItemsDisplay";
 interface Props {
     unavailableItems: PlaylistItem[];
     playlist: Playlist;
+
+    isLoading: boolean;
+    loadingProgress?: number;
+    loadingTotal?: number;
+
     handleRemoveVideosButtonClick?: () => void;
     showRemoveVideosButton?: boolean;
+    
     ref?: React.RefObject<HTMLDivElement>;
 }
 
