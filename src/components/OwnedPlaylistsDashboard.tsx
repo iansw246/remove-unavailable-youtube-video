@@ -12,9 +12,10 @@ export interface Props {
     isUserLoggedIn: boolean;
     onUserLoginRequest: () => void;
     userRegion: Region;
+    isTokenClientReady: boolean;
 }
 
-export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequest, userRegion}: Props) {
+export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequest, userRegion, isTokenClientReady}: Props) {
     const [userChannelId, setUserChannelId] = useState<string>();
 
     const [playlists, setPlaylists] = useState<Playlist[]>();
@@ -107,7 +108,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
     return (
         <div>
-            <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} />
+            <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} disabled={!isTokenClientReady} />
             <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
 
             <Collapse in={showError}>

@@ -74,9 +74,14 @@ function App() {
                     <EnterPlaylistDashboard region={userRegion} />
                 </TabPanel>
                 <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
-                    <OwnedPlaylistsDashboard userRegion={userRegion} isUserLoggedIn={isUserLoggedIn} onUserLoginRequest={() => {
-                        tokenClient?.requestAccessToken();
-                    }} />
+                    <OwnedPlaylistsDashboard
+                        userRegion={userRegion}
+                        isUserLoggedIn={isUserLoggedIn}
+                        onUserLoginRequest={() => {
+                            tokenClient?.requestAccessToken();
+                        }}
+                        isTokenClientReady={tokenClient !== undefined}
+                    />
                 </TabPanel>
             </Layout>
         </div>
