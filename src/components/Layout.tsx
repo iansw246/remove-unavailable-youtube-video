@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, Link, List, ListItem, Theme, Box } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, List, ListItem, Theme, Box } from "@mui/material";
 import { useState, useCallback } from "react";
+import RouterLink from "./RouterLink";
 
 import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png"
 
@@ -18,7 +19,6 @@ export default function Layout({ children }: Props) {
             <header>
                 <AppBar position="static" sx={{mb: 1}}>
                     <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
-                    {/* <Container maxWidth="lg"> */}
                         <Toolbar>
                             <IconButton onClick={onClose} sx={{ color: "white" }}>
                                 <Icon>menu</Icon>
@@ -31,19 +31,18 @@ export default function Layout({ children }: Props) {
                                 }
                             }}>Remove unavailable videos from your playlists and hide the "Unavailable video" message</Typography>
                         </Toolbar>
-                    {/* </Container> */}
                     </Box>
                 </AppBar>
             </header>
 
             <Container maxWidth="lg" component="main" sx={{pt: 2, pb: 4}}>
                 <Drawer open={isDrawerOpen} onClose={onClose}>
-                    <List sx={{width: 200}}>
+                    <List sx={{width: 200}} onClick={onClose}>
                         <ListItem>
-                            <Link>Home</Link>
+                            <RouterLink to="/">Home</RouterLink>
                         </ListItem>
                         <ListItem>
-                            <Link>About</Link>
+                            <RouterLink to="/privacy-policy">Privacy Policy</RouterLink>
                         </ListItem>
                     </List>
                 </Drawer>

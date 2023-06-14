@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import './App.css';
 import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
 import ErrorDialog from './components/ErrorDialog';
-import Layout from './components/Layout';
 import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
@@ -45,46 +44,44 @@ function App() {
     const [tabIndex, setTabIndex] = useState<TabTypes>(TabTypes.ENTER_PLAYLIST);
 
     return (
-        <div className="App">
-            <Layout>
-                {showError &&
-                    <ErrorDialog open={true} errorBody={errorBody} errorTitle={errorTitle} onClose={() => setShowError(false)} />
-                }
+        <>
+            {showError &&
+                <ErrorDialog open={true} errorBody={errorBody} errorTitle={errorTitle} onClose={() => setShowError(false)} />
+            }
 
-                <Typography variant="h1">
-                    Unavailable Video Remover
-                </Typography>
-                <Typography>
-                    Annoyed by the "unavailable videos are hidden" banner in YouTube?
-                    This app will allow you to find and remove all unavailable videos from your YouTube playlists.
-                </Typography>
-                <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
-                
-                <Typography>To get started, first <strong>select your region</strong>.</Typography>
+            <Typography variant="h1">
+                Unavailable Video Remover
+            </Typography>
+            <Typography>
+                Annoyed by the "unavailable videos are hidden" banner in YouTube?
+                This app will allow you to find and remove all unavailable videos from your YouTube playlists.
+            </Typography>
+            <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
+            
+            <Typography>To get started, first <strong>select your region</strong>.</Typography>
 
-                <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} sx={{mt: 2}} />
+            <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} sx={{mt: 2}} />
 
-                <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
-                    <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
-                    <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
-                </Tabs>
-                
-                {/* Use TabPanes which are always rendered because  */}
-                <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
-                    <EnterPlaylistDashboard region={userRegion} />
-                </TabPanel>
-                <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
-                    <OwnedPlaylistsDashboard
-                        userRegion={userRegion}
-                        isUserLoggedIn={isUserLoggedIn}
-                        onUserLoginRequest={() => {
-                            tokenClient?.requestAccessToken();
-                        }}
-                        isTokenClientReady={tokenClient !== undefined}
-                    />
-                </TabPanel>
-            </Layout>
-        </div>
+            <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
+                <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
+                <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
+            </Tabs>
+            
+            {/* Use TabPanes which are always rendered because  */}
+            <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
+                <EnterPlaylistDashboard region={userRegion} />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
+                <OwnedPlaylistsDashboard
+                    userRegion={userRegion}
+                    isUserLoggedIn={isUserLoggedIn}
+                    onUserLoginRequest={() => {
+                        tokenClient?.requestAccessToken();
+                    }}
+                    isTokenClientReady={tokenClient !== undefined}
+                />
+            </TabPanel>
+        </>
     );
 }
 export default App;
