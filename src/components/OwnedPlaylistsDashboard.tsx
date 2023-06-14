@@ -8,6 +8,31 @@ import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
+function getErrorAlertBody(error: unknown) {
+    if (isUnauthenticated(error)) {
+        return (
+            <>
+                <AlertTitle>Not signed in</AlertTitle>
+                You are not signed in to Google. Please sign in and try again.
+            </>
+        );
+    } else if (error instanceof TypeError && error.message === "gapi.client.youtube is undefined") {
+        return (
+            <>
+                <AlertTitle>YouTube API not loaded</AlertTitle>
+                The YouTube API client could not be loaded. Please check your network connection and ad blocker, or contact the developer.
+            </>
+        )
+    } else {
+        return (
+            <>
+                <AlertTitle>Unknown error</AlertTitle>
+                An unknown error occured. Please try again or contact the developer.
+            </>
+        );
+    }
+}
+
 export interface Props {
     isUserLoggedIn: boolean;
     onUserLoginRequest: () => void;
@@ -113,14 +138,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
 
             <Collapse in={showError}>
                 <ErrorAlert error={error} onClose={() => {setShowError(false);}}>
-                    {isUnauthenticated(error) ? <>
-                        <AlertTitle>Not signed in</AlertTitle>
-                        You are not signed in to Google. Please sign in and try again.
-                    </> : 
-                    <>
-                        <AlertTitle>Unknown error</AlertTitle>
-                        An unknown error occured. Please try again or contact the developer.
-                    </>}
+                    {getErrorAlertBody(error)}
                 </ErrorAlert>
             </Collapse>
             {isLoading && <AdaptiveLinearProgress loadingProgress={loadingProgress} loadingTotal={loadingTotal} />}

@@ -13,6 +13,31 @@ function isErrorNotFound(error: unknown) {
         && error.status === 404;
 }
 
+function getErrorAlertBody(error: unknown) {
+    if (isErrorNotFound(error)) {
+        return (
+            <>
+                <AlertTitle>Playlist not found</AlertTitle>
+                The playlist may be private.
+            </>
+        );
+    } else if (error instanceof TypeError && error.message === "gapi.client.youtube is undefined") {
+        return (
+            <>
+                <AlertTitle>YouTube API not loaded</AlertTitle>
+                The YouTube API client could not be loaded. Please check your network connection and ad blocker, or contact the developer.
+            </>
+        )
+    } else {
+        return (
+            <>
+                <AlertTitle>Unknown error</AlertTitle>
+                An unknown error occured. Please try again or contact the developer.
+            </>
+        );
+    }
+}
+
 export interface Props {
     region: Region;
 }
@@ -68,13 +93,7 @@ export default function EnterPlaylistDashboard({region}: Props) {
             </>) : null}
             <Collapse in={showError}>
                 <ErrorAlert error={error} onClose={() => { setShowError(false); }}>
-                    {isErrorNotFound(error) ? <>
-                        <AlertTitle>Playlist not found</AlertTitle>
-                        The playlist may be private.
-                    </> : <>
-                        <AlertTitle>Unexpected error</AlertTitle>
-                        An unexpected error occured. Please try again. Contact the developer if this issue persists.
-                    </>}
+                    {getErrorAlertBody(error)}
                 </ErrorAlert>
             </Collapse>
             {playlist ? (
