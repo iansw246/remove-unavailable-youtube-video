@@ -12,6 +12,7 @@ export default function RegionSelector({ value, onChange, ...rest }: Props) {
         <Autocomplete 
             options={regionListResponse.items}
             getOptionLabel={(option: Region) => option.snippet.name + " (" + option.snippet.gl + ")"}
+            isOptionEqualToValue={(option: Region, value: Region) => option.id === value.id}
             autoHighlight
             value={value}
             renderInput={(params) => <TextField {...params} label="Region" />}
