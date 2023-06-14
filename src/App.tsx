@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import './App.css';
 import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
 import ErrorDialog from './components/ErrorDialog';
-import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
 import useGapiTokenClient from './components/useGapiTokenClient';
@@ -16,7 +15,7 @@ enum TabTypes {
 }
 
 function App() {
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
+    const [, setIsUserLoggedIn] = useState<boolean>(false);
 
     const [userRegion, setUserRegion] = useState<Region>(loadOrInitializeSavedRegion);
 
@@ -24,7 +23,7 @@ function App() {
     const [errorTitle, setErrorTitle] = useState<string>();
     const [errorBody, setErrorBody] = useState<React.ReactNode>();
 
-    const [tokenClient, setTokenClient] = useState<TokenClient>();
+    const [, setTokenClient] = useState<TokenClient>();
     const onTokenClientLoadFail = useCallback((error: unknown) => {
         setShowError(true);
         setErrorTitle("Failed to load gapi token client");
@@ -64,22 +63,11 @@ function App() {
 
             <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
                 <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
-                <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
             </Tabs>
             
             {/* Use TabPanes which are always rendered because  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
                 <EnterPlaylistDashboard region={userRegion} />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
-                <OwnedPlaylistsDashboard
-                    userRegion={userRegion}
-                    isUserLoggedIn={isUserLoggedIn}
-                    onUserLoginRequest={() => {
-                        tokenClient?.requestAccessToken();
-                    }}
-                    isTokenClientReady={tokenClient !== undefined}
-                />
             </TabPanel>
         </>
     );

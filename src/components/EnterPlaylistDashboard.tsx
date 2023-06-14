@@ -70,6 +70,7 @@ export default function EnterPlaylistDashboard({region}: Props) {
                 <ErrorAlert error={error} onClose={() => { setShowError(false); }}>
                     {isErrorNotFound(error) ? <>
                         <AlertTitle>Playlist not found</AlertTitle>
+                        The playlist may be private.
                     </> : <>
                         <AlertTitle>Unexpected error</AlertTitle>
                         An unexpected error occured. Please try again. Contact the developer if this issue persists.
