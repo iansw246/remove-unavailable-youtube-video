@@ -1,20 +1,7 @@
-import { Button, DialogActions, DialogContent, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
-import { PlaylistItem } from "../requestHelpers";
-
-enum DataFormats {
-    PlainText = "plaintext",
-    JSON = "json",
-}
-
-const dataFormatToExtensionMap = new Map<DataFormats, string>([
-    [DataFormats.PlainText, "txt"],
-    [DataFormats.JSON, "json"]
-]);
-
-function isDataFormat(obj: any): obj is DataFormats {
-    return Object.values(DataFormats).includes(obj);
-}
+import { Box, Button, FormControl, Icon, IconButton, InputLabel, MenuItem, Select, Snackbar } from "@mui/material";
+import { useCallback, useEffect, useId, useState } from "react";
+import { PlaylistItem } from "../utils/requestHelpers";
+import usePlaylistItemsExportText, { DataFormat, dataFormatToFileExtension, isDataFormat } from "./usePlaylistItemsExportText";
 
 export interface Props {
     playlistName: string;
@@ -26,29 +13,20 @@ const invalidFilenameCharactersRegex = /\\|\/|<|>|:|"|\||\?|\*/g;
 
 export default function ExportPlaylistItems({playlistName, playlistItems}: Props) {
     const [playlistDataTextObjectURL, setPlaylistDataTextObjectURL] = useState<string>();
-    const [playlistDataFormat, setPlaylistDataFormat] = useState<DataFormats>(DataFormats.PlainText);
+    const [playlistDataFormat, setPlaylistDataFormat] = useState<DataFormat>(DataFormat.PlainText);
+    const playlistItemsDataText = usePlaylistItemsExportText(playlistItems, playlistDataFormat);
     const playlistDataFormatLabelId: string = useId();
 
-    const playlistItemsDataText: string = useMemo(() => {
-        if (playlistDataFormat === DataFormats.JSON) {
-            return JSON.stringify(playlistItems, null, 2);
-        } else if (playlistDataFormat === DataFormats.PlainText) {
-            const dataLines: string[] = playlistItems.map((item) =>
-                `${item.snippet?.videoOwnerChannelTitle || "[Unknown channel]"} - ${item.snippet?.title}`
-            );
-            return dataLines.join("\n");
-        } else {
-            return "Invalid data format. Please report this error";
-        }
-    }, [playlistItems, playlistDataFormat]);
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
-    const copyTextCallback = useCallback(() => {
+    const handleCopyTextClicked = useCallback(() => {
         if (!playlistItemsDataText) {
             return;
         }
         const clipboard = navigator.clipboard;
         clipboard.writeText(playlistItemsDataText).then(
-            () => { 
+            () => {
+                setIsSnackbarOpen(true);
                 console.log("Text written successfully");
             },
             (err) => {
@@ -69,40 +47,62 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
         }
     }, [playlistDataTextObjectURL]);
 
+    function handleSnackbarClose() {
+        setIsSnackbarOpen(false);
+    }
+
     return (
         <>
-            <DialogContent>
-                <FormControl>
-                    <InputLabel id={playlistDataFormatLabelId}>Format</InputLabel>
-                    <Select
-                        labelId={playlistDataFormatLabelId}
-                        label="Format"
-                        value={playlistDataFormat}
-                        sx={{ minWidth: "12rem" }}
-                        onChange={(event) => {
-                            if (isDataFormat(event.target.value)) {
-                                setPlaylistDataFormat(event.target.value);
-                            }
-                        }}
-                    >
-                        <MenuItem value={DataFormats.PlainText}>Plain Text</MenuItem>
-                        <MenuItem value={DataFormats.JSON}>JSON</MenuItem>
-                    </Select>
-                </FormControl>
-                <pre style={{overflow: "scroll", paddingBottom: "1rem"}}>
-                    {playlistItemsDataText}
-                </pre>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={copyTextCallback}>Copy text</Button>
+            <FormControl sx={{display: "block"}}>
+                <InputLabel id={playlistDataFormatLabelId}>Format</InputLabel>
+                <Select
+                    labelId={playlistDataFormatLabelId}
+                    label="Format"
+                    value={playlistDataFormat}
+                    sx={{ minWidth: "12rem" }}
+                    onChange={(event) => {
+                        if (isDataFormat(event.target.value)) {
+                            setPlaylistDataFormat(event.target.value);
+                        }
+                    }}
+                >
+                    <MenuItem value={DataFormat.PlainText}>Plain Text</MenuItem>
+                    <MenuItem value={DataFormat.JSON}>JSON</MenuItem>
+                </Select>
+            </FormControl>
+            {/* Raw text/JSON display */}
+            <Box component="pre" sx={{
+                paddingBottom: 1,
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 1,
+                display: "inline-block",
+                padding: 1,
+                overflow: "auto",
+                maxWidth: "100%",
+                maxHeight: "400px"
+                }}>
+                {playlistItemsDataText}
+            </Box>
+            <div>
+                <Button variant="contained" onClick={handleCopyTextClicked} sx={{margin: 1}}>Copy text</Button>
                 <Button
+                    variant="contained"
                     component="a"
-                    download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.${dataFormatToExtensionMap.get(playlistDataFormat) || ".txt"}`}
+                    download={`${playlistName.replaceAll(invalidFilenameCharactersRegex, "_")}-unavailable videos.${dataFormatToFileExtension(playlistDataFormat) || ".txt"}`}
                     href={playlistDataTextObjectURL}
+                    sx={{margin: 1}}
                 >
                     Download List
                 </Button>
-            </DialogActions>
+            </div>
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                action={<IconButton size="small" aria-label="close" onClick={handleSnackbarClose} color="inherit"><Icon>close</Icon></IconButton>}
+                message="Text copied to clipboard"
+            />
         </>
     );    
 }

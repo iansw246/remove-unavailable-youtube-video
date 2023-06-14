@@ -61,3 +61,22 @@ test("unauthenticated error is unauthenticated", () => {
 test("authenticated response is not unauthenticated", () => {
     expect(isUnauthenticated(authenticatedResponse)).toBe(false);
 });
+
+test("null exception is not unathenticated", () => {
+    expect(isUnauthenticated(null)).toBe(false);
+});
+
+test("undefined exception is not unauthenticated", () => {
+    expect(isUnauthenticated(undefined)).toBe(false);
+});
+
+test("non-object exception is not unauthenticated", () => {
+    expect(isUnauthenticated("hello")).toBe(false);
+    expect(isUnauthenticated(123)).toBe(false);
+});
+
+test("Error type exception is not unautnehticated", () => {
+    expect(isUnauthenticated(new Error(""))).toBe(false);
+    expect(isUnauthenticated(new Error("Hello"))).toBe(false);
+    expect(isUnauthenticated(0)).toBe(false);
+});

@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 export interface Props {
     open: boolean;
     errorTitle?: string;
-    errorBody?: string;
+    errorBody?: React.ReactNode;
     onClose?: (event: {}, reason: "backdropClick" | "escapeKeyDown" | "okButtonClick") => void;
 }
 

@@ -1,4 +1,4 @@
-import { getThumbnailURL } from "./youtubeResourceHelpers";
+import { thumbnailURL } from "./youtubeResourceHelpers";
 
 const thumbnailDetailWithDefault: gapi.client.youtube.ThumbnailDetails = {
     "default": {
@@ -29,7 +29,7 @@ const thumbnailDetailWithDefault: gapi.client.youtube.ThumbnailDetails = {
 };
 
 test("getThumbnailURL retrieves default thumbnail first", () => {
-    expect(getThumbnailURL(thumbnailDetailWithDefault))
+    expect(thumbnailURL(thumbnailDetailWithDefault))
         .toEqual("https://i.ytimg.com/vi/jbZU6QyZ8Nc/default.jpg");
 });
 
@@ -41,13 +41,13 @@ function isValidURL(url: string): boolean {
 
 
 test("getThumbnailURL returns valid no_thumbnail url for null", async () => {
-    const url = getThumbnailURL(null);
+    const url = thumbnailURL(null);
     expect(typeof url).toBe("string");
     expect(isValidURL(url)).toBeTruthy();
 });
 
 test("getThumbnailURL returns valid no_thumbnail url for undefined", async () => {
-    const url = getThumbnailURL(undefined);
+    const url = thumbnailURL(undefined);
     expect(typeof url).toBe("string");
     expect(isValidURL(url)).toBeTruthy();
 })
