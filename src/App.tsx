@@ -4,7 +4,7 @@ import './App.css';
 import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
 import ErrorDialog from './components/ErrorDialog';
 import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
-import RegionSelector, { loadOrInitializeSavedRegion } from './components/RegionSelector';
+import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
 import useGapiTokenClient from './components/useGapiTokenClient';
 
@@ -43,6 +43,14 @@ function App() {
 
     const [tabIndex, setTabIndex] = useState<TabTypes>(TabTypes.ENTER_PLAYLIST);
 
+    function onRegionChange(event: React.SyntheticEvent<Element, Event>, newRegion: Region | null) {
+        if (newRegion === null) {
+            return;
+        }
+        setUserRegion(newRegion);
+        saveRegion(newRegion);
+    }
+
     return (
         <>
             {showError &&
@@ -60,7 +68,7 @@ function App() {
             
             <Typography>To get started, first <strong>select your region</strong>.</Typography>
 
-            <RegionSelector onChange={(event, newRegion) => { newRegion !== null && setUserRegion(newRegion) }} value={userRegion} sx={{mt: 2}} />
+            <RegionSelector onChange={onRegionChange} value={userRegion} sx={{mt: 2}} />
 
             <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
                 <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
