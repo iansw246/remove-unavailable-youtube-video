@@ -9,10 +9,10 @@ html, body, #root, .App {
 }
 
 #footer {
+  flex-direction: row;
   display: flex;
   justify-content: center;
-  flex: 2;
-  align-items: flex-end;
+  align-items: center;
 }
 
 body {

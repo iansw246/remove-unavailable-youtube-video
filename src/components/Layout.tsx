@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, List, ListItem, Theme, Box } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, List, ListItem, Theme, Box, Link } from "@mui/material";
 import { useState, useCallback } from "react";
 import RouterLink from "./RouterLink";
 
@@ -20,9 +20,6 @@ export default function Layout({ children }: Props) {
                 <AppBar position="static" sx={{mb: 1}}>
                     <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
                         <Toolbar>
-                            <IconButton onClick={onClose} sx={{ color: "white" }}>
-                                <Icon>menu</Icon>
-                            </IconButton>
                             <Typography sx={{ fontSize: "16px", fontWeight: 700, mr: 2 }}>Unavailable Youtube Video Remover</Typography>
                             <Typography sx={{
                                 display: {
@@ -36,21 +33,14 @@ export default function Layout({ children }: Props) {
             </header>
 
             <Container maxWidth="lg" component="main" sx={{pt: 2, pb: 4}}>
-                <Drawer open={isDrawerOpen} onClose={onClose}>
-                    <List sx={{width: 200}} onClick={onClose}>
-                        <ListItem>
-                            <RouterLink to="/">Home</RouterLink>
-                        </ListItem>
-                        <ListItem>
-                            <RouterLink to="/privacy-policy">Privacy Policy</RouterLink>
-                        </ListItem>
-                    </List>
-                </Drawer>
                 {children}
             </Container>
 
+            <Box sx={{flex: 2}} ></Box>
+
             <footer id="footer">
                 <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}} alt="Developed with YouTube"/></a>
+                <Link href="privacy-policy.html">Privacy policy</Link>
             </footer>
         </>
     );

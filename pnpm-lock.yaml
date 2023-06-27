@@ -56,9 +56,6 @@ dependencies:
   '@types/react-dom':
     specifier: ^18.2.4
     version: 18.2.4
-  '@types/react-router-dom':
-    specifier: ^5.3.3
-    version: 5.3.3
   '@types/testing-library__jest-dom':
     specifier: ^5.14.5
     version: 5.14.5
@@ -68,9 +65,6 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  react-router-dom:
-    specifier: ^6.11.2
-    version: 6.11.2(react-dom@18.2.0)(react@18.2.0)
   react-scripts:
     specifier: 5.0.1
     version: 5.0.1(@babel/plugin-syntax-flow@7.22.5)(@babel/plugin-transform-react-jsx@7.22.5)(eslint@8.41.0)(react@18.2.0)(typescript@4.9.5)
@@ -2118,8 +2112,8 @@ packages:
       '@types/gapi.client.discovery': 1.0.9
     dev: false
 
-  /@maxim_mazurok/gapi.client.youtube-v3@0.0.20230607:
-    resolution: {integrity: sha512-gNxeqVam0MhwWe40rP2cEoaPL4t5uAHVELCGlRF7RM5CI2XdaiUswzSmfOnyPDQx/hneG2wWPIbCkH+eEjxW+w==}
+  /@maxim_mazurok/gapi.client.youtube-v3@0.0.20230620:
+    resolution: {integrity: sha512-BYD22bXkQaNomLAzRxfBF2YJIgaOrrydUAvAletdIhw5n4l+XH6IQzfqBzupGeScfXvk7NPMqmJl8gylUSTQiQ==}
     dependencies:
       '@types/gapi.client': 1.0.5
       '@types/gapi.client.discovery': 1.0.9
@@ -2352,11 +2346,6 @@ packages:
 
   /@popperjs/core@2.11.7:
     resolution: {integrity: sha512-Cr4OjIkipTtcXKjAsm8agyleBuDHvxzeBoa1v543lbv1YaIwQjESsVcmjiWiPEbC1FIeHOG/Op9kdCmAmiS3Kw==}
-    dev: false
-
-  /@remix-run/router@1.6.2:
-    resolution: {integrity: sha512-LzqpSrMK/3JBAVBI9u3NWtOhWNw5AMQfrUFYB0+bDHTSw17z++WJLsPsxAuK+oSddsxk4d7F/JcdDPM1M5YAhA==}
-    engines: {node: '>=14'}
     dev: false
 
   /@rollup/plugin-babel@5.3.1(@babel/core@7.22.5)(rollup@2.79.1):
@@ -2737,7 +2726,7 @@ packages:
   /@types/gapi.client.youtube-v3@0.0.1:
     resolution: {integrity: sha512-X06qkHswrpv8tnAacBWo/SOopFQjcniyhd/HXuR65xg/vboq8/hZnFYqzIOOlJR6QFod2p+9bSnKB3vh2+qrYQ==}
     dependencies:
-      '@maxim_mazurok/gapi.client.youtube-v3': 0.0.20230607
+      '@maxim_mazurok/gapi.client.youtube-v3': 0.0.20230620
     dev: false
 
   /@types/gapi.client@1.0.5:
@@ -2756,10 +2745,6 @@ packages:
     resolution: {integrity: sha512-Sig0SNORX9fdW+bQuTEovKj3uHcUL6LQKbCrrqb1X7J6/ReAbhCXRAhc+SMejhLELFj2QcyuxmUooZ4bt5ReSw==}
     dependencies:
       '@types/node': 20.2.3
-    dev: false
-
-  /@types/history@4.7.11:
-    resolution: {integrity: sha512-qjDJRrmvBMiTx+jyLxvLfJU7UznFuokDv4f3WRuriHKERccVpFU+8XMQUAbDzoiJCsmexxRExQeMwwCdamSKDA==}
     dev: false
 
   /@types/html-minifier-terser@6.1.0:
@@ -2848,21 +2833,6 @@ packages:
   /@types/react-is@18.2.0:
     resolution: {integrity: sha512-1vz2yObaQkLL7YFe/pme2cpvDsCwI1WXIfL+5eLz0MI9gFG24Re16RzUsI8t9XZn9ZWvgLNDrJBmrqXJO7GNQQ==}
     dependencies:
-      '@types/react': 18.2.6
-    dev: false
-
-  /@types/react-router-dom@5.3.3:
-    resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
-    dependencies:
-      '@types/history': 4.7.11
-      '@types/react': 18.2.6
-      '@types/react-router': 5.1.20
-    dev: false
-
-  /@types/react-router@5.1.20:
-    resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
-    dependencies:
-      '@types/history': 4.7.11
       '@types/react': 18.2.6
     dev: false
 
@@ -8711,29 +8681,6 @@ packages:
   /react-refresh@0.11.0:
     resolution: {integrity: sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /react-router-dom@6.11.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-JNbKtAeh1VSJQnH6RvBDNhxNwemRj7KxCzc5jb7zvDSKRnPWIFj9pO+eXqjM69gQJ0r46hSz1x4l9y0651DKWw==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.6.2
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-router: 6.11.2(react@18.2.0)
-    dev: false
-
-  /react-router@6.11.2(react@18.2.0):
-    resolution: {integrity: sha512-74z9xUSaSX07t3LM+pS6Un0T55ibUE/79CzfZpy5wsPDZaea1F8QkrsiyRnA2YQ7LwE/umaydzXZV80iDCPkMg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      react: '>=16.8'
-    dependencies:
-      '@remix-run/router': 1.6.2
-      react: 18.2.0
     dev: false
 
   /react-scripts@5.0.1(@babel/plugin-syntax-flow@7.22.5)(@babel/plugin-transform-react-jsx@7.22.5)(eslint@8.41.0)(react@18.2.0)(typescript@4.9.5):
