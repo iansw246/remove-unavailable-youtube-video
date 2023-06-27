@@ -1,18 +1,12 @@
-import { AppBar, Toolbar, IconButton, Icon, Typography, Container, Drawer, List, ListItem, Theme, Box, Link } from "@mui/material";
-import { useState, useCallback } from "react";
+import { AppBar, Toolbar, Typography, Container, Theme, Box, Link } from "@mui/material";
 
-import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png"
+import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png";
 
 export interface Props {
     children: React.ReactNode
 }
 
 export default function Layout({ children }: Props) {
-    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>();
-    const onClose = useCallback(() => {
-        setIsDrawerOpen(!isDrawerOpen);
-    }, [isDrawerOpen]);
-    
     return (
         <>
             <header>
