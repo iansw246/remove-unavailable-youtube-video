@@ -64,9 +64,10 @@ function App() {
                 Annoyed by the "unavailable videos are hidden" banner in YouTube?
                 This app will allow you to find and remove all unavailable videos from your YouTube playlists.
             </Typography>
-            <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
             
-            <Typography>To get started, first <strong>select your region</strong>.</Typography>
+            <Typography>To get started, first select your region. Then choose whether to find videos in a specific playlist or all your own playlists</Typography>
+
+            <Typography variant="caption">This app is unaffiliated with YouTube or Google. </Typography>
 
             <RegionSelector onChange={onRegionChange} value={userRegion} sx={{mt: 2}} />
 

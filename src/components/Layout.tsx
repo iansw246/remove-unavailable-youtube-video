@@ -13,13 +13,7 @@ export default function Layout({ children }: Props) {
                 <AppBar position="static" sx={{mb: 1}}>
                     <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
                         <Toolbar>
-                            <Typography sx={{ fontSize: "16px", fontWeight: 700, mr: 2 }}>Unavailable Youtube Video Remover</Typography>
-                            <Typography sx={{
-                                display: {
-                                    "xs": "none",
-                                    "md": "unset"
-                                }
-                            }}>Remove unavailable videos from your playlists and hide the "Unavailable video" message</Typography>
+                            <Typography sx={{ fontSize: "16px", fontWeight: 700, mr: 2 }}>Unavailable Video Remover</Typography>
                         </Toolbar>
                     </Box>
                 </AppBar>
