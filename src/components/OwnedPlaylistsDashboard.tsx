@@ -1,4 +1,4 @@
-import { AlertTitle, Button, Collapse } from "@mui/material";
+import { AlertTitle, Button, Collapse, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../youtubeApi";
@@ -134,7 +134,12 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} disabled={!isTokenClientReady} />
-            <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
+            {isUserLoggedIn ? 
+                <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
+                : 
+                <Typography style={{display: isUserLoggedIn ? "none" : ""}}>In order to show your playlists and remove unavailable videos from them, please sign in with Google</Typography>
+            }
+            
 
             <Collapse in={showError}>
                 <ErrorAlert error={error} onClose={() => {setShowError(false);}}>
