@@ -23,7 +23,7 @@ export default function ErrorDialog({ open, errorTitle, errorBody, onClose } : P
                 </DialogContentText>
                 <br />
                 <DialogContentText>
-                    Try clicking the show playlists button and signing into Google if prompted. If the error persists, report the error to the developer.
+                    If the error persists, please report the error to the developer.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
