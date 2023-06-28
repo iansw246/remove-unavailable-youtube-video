@@ -9,21 +9,19 @@ export interface Props {
 export default function Layout({ children }: Props) {
     return (
         <>
-            <header>
-                <AppBar position="static" sx={{mb: 1}}>
-                    <Box sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
-                        <Toolbar>
-                            <Typography sx={{ fontSize: "16px", fontWeight: 700, mr: 2 }}>Unavailable Video Remover</Typography>
-                        </Toolbar>
-                    </Box>
-                </AppBar>
-            </header>
+            <AppBar position="static" sx={{mb: 1}}>
+                <Toolbar sx={{width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto"}}>
+                    {/* Margin should be the same as the main container's padding */}
+                    <Typography sx={{ fontSize: "16px", fontWeight: 700, ml: "24px", mr: "24px" }}>Unavailable Video Remover</Typography>
+                </Toolbar>
+            </AppBar>
 
             <Container maxWidth="lg" component="main" sx={{pt: 2, pb: 4}}>
                 {children}
             </Container>
 
-            <Box sx={{flex: 2}} ></Box>
+            {/* Spacer so push footer to bottom */}
+            <Box sx={{flex: 2}}></Box>
 
             <footer id="footer">
                 <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}} alt="Developed with YouTube"/></a>
