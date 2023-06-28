@@ -1,4 +1,4 @@
-import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
+import { AlertTitle, Button, Collapse, Icon, IconButton, Snackbar, Tab, Tabs, Typography } from "@mui/material";
 import { forwardRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { removeItemsFromPlaylist } from "../youtubeApi";
@@ -24,6 +24,8 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
     const [loadingProgress, setLoadingProgress] = useState<number>();
     const [loadingTotal, setLoadingTotal] = useState<number>();
 
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
+
     const [showError, setShowError] = useState<boolean>(false);
     const [error, setError] = useState<any>();
 
@@ -40,7 +42,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
             setLoadingProgress(index);
         }).then(() => {
             setIsLoading(false);
-
+            setIsSnackbarOpen(true);
         }, (error) => {
             setIsLoading(false);
 
@@ -49,6 +51,23 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
             console.error(error);
         });
     }
+
+    function handleSnackbarClose(event: React.SyntheticEvent | Event, reason?: string) {
+        if (reason === "clickaway") {
+            return;
+        }
+        setIsSnackbarOpen(false);
+    }
+
+    const snackbarAction = (<>
+        <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={handleSnackbarClose}
+        ><Icon fontSize="inherit">close</Icon></IconButton>
+    </>)
+
     return (
         <div ref={ref}>
             <Typography variant="h4">Unavailable videos in selected playlist</Typography>
@@ -78,6 +97,13 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
                 <Typography variant="h5" mb={2}>Export list</Typography>
                 <ExportPlaylistItems playlistItems={unavailableItems} playlistName={playlist.snippet?.title ?? "untitled_playlist"} />
             </TabPanel>
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={10000}
+                onClose={handleSnackbarClose}
+                message="VIdeos remove successfully"
+                action={snackbarAction}
+            />
         </div>
     );
 });
