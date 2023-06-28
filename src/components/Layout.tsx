@@ -1,7 +1,6 @@
 import { AppBar, Toolbar, Typography, Container, Theme, Box, Link } from "@mui/material";
 
 import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png";
-import logo from "../../public/logo192.png"
 
 export interface Props {
     children: React.ReactNode
