@@ -1,5 +1,7 @@
 import { AppBar, Toolbar, Typography, Container, Theme, Box, Link } from "@mui/material";
+import NewTabLink from "./NewTabLink";
 
+import gitHubIcon from "./github-mark.svg"
 import DevelopedWithYoutubeImage from "./developed-with-youtube-sentence-case-dark.png";
 
 export interface Props {
@@ -29,8 +31,11 @@ export default function Layout({ children }: Props) {
             <Box sx={{flex: 2}}></Box>
 
             <footer id="footer">
-                <a href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}} alt="Developed with YouTube"/></a>
+                <Link href="https://www.youtube.com" rel="noreferrer" target="_blank"><img src={DevelopedWithYoutubeImage} style={{height: "100px"}} alt="Developed with YouTube"/></Link>
                 <Link href="privacy-policy.html">Privacy policy</Link>
+                <NewTabLink href="https://github.com/iansw246/remove-unavailable-youtube-video">
+                    <img src={gitHubIcon} style={{marginLeft: "32px", width: "30px", height: "30px"}} alt="GitHub" />
+                </NewTabLink>
             </footer>
         </>
     );
