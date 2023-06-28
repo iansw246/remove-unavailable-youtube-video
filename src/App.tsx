@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import './App.css';
 import EnterPlaylistDashboard from './components/EnterPlaylistDashboard';
 import ErrorDialog from './components/ErrorDialog';
+import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
 import useGapiTokenClient from './components/useGapiTokenClient';
@@ -15,7 +16,7 @@ enum TabTypes {
 }
 
 function App() {
-    const [, setIsUserLoggedIn] = useState<boolean>(false);
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
 
     const [userRegion, setUserRegion] = useState<Region>(loadOrInitializeSavedRegion);
 
@@ -23,7 +24,7 @@ function App() {
     const [errorTitle, setErrorTitle] = useState<string>();
     const [errorBody, setErrorBody] = useState<React.ReactNode>();
 
-    const [, setTokenClient] = useState<TokenClient>();
+    const [tokenClient, setTokenClient] = useState<TokenClient>();
     const onTokenClientLoadFail = useCallback((error: unknown) => {
         setShowError(true);
         setErrorTitle("Failed to load gapi token client");
@@ -63,19 +64,31 @@ function App() {
                 Annoyed by the "unavailable videos are hidden" banner in YouTube?
                 This app will allow you to find and remove all unavailable videos from your YouTube playlists.
             </Typography>
-            <Typography>Note: This app is unaffiliated with YouTube or Google. </Typography>
             
-            <Typography>To get started, first <strong>select your region</strong>.</Typography>
+            <Typography>To get started, first select your region. Then choose whether to find videos in a specific playlist or all your own playlists</Typography>
+
+            <Typography variant="caption">This app is unaffiliated with YouTube or Google. </Typography>
 
             <RegionSelector onChange={onRegionChange} value={userRegion} sx={{mt: 2}} />
 
             <Tabs value={tabIndex} onChange={(event, newValue) => setTabIndex(newValue)} sx={{marginBottom: 2, borderBottom: 1, borderColor: "divider"}}>
                 <Tab label="Enter playlist" value={TabTypes.ENTER_PLAYLIST} />
+                <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
             </Tabs>
             
             {/* Use TabPanes which are always rendered because  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
                 <EnterPlaylistDashboard region={userRegion} />
+            </TabPanel>
+            <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
+                <OwnedPlaylistsDashboard
+                    userRegion={userRegion}
+                    isUserLoggedIn={isUserLoggedIn}
+                    onUserLoginRequest={() => {
+                        tokenClient?.requestAccessToken();
+                    }}
+                    isTokenClientReady={tokenClient !== undefined}
+                />
             </TabPanel>
         </>
     );

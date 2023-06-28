@@ -2,28 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { createBrowserRouter, Outlet, RouterProvider} from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import ErrorPage from './errorPage';
-import PrivacyPolicy from './routes/privacyPolicy';
 import { ThemeProvider } from '@mui/material';
 import theme from './theme';
 import Layout from './components/Layout';
-
-const router = createBrowserRouter([
-  {
-    element: <Layout><Outlet /></Layout>,
-    children: [{
-        path: "/",
-        element: <App />,
-        errorElement: <ErrorPage />
-      },
-      {
-        path: "/privacy-policy",
-        element: <PrivacyPolicy />,
-      }],
-    },
-]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -32,7 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <Layout>
+        <App />
+      </Layout>
     </ThemeProvider>
   </React.StrictMode>
 );

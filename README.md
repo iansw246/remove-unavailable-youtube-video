@@ -34,6 +34,8 @@ Uses [google-api-javascript-client](https://github.com/google/google-api-javascr
 
 Uses the [Google 3P Authorization library for authentication and authorization](https://developers.google.com/identity/oauth2/web/guides/load-3p-authorization-library) (sign-in with Google)
 
+The page components (App.tsx, privacyPolicy.tsx) are put directly into the layout component. To reduce nesting, you may want to return a fragment with the content.
+
 # Todo
 - Get app approved by Google
 - Add unit tests
