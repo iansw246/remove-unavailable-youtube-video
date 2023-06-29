@@ -164,7 +164,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             {isUserLoggedIn ? 
                 <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
                 : 
-                <Typography style={{display: isUserLoggedIn ? "none" : ""}}>In order to show your playlists and remove unavailable videos from them, please sign in with Google</Typography>
+                <Typography style={{display: isUserLoggedIn ? "none" : ""}}>In order to show your playlists and remove unavailable videos from them, please sign in with Google. </Typography>
             }
             
 
