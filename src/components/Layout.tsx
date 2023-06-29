@@ -19,7 +19,7 @@ export default function Layout({ children }: Props) {
                         component="img"
                         alt="RUV icon"
                         src="favicon.ico" />
-                    <Typography sx={{ fontSize: "16px", fontWeight: 700}}>Unavailable Video Remover</Typography>
+                    <Typography sx={{ fontSize: "16px", fontWeight: 700}}>Remove Unavailable Videos</Typography>
                 </Toolbar>
             </AppBar>
 
