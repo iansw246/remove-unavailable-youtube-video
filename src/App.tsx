@@ -58,14 +58,15 @@ function App() {
             }
 
             <Typography variant="h1">
-                Unavailable Video Remover
+                Remove Unavailable Videos
             </Typography>
             <Typography>
                 Annoyed by the "unavailable videos are hidden" banner in YouTube?
-                This app will allow you to find and remove all unavailable videos from your YouTube playlists.
+                Remove Unavailable Videos (RUV) lets you find videos that have been deleted, privated, or blocked in your country
+                and automatically remove them from your YouTube playlists.
             </Typography>
             
-            <Typography>To get started, first select your region. Then choose whether to find videos in a specific playlist or all your own playlists</Typography>
+            <Typography>To get started, first select your region. Then choose whether to find videos in a specific playlist or all your own playlists.</Typography>
 
             <Typography variant="caption">This app is unaffiliated with YouTube or Google. </Typography>
 
