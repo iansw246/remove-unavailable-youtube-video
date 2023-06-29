@@ -1,4 +1,4 @@
-import { AlertTitle, Button, Collapse, Typography } from "@mui/material";
+import { AlertTitle, Button, Collapse, Icon, IconButton, Snackbar, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../youtubeApi";
@@ -117,6 +117,17 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         });
     }
 
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
+
+    const handleVideosRemoved = useCallback(() => {
+        // UnavailableItems must be falsey, not just selectedPlaylist,
+        // or else when clicking on another video,
+        // the old unavailable items will pop up of this playlist will show up
+        setUnavailableItems(undefined);
+
+        setIsSnackbarOpen(true);
+    }, []);
+
     useEffect(() => {
         if (!isUserLoggedIn) {
             return;
@@ -130,6 +141,22 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         }
         unavailableVideosHeader.current?.scrollIntoView();
     }, [unavailableItems, selectedPlaylist, isLoading]);
+
+    function handleSnackbarClose(event: React.SyntheticEvent | Event, reason?: string) {
+        if (reason === "clickaway") {
+            return;
+        }
+        setIsSnackbarOpen(false);
+    }
+
+    const snackbarAction = (<>
+        <IconButton
+            aria-label="close"
+            color="inherit"
+            size="small"
+            onClick={handleSnackbarClose}
+        ><Icon fontSize="inherit">close</Icon></IconButton>
+    </>)
 
     return (
         <div>
@@ -154,8 +181,17 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                     unavailableItems={unavailableItems}
                     playlist={selectedPlaylist}
                     showRemoveVideosButton={true}
+                    onVideosRemoved={handleVideosRemoved}
                 />
             }
+
+            <Snackbar
+                open={isSnackbarOpen}
+                autoHideDuration={10000}
+                onClose={handleSnackbarClose}
+                message="Videos removed successfully"
+                action={snackbarAction}
+            />
         </div>
     );
 }
