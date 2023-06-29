@@ -6,6 +6,10 @@ import ErrorAlert from "./ErrorAlert";
 import PlaylistInput from "./PlaylistInput";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
+enum Error {
+    NO_PLAYLIST_ID_ENTERED = "no playlist id entered"
+}
+
 function isErrorNotFound(error: unknown) {
     return error !== null
         && typeof error === "object"
@@ -26,6 +30,12 @@ function getErrorAlertBody(error: unknown) {
             <>
                 <AlertTitle>YouTube API not loaded</AlertTitle>
                 The YouTube API client could not be loaded. Please check your network connection and ad blocker, or contact the developer.
+            </>
+        )
+    } else if (error === Error.NO_PLAYLIST_ID_ENTERED) {
+        return (
+            <>
+                <AlertTitle>No playlist ID/link entered</AlertTitle>
             </>
         )
     } else {
@@ -57,8 +67,13 @@ export default function EnterPlaylistDashboard({region}: Props) {
         if (typeof playlistId !== "string"
             || playlistId.length === 0
         ) {
+            setError(Error.NO_PLAYLIST_ID_ENTERED);
+            setShowError(true);
             return;
         }
+
+        setError(undefined);
+        setShowError(false);
 
         setIsLoading(true);
         setUnavailableItems(undefined);
