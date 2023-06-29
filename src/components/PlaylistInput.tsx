@@ -79,15 +79,19 @@ export default function PlaylistInput({ onChange }: Props) {
     const playlistInputId = useId();
 
     const onPlaylistInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        if (typeof event.target.value !== "string" || event.target.value.length === 0) {
+            setIsPlaylistInputValid(false);
+            onChange?.(null);
+            return;
+        }
+
         const parsedPlaylistId = parseYoutubePlaylistInput(event.target.value);
         if (parsedPlaylistId === null) {
             setIsPlaylistInputValid(false);
         } else {
-            if (onChange) {      
-                onChange(parsedPlaylistId);
-            }
             setIsPlaylistInputValid(true);
         }
+        onChange?.(parsedPlaylistId);
     }, [onChange]);
 
     return (
