@@ -9,7 +9,7 @@ export type Props = {
 } & Omit<React.ComponentProps<typeof Grid>, "container" | "columns">;
 
 const ListGrid = styled(Grid)({
-    maxHeight: 400,
+    maxHeight: "90vh",
     overflowY: "auto",
     paddingBottom: 2,
 });

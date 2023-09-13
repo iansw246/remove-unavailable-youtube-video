@@ -18,7 +18,8 @@ export default function UnavailableItemsDisplay({ unavailableItems, playlist, al
                     <PlaylistItemList
                         items={unavailableItems}
                         sx={{
-                            maxHeight: "400px",
+                            maxHeight: "90vh",
+                            minHeight: "200px",
                             overflowY: "auto",
                             m: 1,
                             py: 2,
