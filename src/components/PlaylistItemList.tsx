@@ -3,7 +3,7 @@ import { PlaylistItem } from "../utils/requestHelpers";
 import PlaylistItemCard from "./PlaylistItemCard";
 import { StackProps } from "@mui/material/Stack"
 import { PlaylistItemCardCheckBoxMemoized } from "./PlaylistItemCardCheckBox";
-import { memo, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export interface Props extends StackProps {
     items: PlaylistItem[];
@@ -45,7 +45,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                 setCheckAllCheckboxState(CheckAllCheckboxState.CHECKED);
                 break;
         }
-    }, [checkAllCheckboxState]);
+    }, [checkAllCheckboxState, items.length]);
 
     const filteredItems = useMemo(() => {
         return items.filter((item): item is Required<PlaylistItem> =>

@@ -1,5 +1,5 @@
 import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { removeItemsFromPlaylist } from "../youtubeApi";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
