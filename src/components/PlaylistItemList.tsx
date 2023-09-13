@@ -2,8 +2,8 @@ import { Box, Checkbox, FormControlLabel, Stack, Typography } from "@mui/materia
 import { PlaylistItem } from "../utils/requestHelpers";
 import PlaylistItemCard from "./PlaylistItemCard";
 import { StackProps } from "@mui/material/Stack"
-import PlaylistItemCardCheckBox from "./PlaylistItemCardCheckBox";
-import { useState } from "react";
+import { PlaylistItemCardCheckBoxMemoized } from "./PlaylistItemCardCheckBox";
+import { memo, useCallback, useMemo, useState } from "react";
 
 export interface Props extends StackProps {
     items: PlaylistItem[];
@@ -33,7 +33,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
 
     const [checkAllCheckboxState, setCheckAllCheckboxState] = useState<CheckAllCheckboxState>(CheckAllCheckboxState.UNCHECKED);
 
-    function handleCheckAllPlaylistItemsButtonClick() {
+    const handleCheckAllPlaylistItemsButtonClick = useCallback(() => {
         switch (checkAllCheckboxState) {
             case CheckAllCheckboxState.INDETERMINATE:
             case CheckAllCheckboxState.CHECKED:
@@ -45,7 +45,18 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                 setCheckAllCheckboxState(CheckAllCheckboxState.CHECKED);
                 break;
         }
-    }
+    }, [checkAllCheckboxState]);
+
+    const filteredItems = useMemo(() => {
+        return items.filter((item): item is Required<PlaylistItem> =>
+            item !== undefined
+            && item.contentDetails !== undefined
+            && item.etag !== undefined
+            && item.id !== undefined
+            && item.kind !== undefined
+            && item.snippet !== undefined
+            && item.status !== undefined);
+    }, [items]);
 
     return (
         <Box>
@@ -58,7 +69,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    onChange={() => handleCheckAllPlaylistItemsButtonClick()}
+                                    onChange={handleCheckAllPlaylistItemsButtonClick}
                                     checked={checkAllCheckboxState === CheckAllCheckboxState.CHECKED}
                                     indeterminate={checkAllCheckboxState === CheckAllCheckboxState.INDETERMINATE}
                                 />
@@ -71,18 +82,10 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                 : null
             }
             <Stack spacing={2} {...rest}>
-                {items
-                    .filter((item): item is Required<PlaylistItem> =>
-                        item !== undefined
-                        && item.contentDetails !== undefined
-                        && item.etag !== undefined
-                        && item.id !== undefined
-                        && item.kind !== undefined
-                        && item.snippet !== undefined
-                        && item.status !== undefined
-                        ).map((item: Required<PlaylistItem>, i) => (
+                {
+                    filteredItems.map((item: Required<PlaylistItem>, i) => (
                         showCheckboxes
-                            ? (<PlaylistItemCardCheckBox
+                            ? (<PlaylistItemCardCheckBoxMemoized
                                     playlistItem={item}
                                     key={item.id}
                                     checked={checkedPlaylistItems[i]}

@@ -4,6 +4,7 @@ import { thumbnailURL, makeChannelURL, makeVideoURL } from "../utils/youtubeReso
 import NewTabLink from "./NewTabLink";
 import YouTubeThumbnail from "./YouTubeThumbnail";
 import { PaperHover } from "./PaperHover";
+import { memo } from "react";
 
 export interface Props {
     playlistItem: PlaylistItem;
@@ -35,3 +36,5 @@ export default function PlaylistItemCardCheckBox({ playlistItem, checked, onChan
         </PaperHover>
     );
 }
+
+export const PlaylistItemCardCheckBoxMemoized = memo(PlaylistItemCardCheckBox);

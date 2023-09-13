@@ -1,5 +1,5 @@
 import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { removeItemsFromPlaylist } from "../youtubeApi";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
@@ -20,7 +20,7 @@ interface Props {
 
 const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, showRemoveVideosButton: allowRemoval = true, onVideosRemoved }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [tabIndex, setTabIndex] = useState<number>(0);
-    const [selectedPlaylistItems, setSelectedPlaylistItems] = useState<PlaylistItem[]>([]);
+    const selectedPlaylistItemsRef = useRef<PlaylistItem[]>([]);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [loadingProgress, setLoadingProgress] = useState<number>();
@@ -29,20 +29,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
     const [showError, setShowError] = useState<boolean>(false);
     const [error, setError] = useState<any>();
 
-    function handleRemoveAllVideosButtonClick() {
-        removeVideos(unavailableItems);
-    }
-
-    function handleRemoveSelectedVideosButtonClick() {
-        if (selectedPlaylistItems.length <= 0) {
-            setError("No videos selected");
-            setShowError(true);
-            return;
-        }
-        removeVideos(selectedPlaylistItems);
-    }
-
-    function removeVideos(playlistItems: PlaylistItem[]) {
+    const removeVideos = useCallback((playlistItems: PlaylistItem[]) => {
         if (!playlistItems) {
             return;
         }
@@ -62,7 +49,20 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
             setError(error);
             console.error(error);
         });
-    }
+    }, [onVideosRemoved]);
+
+    const handleRemoveSelectedVideosButtonClick = useCallback(() => {
+        if (selectedPlaylistItemsRef.current.length <= 0) {
+            setError("No videos selected");
+            setShowError(true);
+            return;
+        }
+        removeVideos(selectedPlaylistItemsRef.current);
+    }, [removeVideos, selectedPlaylistItemsRef]);
+
+    const handleSelectedVideosChanged = useCallback((selectedItems: PlaylistItem[]) => {
+        selectedPlaylistItemsRef.current = selectedItems;
+    }, [selectedPlaylistItemsRef]);
 
     return (
         <div ref={ref}>
@@ -100,7 +100,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
                     unavailableItems={unavailableItems}
                     playlist={playlist}
                     allowRemoval={allowRemoval}
-                    onSelectionChanged={(selectedItems) => setSelectedPlaylistItems(selectedItems)}
+                    onSelectionChanged={handleSelectedVideosChanged}
                 />
                 {
                     allowRemoval
