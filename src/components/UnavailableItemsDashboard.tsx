@@ -1,5 +1,5 @@
 import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
-import { forwardRef, useCallback, useRef, useState } from "react";
+import React, { forwardRef, useCallback, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { removeItemsFromPlaylist } from "../youtubeApi";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
@@ -16,6 +16,42 @@ interface Props {
     onVideosRemoved?: () => void;
     
     ref?: React.RefObject<HTMLDivElement>;
+}
+
+enum ErrorType {
+    General,
+    YouTubeApiError,
+    Unknown
+}
+
+function createErrorAlertBody(error: unknown): React.ReactNode {
+    try {
+        if (isUnauthenticated(error)) {
+            return (<>
+                <AlertTitle>Not signed in</AlertTitle>
+                You are not signed in to Google. Please sign in and try again.
+            </>);
+        } else if (error && typeof error === "object") {
+            let errorAny = error as any;
+            if (errorAny.type === ErrorType.General && typeof errorAny.message === "string") {
+                return (<>
+                    <AlertTitle>Error</AlertTitle>
+                    {errorAny.message}
+                </>);
+            } else if (errorAny.type === ErrorType.YouTubeApiError && typeof errorAny.response === "object") {
+                return (<>
+                    <AlertTitle>YouTube API Error</AlertTitle>
+                    {errorAny.response.result.error.message}
+                </>);
+            }
+        }
+    } catch (e) {
+        console.error(`Error creating error alert body: ${e}`);
+    }
+    return (<>
+        <AlertTitle>Unknown Error</AlertTitle>
+        An unknown error occured. Please try again or contact the developer.
+    </>);
 }
 
 const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, showRemoveVideosButton: allowRemoval = true, onVideosRemoved }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -46,14 +82,20 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
             setIsLoading(false);
 
             setShowError(true);
-            setError(error);
+            setError({
+                type: ErrorType.YouTubeApiError,
+                response: error,
+            });
             console.error(error);
         });
     }, [onVideosRemoved]);
 
     const handleRemoveSelectedVideosButtonClick = useCallback(() => {
         if (selectedPlaylistItemsRef.current.length <= 0) {
-            setError("No videos selected");
+            setError({
+                type: ErrorType.General,
+                message: "No videos selected",
+            });
             setShowError(true);
             return;
         }
@@ -77,23 +119,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
                 {isLoading && <AdaptiveLinearProgress loadingProgress={loadingProgress} loadingTotal={loadingTotal} />}
                 <Collapse in={showError}>
                     <ErrorAlert error={error} onClose={() => {setShowError(false);}}>
-                        {isUnauthenticated(error)
-                            ? <>
-                                <AlertTitle>Not signed in</AlertTitle>
-                                You are not signed in to Google. Please sign in and try again.
-                            </>
-                            : (
-                                error
-                                ? <>
-                                    <AlertTitle>Error</AlertTitle>
-                                    {error}
-                                </>
-                                : <>
-                                    <AlertTitle>Unknown error</AlertTitle>
-                                    An unknown error occured. Please try again or contact the developer.
-                                </>
-                            )
-                        }
+                        {createErrorAlertBody(error)}
                     </ErrorAlert>
                 </Collapse>
                 <UnavailableItemsDisplay
