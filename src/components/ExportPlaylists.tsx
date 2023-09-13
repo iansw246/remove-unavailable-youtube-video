@@ -79,7 +79,7 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
                 display: "inline-block",
                 padding: 1,
                 overflow: "auto",
-                maxWidth: "100%",
+                width: "100%",
                 maxHeight: "400px"
                 }}>
                 {playlistItemsDataText}
