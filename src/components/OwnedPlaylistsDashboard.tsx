@@ -139,7 +139,9 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         if (!unavailableItems || !selectedPlaylist || isLoading) {
             return;
         }
-        unavailableVideosHeader.current?.scrollIntoView();
+        unavailableVideosHeader.current?.scrollIntoView({
+            behavior: "smooth"
+        });
     }, [unavailableItems, selectedPlaylist, isLoading]);
 
     function handleSnackbarClose(event: React.SyntheticEvent | Event, reason?: string) {
