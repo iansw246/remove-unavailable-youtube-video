@@ -83,6 +83,15 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
             }
             <Stack spacing={2} {...rest}>
                 {
+                    /**
+                     * Here is a  performance issue
+                     * Whenever any cheeckbox is changed, all checkboxes will rerender,
+                     * significantly slowing down responsiveness.
+                     * This happens because the onChange callback is generated each renderer
+                     * This can't be avoided because the callback depends on checkeedPlaylistItems,
+                     * so must be regenerated anytime the selected item state changes.
+                     * I have no idea how to memoize the callback or the children because of this.
+                     */
                     filteredItems.map((item: Required<PlaylistItem>, i) => (
                         showCheckboxes
                             ? (<PlaylistItemCardCheckBoxMemoized
