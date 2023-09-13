@@ -99,6 +99,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             throw new Error(`userChannelId cannot be undefined`);
         }
 
+        setUnavailableItems(undefined);
         setSelectedPlaylist(playlist);
 
         setIsLoading(true);
@@ -179,6 +180,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} pl={1} pr={2} mt={2} mb={2} />}
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
+                    key={selectedPlaylist.etag}
                     ref={unavailableVideosHeader}
                     unavailableItems={unavailableItems}
                     playlist={selectedPlaylist}

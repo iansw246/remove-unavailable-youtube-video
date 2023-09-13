@@ -27,7 +27,6 @@ export default function ExportPlaylistItems({playlistName, playlistItems}: Props
         clipboard.writeText(playlistItemsDataText).then(
             () => {
                 setIsSnackbarOpen(true);
-                console.log("Text written successfully");
             },
             (err) => {
                 console.error("Error copying text to clipboard: ", err);
