@@ -10,11 +10,11 @@ function youtubePlaylistLink(playlistId: string) {
 }
 
 export interface Props {
-    playlist: Playlist,
-    getUnavailableVideosCallback: (playlist: Playlist) => void,
+    playlist: Playlist;
+    getUnavailableVideosCallback: (playlist: Playlist) => void;
 }
 
-export default function PlaylistRow({playlist, getUnavailableVideosCallback}: Props): JSX.Element {
+export default function PlaylistRow({ playlist, getUnavailableVideosCallback }: Props): JSX.Element {
     const playlistTitleText = playlist.snippet?.title || "[No title]";
     return (
         <PaperHover elevation={1} sx={{

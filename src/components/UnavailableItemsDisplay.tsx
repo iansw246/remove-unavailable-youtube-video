@@ -13,18 +13,10 @@ export default function UnavailableItemsDisplay({ unavailableItems, playlist, al
     return (
         <>
             <Typography>Found {unavailableItems?.length ?? 0} unavailable videos {playlist ? `in playlist ${playlist.snippet?.title}` : ""}</Typography>
-            { unavailableItems &&
+            {unavailableItems &&
                 <>
                     <PlaylistItemList
                         items={unavailableItems}
-                        sx={{
-                            maxHeight: "90vh",
-                            minHeight: "200px",
-                            overflowY: "auto",
-                            m: 1,
-                            py: 2,
-                            pr: 2
-                        }}
                         showCheckboxes={allowRemoval}
                         onSelectionChanged={onSelectionChanged}
                     />

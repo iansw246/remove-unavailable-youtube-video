@@ -1,5 +1,5 @@
 import { AlertTitle, Button, Collapse, Icon, IconButton, Snackbar, Typography } from "@mui/material";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../youtubeApi";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
@@ -8,37 +8,14 @@ import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
-function getErrorAlertBody(error: unknown) {
-    if (isUnauthenticated(error)) {
-        return (
-            <>
-                <AlertTitle>Not signed in</AlertTitle>
-                You are not signed in to Google. Please sign in and try again.
-            </>
-        );
-    } else if (error instanceof TypeError && error.message === "gapi.client.youtube is undefined") {
-        return (
-            <>
-                <AlertTitle>YouTube API not loaded</AlertTitle>
-                The YouTube API client could not be loaded. Please check your network connection and ad blocker, or contact the developer.
-            </>
-        )
-    } else {
-        return (
-            <>
-                <AlertTitle>Unknown error</AlertTitle>
-                An unknown error occured. Please try again or contact the developer.
-            </>
-        );
-    }
-}
-
 export interface Props {
     isUserLoggedIn: boolean;
     onUserLoginRequest: () => void;
     userRegion: Region;
     isTokenClientReady: boolean;
 }
+
+const PlaylistListMemoized = memo(PlaylistList);
 
 export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequest, userRegion, isTokenClientReady}: Props) {
     const [userChannelId, setUserChannelId] = useState<string>();
@@ -91,7 +68,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         fetchPlaylists();
     }
 
-    function handleFetchUnavailableItemsClick(playlist: Playlist, index: number) {
+    const handleFetchUnavailableItemsClick = useCallback((playlist: Playlist, index: number) => {
         if (playlist.id === null || playlist.id === undefined) {
             throw new Error(`playlist.id cannot be ${playlist.id}.`);
         }
@@ -116,7 +93,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setError(error);
             console.error(error);
         });
-    }
+    }, [userChannelId, userRegion.id]);
 
     const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
 
@@ -177,7 +154,13 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                 </ErrorAlert>
             </Collapse>
             {isLoading && <AdaptiveLinearProgress loadingProgress={loadingProgress} loadingTotal={loadingTotal} />}
-            {playlists && <PlaylistList playlists={playlists} onGetUnavailableItemsClick={handleFetchUnavailableItemsClick} pl={1} pr={2} mt={2} mb={2} />}
+            {playlists && <PlaylistListMemoized
+                            playlists={playlists}
+                            onGetUnavailableItemsClick={handleFetchUnavailableItemsClick}
+                            pl={1} pr={2}
+                            mt={2} mb={2}
+                        />
+            }
             {unavailableItems && selectedPlaylist &&
                 <UnavailableItemsDashboard
                     key={selectedPlaylist.etag}
@@ -198,4 +181,29 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             />
         </div>
     );
+}
+
+function getErrorAlertBody(error: unknown) {
+    if (isUnauthenticated(error)) {
+        return (
+            <>
+                <AlertTitle>Not signed in</AlertTitle>
+                You are not signed in to Google. Please sign in and try again.
+            </>
+        );
+    } else if (error instanceof TypeError && error.message === "gapi.client.youtube is undefined") {
+        return (
+            <>
+                <AlertTitle>YouTube API not loaded</AlertTitle>
+                The YouTube API client could not be loaded. Please check your network connection and ad blocker, or contact the developer.
+            </>
+        )
+    } else {
+        return (
+            <>
+                <AlertTitle>Unknown error</AlertTitle>
+                An unknown error occured. Please try again or contact the developer.
+            </>
+        );
+    }
 }

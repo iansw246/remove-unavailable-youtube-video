@@ -1,8 +1,8 @@
-import { Box, Checkbox, FormControlLabel, Stack, Typography } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Stack, styled, Typography } from "@mui/material";
 import { PlaylistItem } from "../utils/requestHelpers";
 import PlaylistItemCard from "./PlaylistItemCard";
 import { StackProps } from "@mui/material/Stack"
-import { PlaylistItemCardCheckBoxMemoized } from "./PlaylistItemCardCheckBox";
+import PlaylistItemCardCheckbox from "./PlaylistItemCardCheckBox";
 import { useCallback, useMemo, useState } from "react";
 
 export interface Props extends StackProps {
@@ -16,6 +16,15 @@ enum CheckAllCheckboxState {
     UNCHECKED,
     INDETERMINATE,
 }
+
+const StyledStack = styled(Stack)(({ theme }) => ({
+    maxHeight: "90vh",
+    minHeight: "200px",
+    overflowY: "auto",
+    m: theme.spacing(1),
+    py: theme.spacing(2),
+    pr: theme.spacing(2),
+}));
 
 /**
  * Requires that all playlist items are unique
@@ -59,7 +68,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
     }, [items]);
 
     return (
-        <Box>
+        <div>
             { showCheckboxes
                 ? <>
                     <Box ml="auto" mr={5.5} width="fit-content" display="flex" flexDirection="column" alignItems="flex-end">
@@ -81,10 +90,13 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                 </>
                 : null
             }
-            <Stack spacing={2} {...rest}>
+            <StyledStack
+                spacing={2}
+                {...rest}
+            >
                 {
                     /**
-                     * Here is a  performance issue
+                     * Here is a performance issue
                      * Whenever any cheeckbox is changed, all checkboxes will rerender,
                      * significantly slowing down responsiveness.
                      * This happens because the onChange callback is generated each renderer
@@ -94,7 +106,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                      */
                     filteredItems.map((item: Required<PlaylistItem>, i) => (
                         showCheckboxes
-                            ? (<PlaylistItemCardCheckBoxMemoized
+                            ? (<PlaylistItemCardCheckbox
                                     playlistItem={item}
                                     key={item.id}
                                     checked={checkedPlaylistItems[i]}
@@ -124,7 +136,7 @@ export default function PlaylistItemList({ items, showCheckboxes = false, onSele
                             : (<PlaylistItemCard playlistItem={item} key={item.id} />)
                             ))
                 }
-            </Stack>
-        </Box>
+            </StyledStack>
+        </div>
     );
 }
