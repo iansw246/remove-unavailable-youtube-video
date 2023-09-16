@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Container, Theme, Box, Link } from "@mui/material";
+import { AppBar, Toolbar, Typography, Container, Box, Link } from "@mui/material";
 import NewTabLink from "./NewTabLink";
 
 import gitHubIcon from "./github-mark.svg"
@@ -15,7 +15,7 @@ export default function Layout({ children }: Props) {
                 <Toolbar>
                     {/* Margin should be the same as the main container's padding */}
                     <Box
-                        sx={{ ml: "24px", mr: 2, height: 32, width: 32 }}
+                        sx={{ mr: 2, height: 32, width: 32 }}
                         component="img"
                         alt="RUV icon"
                         src="favicon.ico" />
