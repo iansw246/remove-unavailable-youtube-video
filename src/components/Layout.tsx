@@ -12,7 +12,7 @@ export default function Layout({ children }: Props) {
     return (
         <>
             <AppBar position="static" sx={{mb: 1}}>
-                <Toolbar sx={{ width: "100%", maxWidth: (theme: Theme) => theme.breakpoints.values.lg, ml: "auto", mr: "auto" }}>
+                <Toolbar>
                     {/* Margin should be the same as the main container's padding */}
                     <Box
                         sx={{ ml: "24px", mr: 2, height: 32, width: 32 }}
