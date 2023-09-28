@@ -1,0 +1,23 @@
+{
+  "name": "playlist-items",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "build-manual": "tsc && pnpm prune --production && mv index.js index.mjs && echo \"node_modules has been pruned for production. Reinstall packages for development\"",
+    "build": "esbuild index.ts --bundle --minify --sourcemap --platform=node --target=es2022 --outfile=dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@googleapis/youtube": "^11.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.122",
+    "esbuild": "^0.19.4",
+    "typescript": "^5.2.2"
+  }
+}
