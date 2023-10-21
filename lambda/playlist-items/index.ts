@@ -25,6 +25,22 @@ const playlistItemParts: string[] = [
     "status",
 ];
 
+// Headers required for CORS
+const DEFAULT_RESPONSE_HEADERS = {
+    "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+};
+
+/**
+ * The playlist-items GET route
+ * API parameters are:
+ *  - playlistId: query string
+ *  - Authorization: HTTP header with oauth access token
+ * @param event 
+ * @param context 
+ * @returns 
+ */
 export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
     console.log(JSON.stringify(event, null, 2))
 
@@ -34,11 +50,16 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
             body: JSON.stringify({
                 message: "Missing parameter playlistId",
             }),
+            headers: DEFAULT_RESPONSE_HEADERS,
         }
     }
 
     const playlistId = event.queryStringParameters["playlistId"];
-    const oauthToken = event.queryStringParameters["oauthToken"];
+    // AWS API Gateway appears to make all headers lowercase. Doing this in just that isn't a correct assumption or
+    // conditions change
+    const oauthToken = event.headers["authorization"] || event.headers["Authorization"];
+
+    console.log("oauthToken:", oauthToken);
 
     // I can't find the youtube GaxiosResponse type directly
     let response: Awaited<GaxiosPromise<youtube_v3.Schema$PlaylistItemListResponse>>;
@@ -57,6 +78,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                 message: JSON.stringify({
                     message: "Playlist with given id could not be found",
                 }),
+                headers: DEFAULT_RESPONSE_HEADERS,
             };
         } else {
             return {
@@ -64,6 +86,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                 message: JSON.stringify({
                     message: `An error occured fetching playlist items from the given playlist: ${err.code}`,
                 }),
+                headers: DEFAULT_RESPONSE_HEADERS,
             };
         }
     }
@@ -80,6 +103,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
             body: JSON.stringify({
                 message: "Error fetching playlist items",
             }),
+            headers: DEFAULT_RESPONSE_HEADERS,
         };
     }
 
@@ -89,6 +113,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
     while (response.data.nextPageToken) {
         response = await youtubeClient.playlistItems.list({
             playlistId,
+            access_token: oauthToken,
             part: playlistItemParts,
             maxResults: 50,
             pageToken: response.data.nextPageToken,
@@ -99,6 +124,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
                 body: JSON.stringify({
                     message: `Error fetching playlist items. Code: ${response.status}, ${response.statusText}`,
                 }),
+                headers: DEFAULT_RESPONSE_HEADERS,
             };
         }
         items = response.data.items;
@@ -113,7 +139,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event, context) => {
         statusCode: 200,
         body: JSON.stringify({
             message: "Ok",
-            playlistItems: resultsArrays.flat()
+            playlistItems: resultsArrays.flat(),
         }),
+        headers: DEFAULT_RESPONSE_HEADERS,
     };
 }
