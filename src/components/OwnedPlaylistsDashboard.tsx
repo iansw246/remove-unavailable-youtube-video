@@ -5,6 +5,7 @@ import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../youtubeAp
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
+import NewTabLink from "./NewTabLink";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
 
@@ -143,8 +144,17 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} disabled={!isTokenClientReady} />
             {isUserLoggedIn ? 
                 <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
-                : 
-                <Typography style={{display: isUserLoggedIn ? "none" : ""}}>In order to show your playlists and remove unavailable videos from them, please sign in with Google. </Typography>
+                :
+                <>
+                    <Typography variant="caption" component="p">
+                        In order to show your playlists and remove unavailable videos from them, signing in with Google is required.
+                    </Typography>
+                    <Typography variant="caption" component="p">
+                        RUV's use and transfer to any other app of information received from Google APIs
+                        will adhere to <NewTabLink href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</NewTabLink>,
+                        including the Limited Use requirements
+                    </Typography>
+                </>
             }
             
 
