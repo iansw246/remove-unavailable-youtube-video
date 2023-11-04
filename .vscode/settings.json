@@ -1,3 +1,8 @@
 {
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json": "file:///c%3A/Users/iansw/source/repos/remove-unavailable-youtube-video/lambda/backend.yaml",
+        "https://json.schemastore.org/github-workflow.json": "file:///c%3A/Users/iansw/source/repos/remove-unavailable-youtube-video/.github/workflows/workflows.yaml",
+        "https://raw.githubusercontent.com/awslabs/goformation/master/schema/cloudformation.schema.json": "file:///c%3A/Users/iansw/source/repos/remove-unavailable-youtube-video/lambda/iam-odc.yaml"
+    }
 }

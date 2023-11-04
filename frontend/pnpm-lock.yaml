@@ -2196,15 +2196,15 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: false
 
-  /@maxim_mazurok/gapi.client.discovery-v1@0.0.20200806:
-    resolution: {integrity: sha512-0pZtrElj8bc0YROIo7nH8VVvks/iww/L68l7r74oC9+ksSVO3Lum1zUR8dXTvJ7TqLGaNYiiNaUZianK6doh/w==}
+  /@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806:
+    resolution: {integrity: sha512-Wl6UfmZVDdWbY3PUu8E2ULk9RPLjnMqp/iOA4tcK8Ne+U/GmlnWP/e34IaZNGArfl7iXJNOG+/3Rj9L9jQyF9Q==}
     dependencies:
       '@types/gapi.client': 1.0.5
-      '@types/gapi.client.discovery': 1.0.9
+      '@types/gapi.client.discovery-v1': 0.0.1
     dev: false
 
-  /@maxim_mazurok/gapi.client.youtube-v3@0.0.20230911:
-    resolution: {integrity: sha512-Av1aFmrdLsKhrCJqL2rYxidvXldN6AHNyQFas8f99i3br+1R59ir4tGg9r22nueDJ8h5sVgYssExFdI45ddmJw==}
+  /@maxim_mazurok/gapi.client.youtube-v3@0.0.20231031:
+    resolution: {integrity: sha512-Golzhj4u0CBVE9WLgRBSa5myeuxLdH01iOTyEs84UWXH0dXeGO+j8vYn2kO7u/21xenDvIGQVmq/ZbPWYQsLHQ==}
     dependencies:
       '@types/gapi.client': 1.0.5
       '@types/gapi.client.discovery-v1': 0.0.1
@@ -2811,20 +2811,13 @@ packages:
   /@types/gapi.client.discovery-v1@0.0.1:
     resolution: {integrity: sha512-xHW6FW+ERNxqFYNhC6yo1yZjBMmigqQIkX11VY8S6NFteZAX8eWpzvSrmmwFEUm4OOLTJhz8dxEyUAs4ltIMnw==}
     dependencies:
-      '@maxim_mazurok/gapi.client.discovery-v1': 0.0.20200806
-    dev: false
-
-  /@types/gapi.client.discovery@1.0.9:
-    resolution: {integrity: sha512-51fXpt7DM7+zPG5pgwnNr3KaRXmyszznu66VPpV7+FAu0LGtpTohvdfvkRCnCn2Z6EgNTq/baFAtCa/9ylHOug==}
-    deprecated: use @types/gapi.client.discovery-v1 instead; see https://github.com/Maxim-Mazurok/google-api-typings-generator/issues/652 for details
-    dependencies:
-      '@maxim_mazurok/gapi.client.discovery-v1': 0.0.20200806
+      '@maxim_mazurok/gapi.client.discovery-v1': 0.1.20200806
     dev: false
 
   /@types/gapi.client.youtube-v3@0.0.1:
     resolution: {integrity: sha512-X06qkHswrpv8tnAacBWo/SOopFQjcniyhd/HXuR65xg/vboq8/hZnFYqzIOOlJR6QFod2p+9bSnKB3vh2+qrYQ==}
     dependencies:
-      '@maxim_mazurok/gapi.client.youtube-v3': 0.0.20230911
+      '@maxim_mazurok/gapi.client.youtube-v3': 0.0.20231031
     dev: false
 
   /@types/gapi.client@1.0.5:

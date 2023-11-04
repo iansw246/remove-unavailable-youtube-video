@@ -1,0 +1,25 @@
+{
+  "name": "playlist-items",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist",
+    "pre-build": "mkdir dist && mkdir dist/playlist-items && mkdir dist/playlists",
+    "build-playlist-items": "esbuild playlist-items/index.ts --bundle --minify --sourcemap --platform=node --target=es2022 --outfile=dist/playlist-items/index.js",
+    "build-playlists": "esbuild playlists/index.ts --bundle --minify --sourcemap --platform=node --target=es2022 --outfile=dist/playlists/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@googleapis/youtube": "^11.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.122",
+    "esbuild": "^0.19.4",
+    "serverless": "^3.36.0",
+    "serverless-esbuild": "^1.48.5",
+    "typescript": "^5.2.2"
+  }
+}

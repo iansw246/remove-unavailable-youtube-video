@@ -1,0 +1,41 @@
+openapi: "3.0.2"
+info:
+  title: Remove Unavailable Videos Backend
+  version: "1.0"
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /playlist-items:
+    get:
+      description: Retrieves unavailable playlist items in the given playlist
+      parameters:
+        - name: playlistId
+          in: query
+          required: true
+          schema:
+            type: string
+          description: ID of the YouTube playlist from which to retrieve unavailable items
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          description: The Google OAuth access token required if accessing a private playlist
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  playlistItems:
+                    type: array
+                  message:
+                    type: string
+                    enum: ["OK"]
+
+  /test:
+    get:
+      responses:
+        "200":
+          description: OK

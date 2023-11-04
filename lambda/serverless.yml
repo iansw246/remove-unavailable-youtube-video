@@ -1,0 +1,48 @@
+service: ruv-backend
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  memorySize: 128
+  timeout: 20
+  architecture: arm64
+  httpApi:
+    payload: "2.0"
+    disableDefaultEndpoint: false
+    cors:
+      allowedMethods:
+        - GET
+    metrics: true
+  region: us-west-1
+  environment:
+    GOOGLE_API_KEY: ${env:GOOGLE_API_KEY}
+
+package:
+  individually: true
+
+functions:
+  playlists:
+    handler: playlists/index.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /playlists
+  playlist-items:
+    handler: playlist-items/index.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /playlist-items
+    environment:
+      MAX_PLAYLIST_ITEMS: 
+      RESERVED_TIME: "500"
+
+plugins:
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
+

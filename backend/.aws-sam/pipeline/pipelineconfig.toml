@@ -1,0 +1,23 @@
+version = 0.1
+[default.pipeline_bootstrap.parameters]
+oidc_provider_url = "https://token.actions.githubusercontent.com"
+oidc_client_id = "sts.amazonaws.com"
+github_org = "iansw246"
+github_repo = "remove-unavailable-youtube-video"
+deployment_branch = "main"
+oidc_provider = "github-actions"
+permissions_provider = "OpenID Connect (OIDC)"
+
+[dev.pipeline_bootstrap.parameters]
+pipeline_execution_role = "arn:aws:iam::584221340896:role/aws-sam-cli-managed-dev-pipel-PipelineExecutionRole-vuIzDl0qlYN4"
+cloudformation_execution_role = "arn:aws:iam::584221340896:role/aws-sam-cli-managed-dev-p-CloudFormationExecutionRo-0jSA7aMI5gh1"
+artifacts_bucket = "aws-sam-cli-managed-dev-pipeline-artifactsbucket-1gjesaj02zsnr"
+image_repository = ""
+region = "us-west-1"
+
+[prod.pipeline_bootstrap.parameters]
+pipeline_execution_role = "arn:aws:iam::584221340896:role/aws-sam-cli-managed-prod-pipe-PipelineExecutionRole-dRuPXqP3fkSo"
+cloudformation_execution_role = "arn:aws:iam::584221340896:role/aws-sam-cli-managed-prod--CloudFormationExecutionRo-m9r34w83sL7O"
+artifacts_bucket = "aws-sam-cli-managed-prod-pipeline-artifactsbucket-t49o8699qsu2"
+image_repository = ""
+region = "us-west-1"
