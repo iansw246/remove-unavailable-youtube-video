@@ -1,7 +1,7 @@
 import { AlertTitle, Button, Collapse, LinearProgress, Typography } from "@mui/material";
 import { useState } from "react";
+import ApiProvider from "../apiProvider";
 import { hasProperty, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { fetchPlaylist, fetchUnavailablePublicPlaylistItems } from "../youtubeApi";
 import ErrorAlert from "./ErrorAlert";
 import PlaylistInput from "./PlaylistInput";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
@@ -49,10 +49,16 @@ function getErrorAlertBody(error: unknown) {
 }
 
 export interface Props {
+    // The region in which user is assumed to be when checking for unavailable playlist items.
     region: Region;
+    apiProvider: ApiProvider;
 }
 
-export default function EnterPlaylistDashboard({region}: Props) {
+/**
+ * Tab where user can enter a playlist to find unavailable videos in
+ * Does not require authentiation
+ */
+export default function EnterPlaylistDashboard({region, apiProvider}: Props) {
     const [playlistId, setPlaylistId] = useState<string>();
 
     const [playlist, setPlaylist] = useState<Playlist>();
@@ -79,8 +85,8 @@ export default function EnterPlaylistDashboard({region}: Props) {
         setUnavailableItems(undefined);
 
         Promise.all([
-                fetchPlaylist(playlistId),
-                fetchUnavailablePublicPlaylistItems(playlistId, region.id),
+                apiProvider.fetchPlaylist(playlistId),
+                apiProvider.fetchUnavailablePublicPlaylistItems(playlistId, region.id),
             ])
             .then(([playlist, playlistItems]) => {
                 setIsLoading(false);

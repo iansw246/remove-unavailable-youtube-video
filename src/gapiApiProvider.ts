@@ -1,3 +1,4 @@
+import ApiProvider from "./apiProvider";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "./utils/requestHelpers";
 
 /**
@@ -228,3 +229,8 @@ async function fetchPlaylist(playlistId: string): Promise<Playlist[]> {
 }
 
 export { fetchOwnedPlaylists, filterAvailablePlaylistItems as includeUnavailablePlaylistItems, fetchUnavailablePublicPlaylistItems, fetchUnavailablePlaylistItems, fetchVideosInPlaylist, removeItemsFromPlaylist, fetchPlaylist }
+
+export const GApiApiProvider: ApiProvider = {
+    fetchPlaylist,
+    fetchUnavailablePublicPlaylistItems,
+};

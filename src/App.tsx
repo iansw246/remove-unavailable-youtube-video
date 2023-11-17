@@ -7,6 +7,7 @@ import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
 import useGapiTokenClient from './components/useGapiTokenClient';
+import { GApiApiProvider } from './gapiApiProvider';
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -79,7 +80,7 @@ function App() {
             
             {/* Use TabPanes which are always rendered because  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
-                <EnterPlaylistDashboard region={userRegion} />
+                <EnterPlaylistDashboard apiProvider={GApiApiProvider} region={userRegion} />
             </TabPanel>
             <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
                 <OwnedPlaylistsDashboard

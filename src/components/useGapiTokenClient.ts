@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import { TokenClient } from "../utils/requestHelpers";
-
-function getEnvVarSafe(envVarName: string): string {
-    const value = process.env[envVarName];
-    if (typeof value !== "string" || value.length === 0) {
-        throw new Error(`Expected environment variable ${envVarName} to be defined, but was ${value}`);
-    }
-    return value;
-}
+import { getEnvVarSafe } from "../utils/getEnvVarSafe";
 
 const youtubeApiName: string = "youtube";
 const youtubeApiVersion: string = "v3";
