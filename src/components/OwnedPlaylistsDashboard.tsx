@@ -1,7 +1,7 @@
 import { AlertTitle, Button, Collapse, Icon, IconButton, Snackbar, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../gapiApiProvider";
+import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../apiProviders/gapiApiProvider";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";

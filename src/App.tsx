@@ -7,7 +7,8 @@ import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
 import useGapiTokenClient from './components/useGapiTokenClient';
-import { GApiApiProvider } from './gapiApiProvider';
+import { GApiApiProvider } from './apiProviders/gapiApiProvider';
+import { LambdaApiProvider } from './apiProviders/lambdaApiProvider';
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -29,7 +30,7 @@ function App() {
     const onTokenClientLoadFail = useCallback((error: unknown) => {
         setShowError(true);
         setErrorTitle("Failed to load gapi token client");
-        setErrorBody(<Typography>Please check your network connection or brower blocking settings.</Typography>);
+        setErrorBody(<Typography>Please check your network connection or browser blocking settings.</Typography>);
         console.error(`Failed to load gapi token client: ${JSON.stringify(error)}`);
     }, []);
     const onTokenResponse = useCallback((tokenResponse: google.accounts.oauth2.TokenResponse) => {
@@ -80,7 +81,7 @@ function App() {
             
             {/* Use TabPanes which are always rendered because  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
-                <EnterPlaylistDashboard apiProvider={GApiApiProvider} region={userRegion} />
+                <EnterPlaylistDashboard apiProvider={LambdaApiProvider} region={userRegion} />
             </TabPanel>
             <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
                 <OwnedPlaylistsDashboard

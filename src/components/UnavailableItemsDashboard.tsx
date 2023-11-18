@@ -1,7 +1,7 @@
 import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
 import React, { forwardRef, useCallback, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { removeItemsFromPlaylist } from "../gapiApiProvider";
+import { removeItemsFromPlaylist } from "../apiProviders/gapiApiProvider";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import ExportPlaylistItems from "./ExportPlaylists";

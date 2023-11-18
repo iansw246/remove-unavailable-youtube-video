@@ -1,6 +1,6 @@
 import { AlertTitle, Button, Collapse, LinearProgress, Typography } from "@mui/material";
 import { useState } from "react";
-import ApiProvider from "../apiProvider";
+import ApiProvider from "../apiProviders/apiProvider";
 import { hasProperty, Playlist, PlaylistItem } from "../utils/requestHelpers";
 import ErrorAlert from "./ErrorAlert";
 import PlaylistInput from "./PlaylistInput";

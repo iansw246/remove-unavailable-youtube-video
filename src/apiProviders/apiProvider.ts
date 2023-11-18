@@ -1,4 +1,4 @@
-import { Playlist, PlaylistItem } from "./utils/requestHelpers";
+import { Playlist, PlaylistItem } from "../utils/requestHelpers";
 
 type ApiProvider = Readonly<{
     // Fetches playlists that match the given playlistId

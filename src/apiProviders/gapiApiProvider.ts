@@ -1,5 +1,5 @@
 import ApiProvider from "./apiProvider";
-import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "./utils/requestHelpers";
+import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "../utils/requestHelpers";
 
 /**
  * Gets all playlists owned by the signed-in user.
