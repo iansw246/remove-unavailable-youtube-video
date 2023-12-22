@@ -60,6 +60,7 @@
     "prettier": "^3.1.1"
   },
   "lint-staged": {
-    "*.ts,*.tsx,*.js,*.jsx": "prettier . --list-different"
+    "*.{ts,tsx,js,jsx}": "prettier --write",
+    "*.{json,md}": "prettier --write"
   }
 }
