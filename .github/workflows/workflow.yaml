@@ -6,7 +6,7 @@ on:
       - main
   push:
     branches:
-      - '*'
+      - "*"
 
 jobs:
   Test:
@@ -36,4 +36,3 @@ jobs:
         run: pnpm install
       - name: Run tests
         run: pnpm test
-

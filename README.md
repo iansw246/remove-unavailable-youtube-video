@@ -1,4 +1,5 @@
 # Remove Unavailable Videos
+
 [![Netlify Status](https://api.netlify.com/api/v1/badges/765ede59-349a-47c7-afcb-0e6faa3376e0/deploy-status)](https://app.netlify.com/sites/ruv/deploys)
 
 This web app gets all YouTube playlists and the unavailable videos in each video. Unavailable videos
@@ -19,14 +20,16 @@ give options to download the list of videos or remove the videos. Due to limitat
 videos that are deleted will have no information.
 
 # Building
-Install dependencies with `pnpm i`. Set required environment variables in build: 
+
+Install dependencies with `pnpm i`. Set required environment variables in build:
+
 - `REACT_APP_GAPI_CLIENT_ID`: Google API OAuth Client ID
 - `REACT_APP_GAPI_API_KEY`: Google API API Key
 
-Build with run `pnpm build`. 
-
+Build with run `pnpm build`.
 
 # Details
+
 Unavailable videos are videos that are deleted, privated, blocked due to copyright grounds, or other
 reasons. Videos availability, mostly for videos blocked for copyright, is different in each country.
 
@@ -37,6 +40,7 @@ Uses the [Google 3P Authorization library for authentication and authorization](
 The page components (App.tsx, privacyPolicy.tsx) are put directly into the layout component. To reduce nesting, you may want to return a fragment with the content.
 
 # Todo
+
 - Get app approved by Google
 - Add unit tests
 - Add privacy policy or other information
