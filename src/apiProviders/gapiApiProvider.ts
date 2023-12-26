@@ -1,6 +1,30 @@
 import ApiProvider from "./apiProvider";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "../utils/requestHelpers";
 
+async function fetchPlaylistsOwnedByChannel(channelId: string): Promise<PlaylistListResponse[]> {
+    const responses: PlaylistListResponse[] = [];
+
+    let response: gapi.client.Response<PlaylistListResponse>;
+    response = await gapi.client.youtube.playlists.list({
+        part: "contentDetails,id,snippet,status",
+        channelId,
+        maxResults: 50,
+    });
+    responses.push(response.result);
+
+    // Fetch remaining pages
+    while (Object.hasOwn(response.result, "nextPageToken")) {
+        response = await gapi.client.youtube.playlists.list({
+            part: "contentDetails,id,snippet,status",
+            channelId,
+            maxResults: 50,
+            pageToken: response.result.nextPageToken,
+        });
+        responses.push(response.result);
+    }
+    return responses;
+}
+
 /**
  * Gets all playlists owned by the signed-in user.
  * Requires authentication to have already happened.
@@ -232,5 +256,8 @@ export { fetchOwnedPlaylists, filterAvailablePlaylistItems as includeUnavailable
 
 export const GApiApiProvider: ApiProvider = {
     fetchPlaylist,
+    fetchPlaylistsOwnedByChannel,
+    fetchVideosInPlaylist,
+    fetchUnavailablePlaylistItems,
     fetchUnavailablePublicPlaylistItems,
 };
