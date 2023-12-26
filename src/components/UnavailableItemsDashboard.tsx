@@ -1,12 +1,12 @@
 import { AlertTitle, Button, Collapse, Tab, Tabs, Typography } from "@mui/material";
 import React, { forwardRef, useCallback, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { removeItemsFromPlaylist } from "../apiProviders/gapiApiProvider";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import ExportPlaylistItems from "./ExportPlaylists";
 import TabPanel from "./TabPanel";
 import UnavailableItemsDisplay from "./UnavailableItemsDisplay";
+import ApiProvider from "../apiProviders/apiProvider";
 
 interface Props {
     unavailableItems: PlaylistItem[];
@@ -16,6 +16,9 @@ interface Props {
     onVideosRemoved?: () => void;
     
     ref?: React.RefObject<HTMLDivElement>;
+
+    apiProvider: ApiProvider;
+    googleOAuthAccessToken?: string;
 }
 
 enum ErrorType {
@@ -54,7 +57,7 @@ function createErrorAlertBody(error: unknown): React.ReactNode {
     </>);
 }
 
-const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, showRemoveVideosButton: allowRemoval = true, onVideosRemoved }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
+const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, showRemoveVideosButton: allowRemoval = true, onVideosRemoved, apiProvider, googleOAuthAccessToken }: Props, ref: React.ForwardedRef<HTMLDivElement>) => {
     const [tabIndex, setTabIndex] = useState<number>(0);
     const selectedPlaylistItemsRef = useRef<PlaylistItem[]>([]);
 
@@ -73,9 +76,13 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
         setLoadingProgress(0);
         setLoadingTotal(playlistItems.length);
 
-        removeItemsFromPlaylist(playlistItems, (index) => {
-            setLoadingProgress(index);
-        }).then(() => {
+        apiProvider.removeItemsFromPlaylist(
+            playlistItems,
+            (index) => {
+                setLoadingProgress(index);
+            },
+            googleOAuthAccessToken
+        ).then(() => {
             setIsLoading(false);
             onVideosRemoved?.();
         }, (error) => {
@@ -88,7 +95,7 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
             });
             console.error(error);
         });
-    }, [onVideosRemoved]);
+    }, [onVideosRemoved, apiProvider, googleOAuthAccessToken]);
 
     const handleRemoveSelectedVideosButtonClick = useCallback(() => {
         if (selectedPlaylistItemsRef.current.length <= 0) {

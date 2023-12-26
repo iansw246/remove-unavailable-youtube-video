@@ -1,24 +1,25 @@
 import { AlertTitle, Button, Collapse, Icon, IconButton, Snackbar, Typography } from "@mui/material";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { isUnauthenticated, Playlist, PlaylistItem } from "../utils/requestHelpers";
-import { fetchOwnedPlaylists, fetchUnavailablePlaylistItems } from "../apiProviders/gapiApiProvider";
 import AdaptiveLinearProgress from "./AdaptiveLinearProgress";
 import ErrorAlert from "./ErrorAlert";
 import GoogleSigninButton from "./GoogleSignInButton/GoogleSignInButton";
 import NewTabLink from "./NewTabLink";
 import PlaylistList from "./PlaylistList";
 import UnavailableItemsDashboard from "./UnavailableItemsDashboard";
+import ApiProvider from "../apiProviders/apiProvider";
 
 export interface Props {
-    isUserLoggedIn: boolean;
+    googleOAuthAccessToken: string | undefined;
     onUserLoginRequest: () => void;
     userRegion: Region;
     isTokenClientReady: boolean;
+    apiProvider: ApiProvider;
 }
 
 const PlaylistListMemoized = memo(PlaylistList);
 
-export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequest, userRegion, isTokenClientReady}: Props) {
+export default function OwnedPlaylistsDashboard({googleOAuthAccessToken, onUserLoginRequest, userRegion, isTokenClientReady, apiProvider}: Props) {
     const [userChannelId, setUserChannelId] = useState<string>();
 
     const [playlists, setPlaylists] = useState<Playlist[]>();
@@ -36,7 +37,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     const unavailableVideosHeader = useRef<HTMLDivElement>(null);
 
     const fetchPlaylists = useCallback(() => {
-        if (!isUserLoggedIn) {
+        if (!googleOAuthAccessToken) {
             setShowError(true);
             setError("User is not logged in");
             console.error("User is not logged in");
@@ -45,7 +46,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
 
-        fetchOwnedPlaylists().then((responses) => {
+        apiProvider.fetchOwnedPlaylists(googleOAuthAccessToken).then((responses) => {
             setPlaylists(responses.flatMap((item) => {
                 return item.items ?? [];
             }));
@@ -63,7 +64,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setError(error);
             console.error(error);
         });
-    }, [isUserLoggedIn]);
+    }, [googleOAuthAccessToken, apiProvider]);
 
     function handleFetchMyPlaylistsButtonClick() {
         fetchPlaylists();
@@ -84,7 +85,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
 
-        fetchUnavailablePlaylistItems(playlist.id, userChannelId, userRegion.id).then((fetchedUnavailableItems) => {
+        apiProvider.fetchUnavailablePlaylistItems(playlist.id, userChannelId, userRegion.id, googleOAuthAccessToken).then((fetchedUnavailableItems) => {
             setUnavailableItems(fetchedUnavailableItems);
             setIsLoading(false);
         }, (error) => {
@@ -94,7 +95,7 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
             setError(error);
             console.error(error);
         });
-    }, [userChannelId, userRegion.id]);
+    }, [userChannelId, userRegion.id, apiProvider, googleOAuthAccessToken]);
 
     const [isSnackbarOpen, setIsSnackbarOpen] = useState<boolean>(false);
 
@@ -108,11 +109,11 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     }, []);
 
     useEffect(() => {
-        if (!isUserLoggedIn) {
+        if (!googleOAuthAccessToken) {
             return;
         }
         fetchPlaylists();
-    }, [isUserLoggedIn, fetchPlaylists]);
+    }, [googleOAuthAccessToken, fetchPlaylists]);
 
     useEffect(() => {
         if (!unavailableItems || !selectedPlaylist || isLoading) {
@@ -142,8 +143,8 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
     return (
         <div>
             <GoogleSigninButton onClick={() => { onUserLoginRequest(); }} disabled={!isTokenClientReady} />
-            {isUserLoggedIn ? 
-                <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: isUserLoggedIn ? "" : "none"}}>Refresh playlists</Button>
+            {googleOAuthAccessToken ? 
+                <Button onClick={handleFetchMyPlaylistsButtonClick} style={{display: googleOAuthAccessToken ? "" : "none"}}>Refresh playlists</Button>
                 :
                 <>
                     <Typography variant="caption" component="p">
@@ -178,6 +179,8 @@ export default function OwnedPlaylistsDashboard({isUserLoggedIn, onUserLoginRequ
                     playlist={selectedPlaylist}
                     showRemoveVideosButton={true}
                     onVideosRemoved={handleVideosRemoved}
+                    apiProvider={apiProvider}
+                    googleOAuthAccessToken={googleOAuthAccessToken}
                 />
             }
 

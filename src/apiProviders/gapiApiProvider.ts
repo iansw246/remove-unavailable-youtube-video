@@ -1,28 +1,13 @@
 import ApiProvider from "./apiProvider";
 import { Playlist, PlaylistItem, PlaylistItemListResponse, PlaylistListResponse, Video } from "../utils/requestHelpers";
 
-async function fetchPlaylistsOwnedByChannel(channelId: string): Promise<PlaylistListResponse[]> {
-    const responses: PlaylistListResponse[] = [];
-
-    let response: gapi.client.Response<PlaylistListResponse>;
-    response = await gapi.client.youtube.playlists.list({
+async function fetchPlaylist(playlistId: string, googleOAuthAccessToken?: string): Promise<Playlist[]> {
+    return (await gapi.client.youtube.playlists.list({
+        id: playlistId,
         part: "contentDetails,id,snippet,status",
-        channelId,
         maxResults: 50,
-    });
-    responses.push(response.result);
-
-    // Fetch remaining pages
-    while (Object.hasOwn(response.result, "nextPageToken")) {
-        response = await gapi.client.youtube.playlists.list({
-            part: "contentDetails,id,snippet,status",
-            channelId,
-            maxResults: 50,
-            pageToken: response.result.nextPageToken,
-        });
-        responses.push(response.result);
-    }
-    return responses;
+        oauth_token: googleOAuthAccessToken,
+    })).result.items ?? [];
 }
 
 /**
@@ -30,12 +15,13 @@ async function fetchPlaylistsOwnedByChannel(channelId: string): Promise<Playlist
  * Requires authentication to have already happened.
  * @returns The pages of the PlaylistListReponses 
  */
-async function fetchOwnedPlaylists(): Promise<PlaylistListResponse[]> {
+async function fetchOwnedPlaylists(googleOAuthAccessToken?: string): Promise<PlaylistListResponse[]> {
     const responses: PlaylistListResponse[] = [];
 
     let response: gapi.client.Response<PlaylistListResponse>;
     response = await gapi.client.youtube.playlists.list({
         part: "contentDetails,id,snippet,status",
+        access_token: googleOAuthAccessToken,
         mine: true,
         maxResults: 50,
     });
@@ -46,6 +32,7 @@ async function fetchOwnedPlaylists(): Promise<PlaylistListResponse[]> {
         response = await gapi.client.youtube.playlists.list({
             part: "contentDetails,id,snippet,status",
             mine: true,
+            access_token: googleOAuthAccessToken,
             maxResults: 50,
             pageToken: response.result.nextPageToken,
         });
@@ -74,13 +61,14 @@ function isVideoAvailableInCountry(video: Video, countryCode: string): boolean {
     }
 }
 
-async function fetchVideosInPlaylist(playlistId: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
+async function fetchVideosInPlaylist(playlistId: string, googleOAuthAccessToken?: string): Promise<gapi.client.youtube.PlaylistItemListResponse[]> {
     const results: gapi.client.youtube.PlaylistItemListResponse[] = [];
 
     let response = await gapi.client.youtube.playlistItems.list({
         part: "contentDetails,id,snippet,status",
         maxResults: 50,
-        playlistId
+        access_token: googleOAuthAccessToken,
+        playlistId,
     });
     // Should have thrown error if not successful
     console.assert(response.status === 200, response);
@@ -91,6 +79,7 @@ async function fetchVideosInPlaylist(playlistId: string): Promise<gapi.client.yo
         let response = await gapi.client.youtube.playlistItems.list({
             part: "contentDetails,id,snippet,status",
             maxResults: 50,
+            access_token: googleOAuthAccessToken,
             playlistId,
             pageToken: itemsResult.nextPageToken,
         });
@@ -101,11 +90,6 @@ async function fetchVideosInPlaylist(playlistId: string): Promise<gapi.client.yo
     return results;
 }
 
-// Gets unavailable playlist items as a non-signed-in user in the given country
-async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCountryCode: string): Promise<PlaylistItem[]> {
-    return fetchUnavailablePlaylistItems(playlistId, null, userCountryCode);
-}
-
 /**
  * Gets unavailable playlist items from given playlist as the given user user in the given country
  * @param playlistId 
@@ -113,10 +97,16 @@ async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCount
  * @param userCountryCode 
  * @returns 
  */
-async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
-    const playlistItemResponses = await fetchVideosInPlaylist(playlistId);
-    return filterAvailablePlaylistItems(playlistItemResponses, userChannelId, userCountryCode);
+async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
+    const playlistItemResponses = await fetchVideosInPlaylist(playlistId, googleOAuthAccessToken);
+    return filterAvailablePlaylistItems(playlistItemResponses, userChannelId, userCountryCode, googleOAuthAccessToken);
 }
+
+// Gets unavailable playlist items as a non-signed-in user in the given country
+async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCountryCode: string): Promise<PlaylistItem[]> {
+    return fetchUnavailablePlaylistItems(playlistId, null, userCountryCode);
+}
+
 
 /**
  * Returns all playlistItems that are unavailable for the given user in the given region from the given list.
@@ -126,7 +116,7 @@ async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: 
  * @param userCountryCode 
  * @returns 
  */
-async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string): Promise<PlaylistItem[]> {
+async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
     const unavailableItems: PlaylistItem[] = [];
     // Videos public, but possibly unavailable due to region blocking
     const possiblyUnavailableItems: PlaylistItem[] = [];
@@ -175,7 +165,8 @@ async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemL
         batch.add(gapi.client.youtube.videos.list({
             part: "contentDetails,status",
             id: uniqueVideoIds.slice(startIndex, startIndex + MAX_VIDEO_IDS_PER_REQUEST).join(","),
-            maxResults: 50
+            maxResults: 50,
+            access_token: googleOAuthAccessToken,
         }));
         startIndex += 50;
     }
@@ -219,7 +210,7 @@ async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemL
     return unavailableItems;
 }
 
-async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemDelete?: (index: number) => void): Promise<void> {
+async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemDelete?: (index: number) => void, googleOAuthAccessToken?: string): Promise<void> {
     if (unavailableItems.length <= 0) {
         return;
     }
@@ -234,7 +225,8 @@ async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemD
             continue;
         }
         const response = await gapi.client.youtube.playlistItems.delete({
-            id: item.id
+            id: item.id,
+            oauth_token: googleOAuthAccessToken,
         });
         // Successful deletion should responsd with error 204
         if (response.status !== 204) {
@@ -244,20 +236,15 @@ async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemD
     }
 }
 
-async function fetchPlaylist(playlistId: string): Promise<Playlist[]> {
-    return (await gapi.client.youtube.playlists.list({
-        id: playlistId,
-        part: "contentDetails,id,snippet,status",
-        maxResults: 50,
-    })).result.items ?? [];
-}
-
-export { fetchOwnedPlaylists, filterAvailablePlaylistItems as includeUnavailablePlaylistItems, fetchUnavailablePublicPlaylistItems, fetchUnavailablePlaylistItems, fetchVideosInPlaylist, removeItemsFromPlaylist, fetchPlaylist }
-
+/**
+ * ApiProvider using the GApi client-side JavaScript library, by Google
+ * Requires setting the API key for GApi before using (with gapi.client.init)
+ */
 export const GApiApiProvider: ApiProvider = {
     fetchPlaylist,
-    fetchPlaylistsOwnedByChannel,
+    fetchOwnedPlaylists,
     fetchVideosInPlaylist,
     fetchUnavailablePlaylistItems,
     fetchUnavailablePublicPlaylistItems,
+    removeItemsFromPlaylist,
 };

@@ -6,9 +6,8 @@ import ErrorDialog from './components/ErrorDialog';
 import OwnedPlaylistsDashboard from './components/OwnedPlaylistsDashboard';
 import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './components/RegionSelector';
 import TabPanel from './components/TabPanel';
-import useGapiTokenClient from './components/useGapiTokenClient';
+import useGapiAndTokenClient from './components/useGapiTokenClient';
 import { GApiApiProvider } from './apiProviders/gapiApiProvider';
-import { LambdaApiProvider } from './apiProviders/lambdaApiProvider';
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -18,7 +17,7 @@ enum TabTypes {
 }
 
 function App() {
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(false);
+    const [googleOAuthAccessToken, setGapiAccessToken] = useState<string>();
 
     const [userRegion, setUserRegion] = useState<Region>(loadOrInitializeSavedRegion);
 
@@ -35,13 +34,9 @@ function App() {
     }, []);
     const onTokenResponse = useCallback((tokenResponse: google.accounts.oauth2.TokenResponse) => {
         // If successfully got scopes desired
-        if (tokenResponse.access_token) {
-            setIsUserLoggedIn(true);
-        } else {
-            setIsUserLoggedIn(false);
-        }
+        setGapiAccessToken(tokenResponse.access_token || undefined);
     }, []);
-    useGapiTokenClient(setTokenClient, onTokenClientLoadFail, onTokenResponse);
+    useGapiAndTokenClient(setTokenClient, onTokenClientLoadFail, onTokenResponse);
 
     const [tabIndex, setTabIndex] = useState<TabTypes>(TabTypes.ENTER_PLAYLIST);
 
@@ -79,18 +74,19 @@ function App() {
                 <Tab label="Your playlists" value={TabTypes.MY_PLAYLISTS} />
             </Tabs>
             
-            {/* Use TabPanes which are always rendered because  */}
+            {/* Use TabPanes which are always rendered so that scroll positions are not lost  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
-                <EnterPlaylistDashboard apiProvider={LambdaApiProvider} region={userRegion} />
+                <EnterPlaylistDashboard apiProvider={GApiApiProvider} region={userRegion} />
             </TabPanel>
             <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
                 <OwnedPlaylistsDashboard
                     userRegion={userRegion}
-                    isUserLoggedIn={isUserLoggedIn}
+                    googleOAuthAccessToken={googleOAuthAccessToken}
                     onUserLoginRequest={() => {
                         tokenClient?.requestAccessToken();
                     }}
                     isTokenClientReady={tokenClient !== undefined}
+                    apiProvider={GApiApiProvider}
                 />
             </TabPanel>
         </>

@@ -118,7 +118,12 @@ export default function EnterPlaylistDashboard({region, apiProvider}: Props) {
                 </ErrorAlert>
             </Collapse>
             {playlist ? (
-                <UnavailableItemsDashboard playlist={playlist} unavailableItems={unavailableItems ?? []} showRemoveVideosButton={false} />
+                <UnavailableItemsDashboard
+                    playlist={playlist}
+                    unavailableItems={unavailableItems ?? []}
+                    showRemoveVideosButton={false}
+                    apiProvider={apiProvider}
+                />
             ) : null}
         </div>
     );

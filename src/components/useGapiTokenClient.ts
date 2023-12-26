@@ -51,12 +51,12 @@ function initTokenClient(
 }
 
 /**
- * 
+ * Hook to set up the Gapi library and the token client and any callbacks
  * @param onGapiTokenClientLoaded Callback when the token client is loaded and ready to accept login requests
  * @param onGapiTokenClientLoadFail Callback when token client fails to load successfully
  * @param onTokenResponse Callback when user logs in with Google account
  */
-export default function useGapiTokenClient(
+export default function useGapiAndTokenClient(
     onGapiTokenClientLoaded: (tokenClient: TokenClient) => void,
     onGapiTokenClientLoadFail: (error: unknown) => void,
     onTokenResponse: ((tokenResponse: google.accounts.oauth2.TokenResponse) => void) | null
