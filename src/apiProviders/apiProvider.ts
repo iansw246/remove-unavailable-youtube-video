@@ -13,7 +13,7 @@ type ApiProvider = Readonly<{
      * Gets all playlists owned by the signed-in user.
      * @returns The pages of the PlaylistListReponses 
      */
-    fetchOwnedPlaylists: (googleOAuthAccessToken?: string) => Promise<PlaylistListResponse[]>;
+    fetchOwnedPlaylists: (googleOAuthAccessToken: string) => Promise<Playlist[]>;
     
     /**
      * Gets all playlists owned by the given user.
@@ -29,18 +29,19 @@ type ApiProvider = Readonly<{
      * @param userCountryCode 
      * @returns 
      */
-    fetchUnavailablePlaylistItems: (playlistId: string, userChannelId: string | null, userCountryCode: string, googleOAuthAccessToken?: string) => Promise<PlaylistItem[]>;
+    fetchUnavailablePlaylistItems: (playlistId: string, userCountryCode: string, userChannelId?: string, googleOAuthAccessToken?: string) => Promise<PlaylistItem[]>;
     // Fetches items that are unavailable to a public user (not signed into an account) in a given playlist within a given country.
     fetchUnavailablePublicPlaylistItems: (playlistId: string, userCountryCode: string) => Promise<PlaylistItem[]>;
 
     /**
      * Removes the given playlist items from their respective playlists
-     * @param unavailableItems Playlist items to remove
-     * @param onItemDelete Callback when the item at the index has been successfully deleted. Useful for user feedback while deletion is happening
+     * @param itemsToRemove Playlist items to remove
+     * @param onItemDelete Callback when the item at the index has been successfully deleted. Useful for user feedback while deletion is happening.
+     * Is only guaranteed to be called for the last index. Implementations are free to only call it at the end with the last index when all operations are done
      * @param googleOAuthAccessToken 
      * @returns 
      */
-    removeItemsFromPlaylist: (unavailableItems: PlaylistItem[], onItemDelete?: (index: number) => void, googleOAuthAccessToken?: string) => Promise<void>
+    removeItemsFromPlaylist: (itemsToRemove: PlaylistItem[], googleOAuthAccessToken: string, onItemDelete?: (index: number) => void) => Promise<void>
 }>;
 
 export default ApiProvider;

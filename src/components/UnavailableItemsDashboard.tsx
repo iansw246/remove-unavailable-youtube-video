@@ -69,6 +69,12 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
     const [error, setError] = useState<any>();
 
     const removeVideos = useCallback((playlistItems: PlaylistItem[]) => {
+        if (!googleOAuthAccessToken) {
+            setError("Missing googleOAuthAccessToken");
+            setShowError(true);
+            return;
+        }
+
         if (!playlistItems) {
             return;
         }
@@ -78,10 +84,10 @@ const UnavailableItemsDashboard = forwardRef(({ unavailableItems, playlist, show
 
         apiProvider.removeItemsFromPlaylist(
             playlistItems,
+            googleOAuthAccessToken,
             (index) => {
                 setLoadingProgress(index);
             },
-            googleOAuthAccessToken
         ).then(() => {
             setIsLoading(false);
             onVideosRemoved?.();

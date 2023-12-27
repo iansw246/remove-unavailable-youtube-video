@@ -8,6 +8,9 @@ import RegionSelector, { loadOrInitializeSavedRegion, saveRegion } from './compo
 import TabPanel from './components/TabPanel';
 import useGapiAndTokenClient from './components/useGapiTokenClient';
 import { GApiApiProvider } from './apiProviders/gapiApiProvider';
+import { LambdaApiProvider } from './apiProviders/lambdaApiProvider';
+
+const apiProvider = LambdaApiProvider;
 
 type TokenClient = google.accounts.oauth2.TokenClient;
 
@@ -76,7 +79,7 @@ function App() {
             
             {/* Use TabPanes which are always rendered so that scroll positions are not lost  */}
             <TabPanel value={tabIndex} index={TabTypes.ENTER_PLAYLIST}>
-                <EnterPlaylistDashboard apiProvider={GApiApiProvider} region={userRegion} />
+                <EnterPlaylistDashboard apiProvider={apiProvider} region={userRegion} />
             </TabPanel>
             <TabPanel value={tabIndex} index={TabTypes.MY_PLAYLISTS}>
                 <OwnedPlaylistsDashboard
@@ -86,7 +89,7 @@ function App() {
                         tokenClient?.requestAccessToken();
                     }}
                     isTokenClientReady={tokenClient !== undefined}
-                    apiProvider={GApiApiProvider}
+                    apiProvider={apiProvider}
                 />
             </TabPanel>
         </>

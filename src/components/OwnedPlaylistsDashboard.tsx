@@ -41,18 +41,17 @@ export default function OwnedPlaylistsDashboard({googleOAuthAccessToken, onUserL
             setShowError(true);
             setError("User is not logged in");
             console.error("User is not logged in");
+            return;
         }
         setIsLoading(true);
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
 
-        apiProvider.fetchOwnedPlaylists(googleOAuthAccessToken).then((responses) => {
-            setPlaylists(responses.flatMap((item) => {
-                return item.items ?? [];
-            }));
+        apiProvider.fetchOwnedPlaylists(googleOAuthAccessToken).then((playlists) => {
+            setPlaylists(playlists);
 
             // Assume that the first playlist returned is owned by the user's channel
-            setUserChannelId(responses[0].items?.[0]?.snippet?.channelId);
+            setUserChannelId(playlists[0]?.snippet?.channelId);
 
             setIsLoading(false);
 
@@ -85,7 +84,7 @@ export default function OwnedPlaylistsDashboard({googleOAuthAccessToken, onUserL
         setLoadingProgress(undefined);
         setLoadingTotal(undefined);
 
-        apiProvider.fetchUnavailablePlaylistItems(playlist.id, userChannelId, userRegion.id, googleOAuthAccessToken).then((fetchedUnavailableItems) => {
+        apiProvider.fetchUnavailablePlaylistItems(playlist.id, userRegion.id, userChannelId, googleOAuthAccessToken).then((fetchedUnavailableItems) => {
             setUnavailableItems(fetchedUnavailableItems);
             setIsLoading(false);
         }, (error) => {

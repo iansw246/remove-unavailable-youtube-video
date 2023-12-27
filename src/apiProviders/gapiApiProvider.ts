@@ -15,7 +15,7 @@ async function fetchPlaylist(playlistId: string, googleOAuthAccessToken?: string
  * Requires authentication to have already happened.
  * @returns The pages of the PlaylistListReponses 
  */
-async function fetchOwnedPlaylists(googleOAuthAccessToken?: string): Promise<PlaylistListResponse[]> {
+async function fetchOwnedPlaylists(googleOAuthAccessToken?: string): Promise<Playlist[]> {
     const responses: PlaylistListResponse[] = [];
 
     let response: gapi.client.Response<PlaylistListResponse>;
@@ -38,7 +38,7 @@ async function fetchOwnedPlaylists(googleOAuthAccessToken?: string): Promise<Pla
         });
         responses.push(response.result);
     }
-    return responses;
+    return responses.flatMap(response => response.items ?? []);
 }
 
 function isVideoAvailableInCountry(video: Video, countryCode: string): boolean {
@@ -97,14 +97,14 @@ async function fetchVideosInPlaylist(playlistId: string, googleOAuthAccessToken?
  * @param userCountryCode 
  * @returns 
  */
-async function fetchUnavailablePlaylistItems(playlistId: string, userChannelId: string | null, userCountryCode: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
+async function fetchUnavailablePlaylistItems(playlistId: string, userCountryCode: string, userChannelId?: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
     const playlistItemResponses = await fetchVideosInPlaylist(playlistId, googleOAuthAccessToken);
-    return filterAvailablePlaylistItems(playlistItemResponses, userChannelId, userCountryCode, googleOAuthAccessToken);
+    return filterAvailablePlaylistItems(playlistItemResponses, userCountryCode, userChannelId, googleOAuthAccessToken);
 }
 
 // Gets unavailable playlist items as a non-signed-in user in the given country
 async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCountryCode: string): Promise<PlaylistItem[]> {
-    return fetchUnavailablePlaylistItems(playlistId, null, userCountryCode);
+    return fetchUnavailablePlaylistItems(playlistId, userCountryCode);
 }
 
 
@@ -116,7 +116,7 @@ async function fetchUnavailablePublicPlaylistItems(playlistId: string, userCount
  * @param userCountryCode 
  * @returns 
  */
-async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemListResponse[], userChannelId: string | null, userCountryCode: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
+async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemListResponse[], userCountryCode: string, userChannelId?: string, googleOAuthAccessToken?: string): Promise<PlaylistItem[]> {
     const unavailableItems: PlaylistItem[] = [];
     // Videos public, but possibly unavailable due to region blocking
     const possiblyUnavailableItems: PlaylistItem[] = [];
@@ -210,7 +210,7 @@ async function filterAvailablePlaylistItems(playlistItemResponses: PlaylistItemL
     return unavailableItems;
 }
 
-async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], onItemDelete?: (index: number) => void, googleOAuthAccessToken?: string): Promise<void> {
+async function removeItemsFromPlaylist(unavailableItems: PlaylistItem[], googleOAuthAccessToken: string, onItemDelete?: (index: number) => void): Promise<void> {
     if (unavailableItems.length <= 0) {
         return;
     }
