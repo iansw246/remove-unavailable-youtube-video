@@ -79,7 +79,6 @@ async function fetchOwnedPlaylists(googleOAuthAccessToken?: string) {
 async function fetchUnavailablePlaylistItems(playlistId: string, userCountryCode: string, userChannelId?: string, googleOAuthAccessToken?: string) {
     const headers = new Headers();
 
-    console.log(googleOAuthAccessToken);
     if (googleOAuthAccessToken) {
         headers.append("Authorization", googleOAuthAccessToken);
     }
@@ -99,9 +98,6 @@ async function fetchUnavailablePlaylistItems(playlistId: string, userCountryCode
     });
 
     const responseObj = await response.json();
-
-    console.log("playlistItems" in responseObj);
-    console.log(validatePlaylistItemResponse(responseObj.playlistItems));
 
     if (!("playlistItems" in responseObj) || !validatePlaylistItemResponse(responseObj.playlistItems)) {
         throw new Error("Invalid response from API");
@@ -130,17 +126,15 @@ async function removeItemsFromPlaylist(itemsToRemove: PlaylistItem[], googleOAut
     onItemDelete?.(itemsToRemove.length - 1);
 }
 
-function validatePlaylistResponse(responsePlaylists: object): responsePlaylists is Playlist[] {
-    if (!("items" in responsePlaylists) || !Array.isArray(responsePlaylists.items)) {
+function validatePlaylistResponse(playlists: object): playlists is Playlist[] {
+    if (!Array.isArray(playlists)) {
         return false;
     }
 
-    const items = responsePlaylists.items;
-
-    if (items.length === 0) {
+    if (playlists.length === 0) {
         return true;
     }
-    const firstItem = items[0];
+    const firstItem = playlists[0];
     // Validate a few properties. There's a lot to check that I won't bother with
     // Assume that if these few exists, the rest should be correct too
     if (typeof firstItem !== "object"
@@ -148,6 +142,7 @@ function validatePlaylistResponse(responsePlaylists: object): responsePlaylists 
         || typeof firstItem.etag !== "string"
         || typeof firstItem.id !== "string"
         || typeof firstItem.snippet !== "object"
+        || typeof firstItem.contentDetails !== "object"
     ) {
         return false;
     }
