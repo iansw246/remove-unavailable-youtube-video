@@ -199,8 +199,9 @@ export default function OwnedPlaylistsDashboard({
       ) : (
         <>
           <Typography variant="caption" component="p">
-            In order to show your playlists and remove unavailable videos from
-            them, signing in with Google is required.
+            In order to show your playlists, including private playlists, and
+            remove unavailable videos from them, signing in with Google is
+            required.
           </Typography>
           <Typography variant="caption" component="p">
             RUV's use and transfer to any other app of information received from

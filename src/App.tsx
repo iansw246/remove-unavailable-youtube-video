@@ -79,10 +79,11 @@ function App() {
 
       <Typography variant="h1">Remove Unavailable Videos</Typography>
       <Typography>
-        Annoyed by the "unavailable videos are hidden" banner in YouTube? Remove
-        Unavailable Videos (RUV) lets you find videos that have been deleted,
-        privated, or blocked in your country and automatically remove them from
-        your YouTube playlists.
+        Annoyed by the "unavailable videos are hidden" banner in YouTube?
+        Wondering where the videos in your playlist went? Remove Unavailable
+        Videos (RUV) lets you find videos that have been deleted, privated, or
+        blocked in your country and automatically remove them from your YouTube
+        playlists.
       </Typography>
 
       <Typography>
