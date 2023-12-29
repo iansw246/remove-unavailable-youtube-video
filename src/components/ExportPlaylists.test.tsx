@@ -2,16 +2,25 @@ import playlistItemsListResponse from "../testData/playlistItemsListResponse";
 import ExportPlaylistItems from "./ExportPlaylists";
 
 import { render, screen } from "@testing-library/react";
+import { PlaylistItem } from "../utils/requestHelpers";
+
+function setupURL() {
+  global.URL.createObjectURL = jest.fn();
+}
+
+function teardownURL(oldCreateObjectURL: any) {
+  global.URL.createObjectURL = oldCreateObjectURL;
+}
 
 test("Shows playlists titles and channels in plain text", () => {
-  const playlistName = "The best playlist";
+  const playlistName = "Mock playlist name";
   const playlistItems = playlistItemsListResponse.items;
 
   // JS-DOM did not implement URL.createObjectURL. Must mock
   // https://github.com/jsdom/jsdom/issues/1721
   const oldCreateObjectURL = global.URL.createObjectURL;
 
-  global.URL.createObjectURL = jest.fn();
+  setupURL();
 
   render(
     <ExportPlaylistItems
@@ -34,5 +43,22 @@ test("Shows playlists titles and channels in plain text", () => {
     ).toBeInTheDocument();
   }
 
-  global.URL.createObjectURL = oldCreateObjectURL;
+  teardownURL(oldCreateObjectURL);
+});
+
+test("Handles empty playlistItems", () => {
+  const oldCreateObjectURL = global.URL.createObjectURL;
+  setupURL();
+
+  const playlistName = "Mock Playlist Name";
+  const playlistItems: PlaylistItem[] = [];
+
+  render(
+    <ExportPlaylistItems
+      playlistName={playlistName}
+      playlistItems={playlistItems}
+    />,
+  );
+
+  teardownURL(oldCreateObjectURL);
 });

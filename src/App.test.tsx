@@ -1,7 +1,7 @@
 import { render, waitFor } from "@testing-library/react";
 import App from "./App";
 
-test("App renders without crashing", async () => {
+test("Renders without crashing", async () => {
   // @ts-expect-error
   global.gapi = {
     load(apiName, callback) {

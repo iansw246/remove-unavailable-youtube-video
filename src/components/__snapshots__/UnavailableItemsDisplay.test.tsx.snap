@@ -1,0 +1,252 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<DocumentFragment>
+  <p
+    class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+  >
+    Found 5 unavailable videos in playlist Delete Test
+  </p>
+  <div>
+    <div
+      class="MuiStack-root css-1k2zuzg-MuiStack-root"
+    >
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-1j8pgxe-MuiPaper-root"
+      >
+        <div
+          class="MuiBox-root css-p58oka"
+        >
+          <img
+            alt="Boat Buds thumbnail"
+            class="css-wnbi1d"
+            loading="lazy"
+            src="https://i.ytimg.com/vi/Dc30Pk_Ib1w/default.jpg"
+          />
+          <div
+            class="MuiBox-root css-gqssyb"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/watch?v=Dc30Pk_Ib1w&list=OLAK5uy_lVHKpWYVeLJEP2eqMjfCk0uYE54qRXo10&position=0"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Boat Buds
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/channel/UCPw7S3ZvjuPnc2-KCIxZYbw"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mark Sparling - Topic
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              Published on 9/28/2023, 8:18:04 PM
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-1j8pgxe-MuiPaper-root"
+      >
+        <div
+          class="MuiBox-root css-p58oka"
+        >
+          <img
+            alt="Beach Buds (Flight Mix) thumbnail"
+            class="css-wnbi1d"
+            loading="lazy"
+            src="https://i.ytimg.com/vi/c5CxLUwJATw/default.jpg"
+          />
+          <div
+            class="MuiBox-root css-gqssyb"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/watch?v=c5CxLUwJATw&list=OLAK5uy_lVHKpWYVeLJEP2eqMjfCk0uYE54qRXo10&position=1"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Beach Buds (Flight Mix)
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/channel/UCPw7S3ZvjuPnc2-KCIxZYbw"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mark Sparling - Topic
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              Published on 9/28/2023, 8:18:04 PM
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-1j8pgxe-MuiPaper-root"
+      >
+        <div
+          class="MuiBox-root css-p58oka"
+        >
+          <img
+            alt="Somewhere in the Woods (Flight Mix) thumbnail"
+            class="css-wnbi1d"
+            loading="lazy"
+            src="https://i.ytimg.com/vi/Ezl0eDxazeY/default.jpg"
+          />
+          <div
+            class="MuiBox-root css-gqssyb"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/watch?v=Ezl0eDxazeY&list=OLAK5uy_lVHKpWYVeLJEP2eqMjfCk0uYE54qRXo10&position=2"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Somewhere in the Woods (Flight Mix)
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/channel/UCPw7S3ZvjuPnc2-KCIxZYbw"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mark Sparling - Topic
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              Published on 9/28/2023, 8:18:04 PM
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-1j8pgxe-MuiPaper-root"
+      >
+        <div
+          class="MuiBox-root css-p58oka"
+        >
+          <img
+            alt="See You at the Top (Flight Mix) thumbnail"
+            class="css-wnbi1d"
+            loading="lazy"
+            src="https://i.ytimg.com/vi/BJNkEeZezSw/default.jpg"
+          />
+          <div
+            class="MuiBox-root css-gqssyb"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/watch?v=BJNkEeZezSw&list=OLAK5uy_lVHKpWYVeLJEP2eqMjfCk0uYE54qRXo10&position=3"
+                rel="noreferrer"
+                target="_blank"
+              >
+                See You at the Top (Flight Mix)
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/channel/UCPw7S3ZvjuPnc2-KCIxZYbw"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mark Sparling - Topic
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              Published on 9/28/2023, 8:18:04 PM
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation2 css-1j8pgxe-MuiPaper-root"
+      >
+        <div
+          class="MuiBox-root css-p58oka"
+        >
+          <img
+            alt="Boat Buds (Alternate Mix) thumbnail"
+            class="css-wnbi1d"
+            loading="lazy"
+            src="https://i.ytimg.com/vi/TnsmKZmw_QY/default.jpg"
+          />
+          <div
+            class="MuiBox-root css-gqssyb"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/watch?v=TnsmKZmw_QY&list=OLAK5uy_lVHKpWYVeLJEP2eqMjfCk0uYE54qRXo10&position=4"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Boat Buds (Alternate Mix)
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body2 css-e784if-MuiTypography-root"
+            >
+              <a
+                class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1xylxj1-MuiTypography-root-MuiLink-root"
+                href="https://www.youtube.com/channel/UCPw7S3ZvjuPnc2-KCIxZYbw"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Mark Sparling - Topic
+              </a>
+            </p>
+            <p
+              class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+            >
+              Published on 9/28/2023, 8:18:04 PM
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -37,7 +37,7 @@ export default function usePlaylistItemsExportText(
       );
       return dataLines.join("\n");
     } else {
-      return "Invalid data format. Please report this error";
+      return "Invalid data format. Please report this error.";
     }
   }, [playlistItems, playlistDataFormat]);
 }
