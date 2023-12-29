@@ -1,5 +1,5 @@
 import PlaylistList from "./PlaylistList";
-import playlistListResponse from "../testData/playlistsListResponse";
+import playlistListResponse from "../testData/ownedPlaylistsListResponse";
 import { render, screen } from "@testing-library/react";
 
 const playlists = playlistListResponse.items;
