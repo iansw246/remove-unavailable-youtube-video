@@ -25,12 +25,11 @@ enum CheckAllCheckboxState {
 }
 
 const StyledStack = styled(Stack)(({ theme }) => ({
-  maxHeight: "90vh",
-  minHeight: "200px",
+  maxHeight: "60vh",
   overflowY: "auto",
-  m: theme.spacing(1),
-  py: theme.spacing(2),
-  pr: theme.spacing(2),
+  padding: theme.spacing(1),
+  // Don't be hidden by scroll bar
+  paddingRight: theme.spacing(1.5),
 }));
 
 /**
@@ -90,7 +89,7 @@ export default function PlaylistItemList({
         <>
           <Box
             ml="auto"
-            mr={5.5}
+            mr={3.5}
             width="fit-content"
             display="flex"
             flexDirection="column"
