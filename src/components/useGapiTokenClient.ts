@@ -18,7 +18,6 @@ const youtubeDiscoveryUrl = `https://www.googleapis.com/discovery/v1/apis/${yout
 const CLIENT_ID = getEnvVarSafe("REACT_APP_GAPI_CLIENT_ID");
 const API_KEY = getEnvVarSafe("REACT_APP_GAPI_API_KEY");
 
-console.log(process.env);
 const DEFAULT_YOUTUBE_SCOPES = "https://www.googleapis.com/auth/youtube";
 
 /**
@@ -54,7 +53,6 @@ function initTokenClient(
     scope: scope,
     prompt: prompt,
     callback: (tokenResponse) => {
-      console.log(tokenResponse);
       onTokenResponse?.(tokenResponse);
     },
   });
