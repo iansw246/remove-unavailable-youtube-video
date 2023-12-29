@@ -1,5 +1,4 @@
 import playlistItemsListResponse from "../testData/playlistItemsListResponse";
-import { PlaylistItem } from "../utils/requestHelpers";
 import ExportPlaylistItems from "./ExportPlaylists";
 
 import { render, screen } from "@testing-library/react";
@@ -8,6 +7,8 @@ test("Shows playlists titles and channels in plain text", () => {
   const playlistName = "The best playlist";
   const playlistItems = playlistItemsListResponse.items;
 
+  // JS-DOM did not implement URL.createObjectURL. Must mock
+  // https://github.com/jsdom/jsdom/issues/1721
   const oldCreateObjectURL = global.URL.createObjectURL;
 
   global.URL.createObjectURL = jest.fn();
