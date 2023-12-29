@@ -39,9 +39,12 @@ Uses the [Google 3P Authorization library for authentication and authorization](
 
 The page components (App.tsx, privacyPolicy.tsx) are put directly into the layout component. To reduce nesting, you may want to return a fragment with the content.
 
-# Todo
+# CI/CD
 
-- Get app approved by Google
-- Add unit tests
-- Add privacy policy or other information
-- Link to Github?
+Automated tests via GitHub Actions
+
+Build and pull Request builds via Netlify
+
+The `main` branch is the production branch
+
+The `staging` branch has a staging deploy of the site. This is required so Netlify has a consistent URL, so Google APIs can be authorized for that URL to allow for e2e testing.
